@@ -1,5 +1,5 @@
 {
-  "name": "crm-gwyy",
+  "name": "crm-front",
   "version": "1.0.0",
   "description": "",
   "author": "taohang <xiaotaokh@163.com>",
@@ -15,9 +15,11 @@
     "file-saver": "^2.0.2",
     "jquery": "^3.4.1",
     "qs": "^6.7.0",
+    "slider-verification-code": "^1.0.0",
     "vue": "^2.5.2",
     "vue-amap": "^0.5.10",
     "vue-axios": "^2.1.4",
+    "vue-license-keyboard": "^1.0.4",
     "vue-router": "^3.0.1",
     "xlsx": "^0.15.1"
   },

@@ -15,12 +15,16 @@ import 'aigodata-element-theme'                // 定制element-ui
 import '@/assets/styles/theme.css'
 Vue.use(ElementUI)
 
+import SliderVerificationCode from 'slider-verification-code';    // 验证码
+import 'slider-verification-code/lib/slider-verification-code.css';
+Vue.use(SliderVerificationCode);
+
 import '@/assets/styles/theme.css'   // 主样式文件
 
 import axios from 'axios';   // axios
-Vue.prototype.$axios = axios;  // axios
+Vue.prototype.$axios = axios;  // axios  $为全局请求定义方式
 // axios.defaults.baseURL = '/api'
-axios.defaults.baseURL = 'http://47.92.153.134:8911/nanning/'             // url接口地址全局定义
+// axios.defaults.baseURL = 'http://47.92.153.134:8911/nanning/'             // url接口地址全局定义
 // axios.defaults.baseURL = 'http://192.168.1.9:8911/nanning/'             // url接口地址全局定义
 
 // axios.defaults.headers.post['Content-Type'] = 'application/json';

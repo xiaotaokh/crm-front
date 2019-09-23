@@ -3,26 +3,27 @@ import Router from 'vue-router'
 import appMain from '@/views/app-main'
 import index from '@/views/index'                 // 首页
 import figure from '@/views/figure'               // 数据图
-import first from '@/views/first'
-import second from '@/views/second'
-import third from '@/views/third'
-import fourth from '@/views/fourth'
-import fifth from '@/views/fifth'
-import sixth from '@/views/sixth'
-import seventh from '@/views/seventh'
-import eighth from '@/views/eighth'
-import ninth from '@/views/ninth'
-import tenth from '@/views/tenth'
-import eleventh from '@/views/eleventh'
-import twelfth from '@/views/twelfth'
-import thirteenth from '@/views/thirteenth'
+import f1 from '@/views/f1'               // 1
+import f2 from '@/views/f2'               // 2
+import f3 from '@/views/f3'               // 3
+import f4 from '@/views/f4'               // 4
+import f5 from '@/views/f5'               // 5
+
+import login from '@/views/login'      // login
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
+  mode:'history',
   routes: [
     {
-      path: '/', redirect: '/appMain/index', component: index,
+      path: '/', name: '/login', redirect: '/login', component: login,   // 重定向到login
+    },
+    {
+      path: '/login', name: '/login',  component: login,
+    },
+    {
+      path: '/appMain', redirect: '/appMain/index', component: index,
     },
     {
       path: '/appMain', name: '/appMain', component: appMain,
@@ -34,45 +35,22 @@ export default new Router({
           path: '/appMain/figure', name: 'appMain/figure', component: figure,
         },
         {
-          path: '/appMain/first', name: 'appMain/first', component: first,
+          path: '/appMain/f1', name: 'appMain/f1', component: f1,
         },
         {
-          path: '/appMain/second', name: 'appMain/second', component: second,
+          path: '/appMain/f2', name: 'appMain/f2', component: f2,
         },
         {
-          path: '/appMain/third', name: 'appMain/third', component: third
+          path: '/appMain/f3', name: 'appMain/f3', component: f3,
         },
         {
-          path: '/appMain/fourth', name: 'appMain/fourth', component: fourth
+          path: '/appMain/f4', name: 'appMain/f4', component: f4,
         },
         {
-          path: '/appMain/fifth', name: 'appMain/fifth', component: fifth
-        },
-        {
-          path: '/appMain/sixth', name: 'appMain/sixth', component: sixth
-        },
-        {
-          path: '/appMain/seventh', name: 'appMain/seventh', component: seventh
-        },
-        {
-          path: '/appMain/eighth', name: 'appMain/eighth', component: eighth
-        },
-        {
-          path: '/appMain/ninth', name: 'appMain/ninth', component: ninth
-        },
-        {
-          path: '/appMain/tenth', name: 'appMain/tenth', component: tenth
-        },
-        {
-          path: '/appMain/eleventh', name: 'appMain/eleventh', component: eleventh
-        },
-        {
-          path: '/appMain/twelfth', name: 'appMain/twelfth', component: twelfth
-        },
-        {
-          path: '/appMain/thirteenth', name: 'appMain/thirteenth', component: thirteenth
+          path: '/appMain/f5', name: 'appMain/f5', component: f5,
         }
       ]
     }
   ]
 })
+export default router

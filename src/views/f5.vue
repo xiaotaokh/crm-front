@@ -1,6 +1,6 @@
 <template>
   <div class="figures">
-    123
+    5
   </div>
 </template>
 

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>crm</title>
+</head>
+
+<body>
+  用户名：<input id="userName" type="text" placeholder="请输入用户名">
+  密码：<input id="passWord" type="text" placeholder="请输入密码">
+  <button onclick="login()">登录</button>
+  <button onclick="test2()">测试</button>
+  <button onclick="layOut()">退出</button>
+
+  <script>
+    // 登录测试
+    function login() {
+      postLoadX1();
+    }
+    // 登录状态测试
+    function test2() {
+      postLoadX2();
+    }
+    // 退出
+    function layOut() {
+      logout();
+    }
+    // post方法请求1  带请求头
+    function postLoadX1() {
+
+      var user_name = document.getElementById("userName").value
+      var pass_word = document.getElementById("passWord").value
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      var str = '';
+      var postData = {
+        "userName": user_name,
+        "password": pass_word
+      };
+      postData = (function (value) {
+        for (var key in value) {
+          str += key + "=" + value[key] + "&";
+        };
+        return str;
+      }(postData));
+
+      xmlhttp.open("POST", "http://192.168.3.40:8099/toLogin", true); //连接到服务器
+      xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); //设置头部信息
+      xmlhttp.send(postData); //发送数据
+      xmlhttp.onreadystatechange = function () //响应服务器时所做的准备
+      {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) { //响应成功
+          var data = JSON.parse(xmlhttp.responseText); //解析数据
+          sessionStorage.setItem("token", data.data);
+          console.log(data)
+        }
+      }
+
+    }
+
+    // post方法请求2  不带请求头
+    function postLoadX2() {
+      var user_name = document.getElementById("userName").value
+      var pass_word = document.getElementById("passWord").value
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      var str = '';
+      var postData = {};
+      postData = (function (value) {
+        for (var key in value) {
+          str += key + "=" + value[key] + "&";
+        };
+        return str;
+      }(postData));
+
+      xmlhttp.open("POST", "http://192.168.3.40:8099/index", true); //连接到服务器
+      xmlhttp.setRequestHeader("Authorization", sessionStorage.getItem("token")); //设置头部信息
+      xmlhttp.send(postData); //发送数据
+      xmlhttp.onreadystatechange = function () //响应服务器时所做的准备
+      {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //响应成功
+        {
+          console.log(xmlhttp.responseText);
+        }
+      }
+    }
+
+    // 退出
+    function logout() {
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      var str = '';
+      var postData = {};
+      postData = (function (value) {
+        for (var key in value) {
+          str += key + "=" + value[key] + "&";
+        };
+        return str;
+      }(postData));
+
+      xmlhttp.open("POST", "http://192.168.3.40:8099/logout", true); //连接到服务器
+      xmlhttp.setRequestHeader("Authorization", sessionStorage.getItem("token")); //设置头部信息
+      xmlhttp.send(postData); //发送数据
+      xmlhttp.onreadystatechange = function () //响应服务器时所做的准备
+      {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //响应成功
+        {
+          console.log(xmlhttp.responseText);
+          sessionStorage.clear();
+        }
+      }
+    }
+
+  </script>
+</body>
+
+</html>

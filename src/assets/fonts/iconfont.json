@@ -1,0 +1,44 @@
+{
+  "id": "1424911",
+  "name": "gwyy-crm",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "国威永耀-crm管理平台",
+  "glyphs": [
+    {
+      "icon_id": "553323",
+      "name": "姓名 用户名 昵称",
+      "font_class": "xingmingyonghumingnicheng",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "1002516",
+      "name": "密码",
+      "font_class": "mima",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "1166005",
+      "name": "首页",
+      "font_class": "iconfontzhizuobiaozhun023101",
+      "unicode": "e667",
+      "unicode_decimal": 58983
+    },
+    {
+      "icon_id": "5121489",
+      "name": "导航",
+      "font_class": "daohang",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "6204091",
+      "name": "关  闭",
+      "font_class": "guanbi",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    }
+  ]
+}

@@ -1,8 +1,6 @@
 <template>
   <div class="index">
-    <!-- <iframe src="http://127.0.0.1:5500/static/html/index.html"></iframe> -->
-    <iframe src="http://47.92.153.134:8081/html/index.html"></iframe>
-    <!-- <iframe src="../../static/html/index.html"></iframe> -->
+    主页
   </div>
 </template>
 
@@ -29,10 +27,6 @@ export default {
 
 <style scoped>
 .index {
-  width: 100%;
-  height: 100%;
-}
-iframe {
   width: 100%;
   height: 100%;
 }
