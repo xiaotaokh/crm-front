@@ -20,7 +20,7 @@
     "vue-amap": "^0.5.10",
     "vue-axios": "^2.1.4",
     "vue-license-keyboard": "^1.0.4",
-    "vue-router": "^3.0.1",
+    "vue-router": "^3.0.7",
     "xlsx": "^0.15.1"
   },
   "devDependencies": {

@@ -1,12 +1,13 @@
 <template>
-  <div class="figures">
-    2
+  <!-- 用户管理 -->
+  <div class="userManage">
+    用户管理
   </div>
 </template>
 
 <script>
 export default {
-  name: 'figures',
+  name: 'userManage',
   watch: {
       
   },
@@ -24,7 +25,7 @@ export default {
 </script>
 
 <style scoped>
-.figures {
+.userManage {
   width: 100%;
   height: 100%;
   position: relative;

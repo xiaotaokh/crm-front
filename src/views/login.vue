@@ -101,10 +101,10 @@ export default {
   background:#152E71;
   position: relative;
   overflow: hidden;
-  background: -webkit-linear-gradient(left top, #51e084 ,#d080c3 ,#4b8aa0, #5577dc); /* Safari 5.1 - 6.0 */
-  background: -o-linear-gradient(bottom right,  #51e084 ,#d080c3 ,#4b8aa0, #5577dc); /* Opera 11.1 - 12.0 */
-  background: -moz-linear-gradient(bottom right, #51e084 ,#d080c3 ,#4b8aa0, #5577dc); /* Firefox 3.6 - 15 */
-  background: linear-gradient(to bottom right,  #51e084 ,#d080c3 ,#4b8aa0, #5577dc); /* 标准的语法 */
+  background: -webkit-linear-gradient(left top, #6b80bd, #6bb4ce,#84c5a3 ,#8dad98); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(bottom right,  #6b80bd, #6bb4ce,#84c5a3 ,#8dad98); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(bottom right, #6b80bd, #6bb4ce,#84c5a3 ,#8dad98); /* Firefox 3.6 - 15 */
+  background: linear-gradient(to bottom right,  #6b80bd, #6bb4ce,#84c5a3 ,#8dad98); /* 标准的语法 */
 }
 /* 登录窗口 */
 .login .login-form {
@@ -113,7 +113,7 @@ export default {
   top: 50%;
   transform: translate(-50%,-50%);
   width: 330px;
-  height: 380px;
+  height: 350px;
   background: rgba(255,255,255,0);
   box-shadow: 0 0 10px #fff;
 }
@@ -141,8 +141,8 @@ export default {
 }
 /* 登录按钮 */
 .login .login-form .login-btn {
-  width: 100px;
-  margin-top: 40px;
+  width: 200px;
+  margin-top: 20px;
   font-size: 14px;
 }
 /* 滑动解锁 */

@@ -66,7 +66,7 @@ export default {
 }
 /* 二级菜单滚动 */
 #app .app-sidebar>ul {
-  height: calc(100% - 96px);
+  height: calc(100% - 40px);
   overflow: auto;
 }
 #app .app-content {

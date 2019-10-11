@@ -1,12 +1,13 @@
 <template>
-  <div class="figures">
-    3
+  <!-- 销售目标 -->
+  <div class="salesTarget">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'figures',
+  name: 'salesTarget',
   watch: {
       
   },
@@ -24,7 +25,7 @@ export default {
 </script>
 
 <style scoped>
-.figures {
+.salesTarget {
   width: 100%;
   height: 100%;
   position: relative;

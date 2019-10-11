@@ -1,12 +1,13 @@
 <template>
-  <div class="figures">
-    5
+  <!-- 系统管理 -->
+  <div class="systemManage">
+    系统管理
   </div>
 </template>
 
 <script>
 export default {
-  name: 'figures',
+  name: 'systemManage',
   watch: {
       
   },
@@ -24,7 +25,7 @@ export default {
 </script>
 
 <style scoped>
-.figures {
+.systemManage {
   width: 100%;
   height: 100%;
   position: relative;

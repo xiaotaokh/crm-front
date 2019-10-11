@@ -1,12 +1,13 @@
 <template>
-  <div class="figures">
-    4
+  <!-- 客户管理 -->
+  <div class="customerManage">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'figures',
+  name: 'customerManage',
   watch: {
       
   },
@@ -24,7 +25,7 @@ export default {
 </script>
 
 <style scoped>
-.figures {
+.customerManage {
   width: 100%;
   height: 100%;
   position: relative;

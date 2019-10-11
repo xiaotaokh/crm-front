@@ -1,142 +1,132 @@
 <template>
   <div class="app-sidebar">
-    <el-menu 
+    <el-menu
       :default-active="this.$route.path"
       router
       unique-opened
-      class="el-menu-vertical-demo">
-      <!-- <el-submenu v-for="(item,i) in navList" :key="i" v-show="item.second" :index="item.name">
-         <template slot="title">{{ item.navItem }}</template>
-         <el-submenu v-show="item.third" v-for="(sec,j) in item.third" :key="j" :index="sec.name">
-          <template slot="title">选项4</template>
-          <el-menu-item index="1-4-1">选项1</el-menu-item>
-        </el-submenu>
-         <el-menu-item v-for="(sec,j) in item.second" :key="j" :index="sec.name">{{ sec.navItem }}</el-menu-item>
-      </el-submenu> -->
-      <!-- <el-menu-item v-for="(item,i) in navList" :key="i" v-show="!item.second" :index="item.name">
-        {{ item.navItem }}
-      </el-menu-item> -->
-      <el-submenu v-for="(item,i) in navList" :key="i" :index="item.name">
-         <template slot="title">{{ item.navItem }}</template>
-         <!-- 三级标题存在 -->
-         <el-submenu v-for="(sec,j) in item.second" :key="'A'+j" v-show="sec.third" :index="sec.name">
-          <template slot="title">{{ sec.navItem }}</template>
-          <el-menu-item v-for="(thi,k) in sec.third" :key="k" :index="thi.name">{{ thi.navItem }}</el-menu-item>
+      background-color="#242F35"
+      text-color="#fff"
+      active-text-color="#1BD5E7"
+      class="el-menu-vertical-demo"
+    >
+      <el-submenu v-for="(item,i) in navList" :key="i" :index="item.route">
+        <template slot="title">
+          <i class="iconfont" :class="item.icon"></i>
+          {{ item.navName }}
+        </template>
+        <!-- 三级标题存在 -->
+        <el-submenu
+          v-for="(sec,j) in item.second"
+          :key="'A'+j"
+          v-show="sec.third"
+          :index="sec.route"
+        >
+          <template slot="title">{{ sec.navName }}</template>
+          <el-menu-item v-for="(thi,k) in sec.third" :key="k" :index="thi.route">{{ thi.navName }}</el-menu-item>
         </el-submenu>
         <!-- 三级标题不存在 -->
-        <el-menu-item v-for="(m,n) in item.second" :key="'B'+n" v-show="!m.third" :index="m.name">{{ m.navItem }}</el-menu-item>
+        <el-menu-item
+          v-for="(m,n) in item.second"
+          :key="'B'+n"
+          v-show="!m.third"
+          :index="m.route"
+        >{{ m.navName }}</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
 </template>
 
 <script>
-  export default {
-    name: "app-sidebar",
-    computed: {
-      
-    },
-    data() {
-      return {
-        navList:[
-          {
-            name:'/appMain/caidanyi',
-            navItem:'菜单一',
-            second:[
-              {
-                name:'/appMain/figure',
-                navItem:'数据图',
-                third:[
-                  {
-                    name:'/appMain/figure',
-                    navItem:'数据图'
-                  },
-                  {
-                    name:'/appMain/f1',
-                    navItem:'f1'
-                  },
-                  {
-                    name:'/appMain/f2',
-                    navItem:'f2'
-                  },
-                  {
-                    name:'/appMain/f3',
-                    navItem:'f3'
-                  },
-                  {
-                    name:'/appMain/f4',
-                    navItem:'f4'
-                  },
-                  {
-                    name:'/appMain/f5',
-                    navItem:'f5'
-                  }
-                ]
-              },
-              {
-                name:'/appMain/f1',
-                navItem:'f1'
-              },
-              {
-                name:'/appMain/f2',
-                navItem:'f2'
-              },
-              {
-                name:'/appMain/f3',
-                navItem:'f3'
-              },
-              {
-                name:'/appMain/f4',
-                navItem:'f4'
-              },
-              {
-                name:'/appMain/f5',
-                navItem:'f5'
-              }
-            ]
-          },
-          {
-            name:'/appMain/2',
-            navItem:'菜单一',
-            second:[
-              {
-                name:'/appMain/21',
-                navItem:'数据图'
-              },
-              {
-                name:'/appMain/22',
-                navItem:'f1'
-              },
-              {
-                name:'/appMain/34',
-                navItem:'f2'
-              },
-              {
-                name:'/appMain/56',
-                navItem:'f3'
-              },
-              {
-                name:'/appMain/7',
-                navItem:'f4'
-              },
-              {
-                name:'/appMain/9',
-                navItem:'f5'
-              }
-            ]
-          }
-        ]
-      };
-    },
-    methods: {
-      
-    },
-    mounted(){
-      // console.log(this.$route.path)
-    }
-  };
+export default {
+  name: "app-sidebar",
+  computed: {},
+  data() {
+    return {
+      navList: [
+        {
+          route: "/appMain/customerManage",
+          navName: "客户管理",
+          icon: "iconziyuan",
+          second: [
+            {
+              route: "/appMain/customerManage/salesTarget",
+              navName: "销售目标",
+              third: [
+                {
+                  route: "/appMain/customerManage/salesTarget/salesTargetManage",
+                  navName: "销售目标管理"
+                },
+                {
+                  route:
+                    "/appMain/customerManage/salesTarget/salesTargetStatistic",
+                  navName: "销售目标统计"
+                }
+              ]
+            },
+            {
+              route: "",
+              navName: "公海客户"
+            },
+            {
+              route: "",
+              navName: "我的客户"
+            },
+            {
+              route: "",
+              navName: "跟进记录"
+            },
+            {
+              route: "",
+              navName: "商机管理"
+            },
+            {
+              route: "",
+              navName: "呼叫中心"
+            },
+            {
+              route: "",
+              navName: "客户服务"
+            },
+            {
+              route: "",
+              navName: "预约管理"
+            },
+            {
+              route: "",
+              navName: "售后工单"
+            }
+          ]
+        },
+        {
+          route: "/appMain/systemManage/systemManage",
+          navName: "系统管理",
+          icon: "iconxitongguanli",
+          second: [
+            {
+              route: "/appMain/systemManage/userManage",
+              navName: "用户管理"
+            },
+            {
+              route: "/appMain/systemManage/roleManage",
+              navName: "角色管理"
+            }
+          ]
+        }
+      ]
+    };
+  },
+  methods: {},
+  mounted() {
+    // console.log(this.$route.route)
+  }
+};
 </script>
 
-<style>
-  
+<style scoped>
+.app-sidebar {
+  position: relative;
+}
+.app-sidebar .el-submenu__title i {
+  color: #fff;
+}
 </style>
