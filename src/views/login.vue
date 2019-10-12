@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="img">
-      <img src="../assets/images/login.svg" alt="">
+      <img src="../assets/images/login.svg" alt />
     </div>
     <div class="header">
       <span>国威永耀</span>
@@ -11,110 +11,226 @@
     <div class="login-form">
       <div class="login-form-title">用户登录</div>
       <div class="login-form-ipt">
-        <el-input 
-          placeholder="请输入用户名" 
-          v-model="username"
-          size="medium"
-          clearable
-          autofocus>
-          <template slot="prepend"><i class="iconfont iconxingmingyonghumingnicheng"></i></template>
+        <el-input placeholder="请输入用户名" v-model="username" size="medium" clearable autofocus>
+          <template slot="prepend">
+            <i class="iconfont iconxingmingyonghumingnicheng"></i>
+          </template>
         </el-input>
-        <el-input 
-          show-password 
-          placeholder="请输入密码" 
-          v-model="password" 
-          clearable
-          size="medium">
-          <template slot="prepend"><i class="iconfont iconmima"></i></template>
+        <el-input show-password placeholder="请输入密码" v-model="password" clearable size="medium">
+          <template slot="prepend">
+            <i class="iconfont iconmima"></i>
+          </template>
         </el-input>
-        <SliderVerificationCode v-model="value" />
-        <el-button @click="login" :loading="loading" type="primary" class="login-btn" size="small" round>登 录</el-button>
+        <el-button
+          @click="verifyHandle"
+          :type="verifyType"
+          class="login-verify"
+          size="small"
+        >{{ verifyText }}</el-button>
+        <!-- <SliderVerificationCode v-model="verify" /> -->
+        <el-button
+          @click="login"
+          :loading="loading"
+          type="primary"
+          class="login-btn"
+          size="small"
+        >登 录</el-button>
+        <!-- 验证码 -->
+        <slide-verify
+          v-if="verifyShow"
+          :l="42"
+          :r="10"
+          :w="310"
+          :h="155"
+          @success="onSuccess"
+          @fail="onFail"
+          @refresh="onRefresh"
+          :slider-text="text"
+        ></slide-verify>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import qs from 'qs'
+import qs from "qs";
 export default {
-  name: 'login',
-  watch: {
-      
-  },
-  data () {
+  name: "login",
+  watch: {},
+  data() {
     return {
-      username:"",
-      password:"",
-      value:false,  // 验证结果
-      loading:false,
-    }
+      username: "",
+      password: "",
+      verifyShow: false, // 显示验证
+      verifyType: "info", // 验证按钮类型
+      verifyText: "点击验证", // 验证text
+      verify: false, // 验证结果
+      text: "向右滑",
+      loading: false
+    };
   },
   methods: {
+    // 验证码成功
+    onSuccess() {
+      this.$message({
+        message: "验证成功！",
+        type: "success"
+      });
+      this.verify = true;
+      this.verifyShow = false;
+      this.verifyType = "success";
+      this.verifyText = "验证成功";
+    },
+    // 验证码失败
+    onFail() {
+      this.$message({
+        message: "验证失败,请重新验证！",
+        type: "error"
+      });
+      this.verifyType = "danger";
+      this.verifyText = "验证失败";
+      setTimeout(() => {
+        this.verifyType = "warning";
+        this.verifyText = "向右滑动重新验证";
+      }, 500);
+    },
+    // 验证码刷新
+    onRefresh() {
+      console.log("onRefresh");
+      this.$message({
+        message: "验证码刷新成功！",
+        type: "success"
+      });
+      this.verify = false;
+      this.verifyType = "info";
+      this.verifyText = "点击验证";
+    },
+
+    // 点击验证
+    verifyHandle() {
+      this.verifyShow = true;
+      if (this.verifyType == "success") {
+        this.verifyShow = false;
+        return;
+      }
+    },
+
     login() {
-      if(this.username == "") {
+      if (this.username == "") {
         this.$message({
           message: "请输入用户名",
           type: "warning"
         });
         return false;
-      }else if(this.password == "") {
+      } else if (this.password == "") {
         this.$message({
           message: "请输入密码",
           type: "warning"
         });
         return false;
-      }else if(this.value == false) {
+      } else if (this.verify == false) {
         this.$message({
-          message: "请先滑动解锁",
+          message: "请先点击验证解锁",
           type: "warning"
         });
         return false;
-      };
+      }
 
-      this.loading = true;   // 登录加载  请求失败吧loading设置为false
-      this.$router.push({path:"/appMain"})
+      this.loading = true; // 登录加载  请求失败吧loading设置为false
+      // this.$router.push({path:"/appMain"})
       // 向后台发送请求获取查询结果数据
-      // let formData = {
-      //   userName: this.username,
-      //   password: this.password
-      // };
-      // var self = this;
-      // var url = "http://192.168.3.40:8099/toLogin";
-      // $.post(url,qs.stringify(formData))
-      // .then(res=>{
-      //   // 成功之后跳转页面
-      //   this.$router.push({path:"/appMain"})
-      // })
-    },
+      let formData = {
+        userName: this.username,
+        password: this.password
+      };
+      var url = "toLogin";
+      this.$axios
+        .post(url, qs.stringify(formData))
+        .then(res => {
+          // 成功
+          if (res.data.code == 1) {
+            this.$message({
+              message: res.data.msg,
+              type: "success"
+            });
 
+            // 把拿到的token存放在localStorage里面
+            sessionStorage.setItem("token", res.data.data);
+
+            this.$router.push({ path: "/appMain" }); // 跳转页面
+            this.loading = false; // 关闭loading
+            this.verifyType = "info"; // 设置验证按钮类型
+            this.verifyText = "点击验证"; // 设置验证text
+            this.verify = false; // 验证状态为false
+          } else {
+            // 弹出失败原因
+            this.$message({
+              message: res.data.msg,
+              type: "error"
+            });
+            this.loading = false; // 关闭loading
+            this.verifyType = "info";
+            this.verifyText = "点击验证";
+            this.verify = false; // 验证状态为false
+          }
+        })
+        .catch(error => {
+          this.loading = false; // 关闭loading
+          this.verifyType = "info"; // 设置验证按钮类型
+          this.verifyText = "点击验证"; // 设置验证text
+          this.verify = false; // 验证状态为false
+        });
+    }
   },
-  created() {
-    
-  }
-}
+  created() {}
+};
 </script>
 
 <style scoped>
 .login {
   width: 100%;
   height: 100%;
-  background:#152E71;
+  background: #152e71;
   position: relative;
   overflow: hidden;
-  background: -webkit-linear-gradient(left top, #6b80bd, #6bb4ce,#84c5a3 ,#8dad98); /* Safari 5.1 - 6.0 */
-  background: -o-linear-gradient(bottom right,  #6b80bd, #6bb4ce,#84c5a3 ,#8dad98); /* Opera 11.1 - 12.0 */
-  background: -moz-linear-gradient(bottom right, #6b80bd, #6bb4ce,#84c5a3 ,#8dad98); /* Firefox 3.6 - 15 */
-  background: linear-gradient(to bottom right,  #6b80bd, #6bb4ce,#84c5a3 ,#8dad98); /* 标准的语法 */
+  background: -webkit-linear-gradient(
+    left top,
+    #6b80bd,
+    #6bb4ce,
+    #84c5a3,
+    #8dad98
+  ); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(
+    bottom right,
+    #6b80bd,
+    #6bb4ce,
+    #84c5a3,
+    #8dad98
+  ); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(
+    bottom right,
+    #6b80bd,
+    #6bb4ce,
+    #84c5a3,
+    #8dad98
+  ); /* Firefox 3.6 - 15 */
+  background: linear-gradient(
+    to bottom right,
+    #6b80bd,
+    #6bb4ce,
+    #84c5a3,
+    #8dad98
+  ); /* 标准的语法 */
 }
 /* 登录窗口 */
 .login .login-form {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   width: 330px;
   height: 350px;
-  background: rgba(255,255,255,0);
+  background: rgba(255, 255, 255, 0);
   box-shadow: 0 0 10px #fff;
 }
 /* 标题 */
@@ -141,9 +257,10 @@ export default {
 }
 /* 登录按钮 */
 .login .login-form .login-btn {
-  width: 200px;
+  width: 270px;
   margin-top: 20px;
   font-size: 14px;
+  margin-left: 0px;
 }
 /* 滑动解锁 */
 .login .app-drag {
@@ -151,8 +268,8 @@ export default {
   margin-top: 20px;
 }
 /* 滑动解锁颜色 */
-.login .app-drag{
-  background: rgb(105,105,105) !important;
+.login .app-drag {
+  background: rgb(105, 105, 105) !important;
 }
 /* 背景图片 */
 .login .img {
@@ -161,16 +278,30 @@ export default {
   bottom: 0;
 }
 /* 标题 */
-.login .header{
+.login .header {
   height: 100px;
   line-height: 100px;
   text-align: center;
   font-size: 5vh;
   font-weight: 700;
   margin-top: 20px;
-  font-family:cursive;
+  font-family: cursive;
 }
-.login .header span{
-  letter-spacing:5px;
+.login .header span {
+  letter-spacing: 5px;
+}
+
+/* 验证按钮 */
+.login .login-form .login-verify {
+  width: 270px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+/* 验证码 */
+.login .slide-verify {
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 </style>

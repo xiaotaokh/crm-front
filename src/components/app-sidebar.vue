@@ -4,7 +4,7 @@
       :default-active="this.$route.path"
       router
       unique-opened
-      background-color="#242F35"
+      background-color="#155B74"
       text-color="#fff"
       active-text-color="#1BD5E7"
       class="el-menu-vertical-demo"
@@ -53,7 +53,8 @@ export default {
               navName: "销售目标",
               third: [
                 {
-                  route: "/appMain/customerManage/salesTarget/salesTargetManage",
+                  route:
+                    "/appMain/customerManage/salesTarget/salesTargetManage",
                   navName: "销售目标管理"
                 },
                 {
@@ -118,6 +119,13 @@ export default {
   methods: {},
   mounted() {
     // console.log(this.$route.route)
+    var url = "getMenuByUser";
+    this.$axios
+      .get(url)
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(error => {});
   }
 };
 </script>
