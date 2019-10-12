@@ -1,21 +1,25 @@
-# tscy
+# 项目名称：crm-front (国威永耀crm平台)
 
 > 
 
-## Build Setup
+## 打包Build、运行Setup
+
+**使用教程**：
 
 ``` bash
-# install dependencies
+# 安装
 npm install
 
-# serve with hot reload at localhost:8080
+# 服务与热更新  本地主机端口:8080
 npm run dev
 
-# build for production with minification
+# 打包发布
 npm run build
 
-# build for production and view the bundle analyzer report
+# 为生产构建并查看bundle analyzer报告
 npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+**项目简介**：
+
+> 公司crm管理平台。
