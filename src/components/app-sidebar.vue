@@ -42,78 +42,7 @@ export default {
   computed: {},
   data() {
     return {
-      navList: [
-        {
-          route: "/appMain/customerManage",
-          navName: "客户管理",
-          icon: "iconziyuan",
-          second: [
-            {
-              route: "/appMain/customerManage/salesTarget",
-              navName: "销售目标",
-              third: [
-                {
-                  route:
-                    "/appMain/customerManage/salesTarget/salesTargetManage",
-                  navName: "销售目标管理"
-                },
-                {
-                  route:
-                    "/appMain/customerManage/salesTarget/salesTargetStatistic",
-                  navName: "销售目标统计"
-                }
-              ]
-            },
-            {
-              route: "",
-              navName: "公海客户"
-            },
-            {
-              route: "",
-              navName: "我的客户"
-            },
-            {
-              route: "",
-              navName: "跟进记录"
-            },
-            {
-              route: "",
-              navName: "商机管理"
-            },
-            {
-              route: "",
-              navName: "呼叫中心"
-            },
-            {
-              route: "",
-              navName: "客户服务"
-            },
-            {
-              route: "",
-              navName: "预约管理"
-            },
-            {
-              route: "",
-              navName: "售后工单"
-            }
-          ]
-        },
-        {
-          route: "/appMain/systemManage/systemManage",
-          navName: "系统管理",
-          icon: "iconxitongguanli",
-          second: [
-            {
-              route: "/appMain/systemManage/userManage",
-              navName: "用户管理"
-            },
-            {
-              route: "/appMain/systemManage/roleManage",
-              navName: "角色管理"
-            }
-          ]
-        }
-      ]
+      navList: [],
     };
   },
   methods: {},
@@ -123,7 +52,8 @@ export default {
     this.$axios
       .post(url)
       .then(res => {
-        console.log(res.data);
+        console.log(res.data)
+        this.navList = res.data.data;
       })
       .catch(error => {});
   }
