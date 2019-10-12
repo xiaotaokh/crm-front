@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import qs from "qs";
 export default {
   name: "login",
   watch: {},
@@ -145,7 +144,7 @@ export default {
       };
       var url = "toLogin";
       this.$axios
-        .post(url, qs.stringify(formData))
+        .post(url,formData)
         .then(res => {
           // 成功
           if (res.data.code == 1) {

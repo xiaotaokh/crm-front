@@ -121,7 +121,7 @@ export default {
     // console.log(this.$route.route)
     var url = "getMenuByUser";
     this.$axios
-      .get(url)
+      .post(url)
       .then(res => {
         console.log(res.data);
       })

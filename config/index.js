@@ -10,15 +10,16 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    // proxyTable: {
-    //   '/api':{
-    //     target: "http://192.168.3.40:8099/",
-    //     changeOrigin:true,
-    //     pathRewrite:{
-    //         '^/api':''
-    //     }
-    //   }
-    // },
+    // 跨域拦截请求   设置跨域重启项目(npm start)
+    proxyTable: {
+      '/api':{
+        target: "http://192.168.3.40:8099/",
+        changeOrigin:true,
+        pathRewrite:{
+            '^/api':''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

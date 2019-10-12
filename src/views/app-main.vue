@@ -79,6 +79,7 @@ export default {
   z-index: 1;
   padding: 15px;
   overflow: auto;
+  background: #eaeaea;
 }
 
 /* 过度动画 */
