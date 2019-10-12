@@ -1,7 +1,7 @@
 <template>
   <!-- 系统管理 -->
   <div class="systemManage">
-    系统管理
+    <router-view></router-view>
   </div>
 </template>
 
@@ -29,5 +29,6 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+  background: #fff;
 }
 </style>

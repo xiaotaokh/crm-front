@@ -18,7 +18,7 @@
         <el-submenu
           v-for="(sec,j) in item.second"
           :key="'A'+j"
-          v-show="sec.third"
+          v-show="sec.third.length != 0"
           :index="sec.route"
         >
           <template slot="title">{{ sec.navName }}</template>
@@ -28,7 +28,7 @@
         <el-menu-item
           v-for="(m,n) in item.second"
           :key="'B'+n"
-          v-show="!m.third"
+          v-show="m.third.length == 0"
           :index="m.route"
         >{{ m.navName }}</el-menu-item>
       </el-submenu>
@@ -39,21 +39,25 @@
 <script>
 export default {
   name: "app-sidebar",
-  computed: {},
   data() {
     return {
-      navList: [],
+      navList: [], // 拿到的后台列表数据
     };
+  },
+  computed: {
+    
+  },
+  watch: {
+    
   },
   methods: {},
   mounted() {
-    // console.log(this.$route.route)
     var url = "getMenuByUser";
     this.$axios
       .post(url)
       .then(res => {
-        console.log(res.data)
         this.navList = res.data.data;
+        // console.log(JSON.stringify(res.data))
       })
       .catch(error => {});
   }

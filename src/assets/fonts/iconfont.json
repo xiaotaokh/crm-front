@@ -20,11 +20,25 @@
       "unicode_decimal": 58955
     },
     {
+      "icon_id": "608218",
+      "name": "导航",
+      "font_class": "daohangnavigate6",
+      "unicode": "e660",
+      "unicode_decimal": 58976
+    },
+    {
       "icon_id": "1002516",
       "name": "密码",
       "font_class": "mima",
       "unicode": "e624",
       "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "1069168",
+      "name": "导航",
+      "font_class": "daohang1",
+      "unicode": "e640",
+      "unicode_decimal": 58944
     },
     {
       "icon_id": "1166005",

@@ -14,7 +14,7 @@ import salesTargetStatistic from '@/views/customerManage/salesTarget/salesTarget
 import systemManage from '@/views/systemManage/systemManage'               // 系统管理
 import userManage from '@/views/systemManage/userManage'                   // 用户管理
 import roleManage from '@/views/systemManage/roleManage'                   // 角色管理
-import menuManagement from '@/views/systemManage/menuManagement'                   // 菜单管理
+import menuManage from '@/views/systemManage/menuManage'                   // 菜单管理
 
 Vue.use(Router)
 
@@ -58,7 +58,10 @@ const router = new Router({
             // }
           ]
         },
-        // 系统管理
+        // 系统管理 
+        {
+          path: '/appMain/systemManage/systemManage', redirect: '/appMain/systemManage/menuManage', component: menuManage,   // 系统管理重定向到菜单管理
+        },
         {
           path: '/appMain/systemManage/systemManage', name: 'appMain/systemManage/systemManage', component: systemManage,    // 系统管理
           children:[
@@ -69,7 +72,7 @@ const router = new Router({
               path: '/appMain/systemManage/roleManage', name: 'appMain/systemManage/roleManage', component: roleManage,      // 角色管理
             },
             {
-              path: '/appMain/systemManage/menuManagement', name: 'appMain/systemManage/menuManagement', component: menuManagement,      // 菜单管理
+              path: '/appMain/systemManage/menuManage', name: 'appMain/systemManage/menuManage', component: menuManage,      // 菜单管理
             }
           ]
         }

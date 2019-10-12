@@ -1,7 +1,7 @@
 <template>
   <!-- 用户管理 -->
   <div class="userManage">
-    用户管理
+    <app-breadcrumb></app-breadcrumb>
   </div>
 </template>
 

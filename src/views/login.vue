@@ -127,13 +127,14 @@ export default {
           type: "warning"
         });
         return false;
-      } else if (this.verify == false) {
-        this.$message({
-          message: "请先点击验证解锁",
-          type: "warning"
-        });
-        return false;
-      }
+      } 
+      // else if (this.verify == false) {
+      //   this.$message({
+      //     message: "请先点击验证解锁",
+      //     type: "warning"
+      //   });
+      //   return false;
+      // }
 
       this.loading = true; // 登录加载  请求失败吧loading设置为false
       // this.$router.push({path:"/appMain"})
@@ -156,7 +157,10 @@ export default {
             // 把拿到的token存放在localStorage里面
             sessionStorage.setItem("token", res.data.data);
 
-            this.$router.push({ path: "/appMain" }); // 跳转页面
+            // setTimeout(()=>{
+              this.$router.push({ path: "/appMain" }); // 跳转页面
+            // },500)
+            
             this.loading = false; // 关闭loading
             this.verifyType = "info"; // 设置验证按钮类型
             this.verifyText = "点击验证"; // 设置验证text

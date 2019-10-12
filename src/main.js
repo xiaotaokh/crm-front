@@ -2,6 +2,12 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+
+import 'es6-promise/auto'  // Vuex依赖 Promise
+import Vuex from 'vuex'    // Vuex全局状态管理
+Vue.use(Vuex)
+import store from './store/index'   // 引入vuex 全局状态管理js
+
 import ElementUI from 'element-ui'  // element-ui
 import 'element-ui/lib/theme-chalk/index.css'  // element-ui css
 
@@ -52,7 +58,8 @@ Vue.use(Components);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router,   // 使用router
+  store,    // 使用store
   components: { App },
   template: '<App/>'
 })
