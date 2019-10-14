@@ -20,6 +20,7 @@ export default {
     
   },
   mounted(){
+    this.$store.commit("editBreadcrumb", this.$route.matched);  // 面包屑
   }
 }
 </script>

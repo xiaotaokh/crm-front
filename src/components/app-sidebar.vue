@@ -8,6 +8,7 @@
       text-color="#fff"
       active-text-color="#1BD5E7"
       class="el-menu-vertical-demo"
+      @select="handleSelect"
     >
       <el-submenu v-for="(item,i) in navList" :key="i" :index="item.route">
         <template slot="title">
@@ -41,23 +42,21 @@ export default {
   name: "app-sidebar",
   data() {
     return {
-      navList: [], // 拿到的后台列表数据
+      navList: [] // 拿到的后台列表数据
     };
   },
-  computed: {
-    
+  computed: {},
+  watch: {},
+  methods: {
+    // 激活菜单事件
+    handleSelect(key, keyPath) {}
   },
-  watch: {
-    
-  },
-  methods: {},
   mounted() {
     var url = "getMenuByUser";
     this.$axios
       .post(url)
       .then(res => {
         this.navList = res.data.data;
-        // console.log(JSON.stringify(res.data))
       })
       .catch(error => {});
   }

@@ -7,9 +7,9 @@
     <!-- 内容区 -->
     <div class="app-content">
       <!-- 具体页面 -->
-      <transition name="fade">
+      <!-- <transition name="fade"> -->
         <router-view></router-view>
-      </transition>
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -77,11 +77,10 @@ export default {
   width: calc(100% - 240px);
   height: calc(100% - 60px);
   z-index: 1;
-  padding: 15px;
+  padding: 0px;
   overflow: auto;
   background: #eaeaea;
 }
-
 /* 过度动画 */
 .fade-enter-active, .fade-leave-active {
   transition: opacity .3s;

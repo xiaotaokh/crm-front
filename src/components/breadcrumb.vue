@@ -2,9 +2,8 @@
   <!-- 面包屑 -->
   <div class="breadcrumb">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/appMain/index' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/appMain/systemManage/systemManage' }">系统管理</el-breadcrumb-item>
-      <el-breadcrumb-item>菜单管理</el-breadcrumb-item>
+      <!-- 通过路由meta属性记录，得到当前路由下所有的路径地址以及菜单名称  this.$route.matched -->
+      <el-breadcrumb-item v-for="(item,index) in breadcrumb" :key="index" :to="{ path: item.path }">{{ item.meta }}</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
 </template>
@@ -14,17 +13,25 @@ export default {
   name: "breadcrumb",
   watch: {},
   data() {
-    return {};
+    return {
+      breadcrumb:[],   // 面包屑
+    };
   },
   methods: {},
-  mounted() {}
+  mounted() {
+    setTimeout(()=>{
+      this.breadcrumb = this.$store.getters.getBreadcrumb;   // 全局获取面包屑   因为同步，设置延迟器
+    })
+  }
 };
 </script>
 
 <style scoped>
 .breadcrumb {
   width: 100%;
-  height: 100%;
+  height: 40px;
   position: relative;
+  padding: 10px;
+  border-bottom: 1px solid #eaeaea;
 }
 </style>

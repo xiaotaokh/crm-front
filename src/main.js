@@ -2,46 +2,60 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+import '@/assets/styles/main.css'    // 全局主样式文件
+import '@/assets/styles/media.css'   // 响应式布局样式文件
+import '@/assets/styles/reset.css'	 // 全局样式重置
 
 import 'es6-promise/auto'  // Vuex依赖 Promise
 import Vuex from 'vuex'    // Vuex全局状态管理
 Vue.use(Vuex)
 import store from './store/index'   // 引入vuex 全局状态管理js
 
-import ElementUI from 'element-ui'  // element-ui
+// ElementUI
+import ElementUI from 'element-ui'             // element-ui
 import 'element-ui/lib/theme-chalk/index.css'  // element-ui css
 
-import '@/assets/styles/reset.css'							// 重置样式
-import '@/assets/fonts/iconfont.css'						// 图标字体
-import '@/assets/fonts/iconfont.js'						// 图标字体
-
-import 'aigodata-element-theme'                // 定制element-ui
+import 'aigodata-element-theme'                // aigo定制element-ui
 import '@/assets/styles/theme.css'
 Vue.use(ElementUI)
 
-import SliderVerificationCode from 'slider-verification-code';    // 滑动验证码
+import '@/assets/fonts/iconfont.css'					 // 阿里图标字体
+import '@/assets/fonts/iconfont.js'						 // 阿里图标字体
+
+// url-loader
+import urlLoader from './router'
+Vue.use(urlLoader);
+
+// 滑动验证码
+import SliderVerificationCode from 'slider-verification-code';    
 import 'slider-verification-code/lib/slider-verification-code.css';
 Vue.use(SliderVerificationCode);
 
-// npm install --save vue-monoplasty-slide-verify   // 图片滑动验证码
+// 图片对照滑动验证码  npm install --save vue-monoplasty-slide-verify   
 import SlideVerify from 'vue-monoplasty-slide-verify';
 Vue.use(SlideVerify);
-
-import '@/assets/styles/theme.css'   // 主样式文件
 
 // axios
 import axios from 'axios';
 Vue.prototype.$axios = axios;  // axios  $为全局请求定义方式
 axios.defaults.baseURL = '/api'          // 跨域解决
-// axios.defaults.headers.post['Content-Type'] = 'application/json';   // 跨域解决  可以在axios.interceptors.request.us下设置
+// axios.defaults.headers.post['Content-Type'] = 'application/json';   // 跨域解决  可以在axios.interceptors.request.us下设置  application/x-www-form-urlencoded;charset=UTF-8
 // axios.defaults.baseURL = 'http://192.168.3.40:8099/'             // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 axios.defaults.timeout = 3000;  // 每次请求间隔时间 3s
-axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : '';  // 全局设置请求头 添加token
+// axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : "";  // 全局设置请求头 添加token
 
 import Qs from 'qs'     // 对post请求parms进行数据格式处理
 // axios.defaults.transformRequest = [obj => Qs.stringify(obj)]
-// 对axios进行拦截处理，设置parms格式以及请求头
+
+// 对axios进行请求拦截处理
 axios.interceptors.request.use(config => {
+  // 添加token
+  let token = sessionStorage.getItem("token");
+  if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+    config.headers.Authorization = token;
+  }
+  
+  // 设置post请求体parms格式以
   if (config.method === "post") {
       config.data = Qs.stringify(config.data);  // 转换请求体格式
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -49,13 +63,24 @@ axios.interceptors.request.use(config => {
   return config;
 }, err => Promise.reject(err));
  
+// 对axios进行响应拦截处理
+axios.interceptors.response.use(res => {
+  // 拦截所有请求，根据状态码，做出相应处理
+  if(res.data && res.data.code == 418) {
+    // 状态码 418 表示未登录/token失效，退出系统，跳转到登录页
+    sessionStorage.removeItem("token");  // 清除token
+    router.replace({
+      path: '/login',
+    })
+  }
+  return res;
+}, err => Promise.reject(err));
 
 Vue.config.productionTip = false
 
 import Components from './components'; 
 Vue.use(Components);
 
-/* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,   // 使用router
@@ -63,20 +88,3 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
-
-
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';  // 跨域解决option问题
-
-//Axios请求拦截器 设置 token
-// axios.interceptors.request.use(config => {
-//   let token = sessionStorage.getItem("token");
-//   if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-//       config.headers.Authorization = token;
-//       console.log('interceptors config=',config)
-//   }
-//   return config
-// }, error => {
-//   return Promise.reject(error)
-// })
-
-// axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'   // 没用到

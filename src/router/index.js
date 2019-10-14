@@ -22,33 +22,39 @@ const router = new Router({
   mode:'history',
   routes: [
     {
-      path: '/', redirect: '/login', component: login,                                                              // 重定向到login
+      path: '/', redirect: '/login', component: login,                       // 重定向到login
     },
     {
-      path: '/login', name: '/login',  component: login,                                                                            // 登录
+      path: '/login', name: '/login',  component: login, meta:"登录",          // 登录
     },
     {
-      path: '/appMain', redirect: '/appMain/index', component: index,                                                               // 首页
+      path: '/appMain', redirect: '/appMain/index', component: index           // 重定向到首页
     },
     {
-      path: '/appMain', name: '/appMain', component: appMain,                                                                       // 主体页
+      path: '/appMain', name: '/appMain', component: appMain, meta:"首页",       // 主体页
       children:[
         {
-          path: '/appMain/index', name: 'appMain/index', component: index,                                                          // 首页
+          path: '/appMain/index', name: 'appMain/index', component: index,        // 首页
         },
         // 客户管理
         {
-          path: '/appMain/customerManage/customerManage', name: 'appMain/customerManage/customerManage', component: customerManage,                               // 客户管理
+          path: '/appMain/customerManage/customerManage', redirect: '/appMain/customerManage/salesTarget/salesTargetManage', component: salesTargetManage                 // 客户管理重定向到销售目标管理
+        },
+        {
+          path: '/appMain/customerManage/customerManage', name: 'appMain/customerManage/customerManage', component: customerManage, meta:"客户管理",                               // 客户管理
           children:[
             // 销售目标
             {
-              path: '/appMain/customerManage/salesTarget/salesTarget', name: 'appMain/customerManage/salesTarget/salesTarget', component: salesTarget,            
+              path: '/appMain/customerManage/salesTarget/salesTarget', redirect: '/appMain/customerManage/salesTarget/salesTargetManage', component: salesTargetManage                  // 销售目标重定向到销售目标管理
+            },
+            {
+              path: '/appMain/customerManage/salesTarget/salesTarget', name: 'appMain/customerManage/salesTarget/salesTarget', component: salesTarget, meta:"销售目标",           
               children:[
                 {
-                  path: '/appMain/customerManage/salesTarget/salesTargetManage', name: 'appMain/customerManage/salesTarget/salesTargetManage', component: salesTargetManage,                      // 销售目标管理
+                  path: '/appMain/customerManage/salesTarget/salesTargetManage', name: 'appMain/customerManage/salesTarget/salesTargetManage', component: salesTargetManage, meta:"销售目标管理",                       // 销售目标管理
                 },
                 {
-                  path: '/appMain/customerManage/salesTarget/salesTargetStatistic', name: 'appMain/customerManage/salesTarget/salesTargetStatistic', component: salesTargetStatistic,             // 销售目标统计
+                  path: '/appMain/customerManage/salesTarget/salesTargetStatistic', name: 'appMain/customerManage/salesTarget/salesTargetStatistic', component: salesTargetStatistic, meta:"销售目标统计",              // 销售目标统计
                 }
               ]
             },
@@ -63,16 +69,16 @@ const router = new Router({
           path: '/appMain/systemManage/systemManage', redirect: '/appMain/systemManage/menuManage', component: menuManage,   // 系统管理重定向到菜单管理
         },
         {
-          path: '/appMain/systemManage/systemManage', name: 'appMain/systemManage/systemManage', component: systemManage,    // 系统管理
+          path: '/appMain/systemManage/systemManage', name: 'appMain/systemManage/systemManage', component: systemManage, meta:"系统管理",    // 系统管理
           children:[
             {
-              path: '/appMain/systemManage/userManage', name: 'appMain/systemManage/userManage', component: userManage,      // 用户管理
+              path: '/appMain/systemManage/userManage', name: 'appMain/systemManage/userManage', component: userManage, meta:"用户管理",      // 用户管理
             },
             {
-              path: '/appMain/systemManage/roleManage', name: 'appMain/systemManage/roleManage', component: roleManage,      // 角色管理
+              path: '/appMain/systemManage/roleManage', name: 'appMain/systemManage/roleManage', component: roleManage, meta:"角色管理",      // 角色管理
             },
             {
-              path: '/appMain/systemManage/menuManage', name: 'appMain/systemManage/menuManage', component: menuManage,      // 菜单管理
+              path: '/appMain/systemManage/menuManage', name: 'appMain/systemManage/menuManage', component: menuManage, meta:"菜单管理",      // 菜单管理
             }
           ]
         }
@@ -80,4 +86,22 @@ const router = new Router({
     }
   ]
 })
+// 路由守卫
+router.beforeEach((to, from, next) => {
+  // 如果是登录页面的话，直接next()
+  if (to.path == '/login') {
+    // 获取浏览器缓存的用户信息 如果已经登录的话
+    if (sessionStorage.getItem('token')) { 
+      next("/appMain");
+      Vue.prototype.$message({
+        message: '您已经登录，欢迎使用！',
+        type: 'success'
+      });
+    } else {
+      next();
+    }
+  }
+  // next();
+})
+
 export default router

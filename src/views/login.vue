@@ -58,8 +58,8 @@ export default {
   watch: {},
   data() {
     return {
-      username: "",
-      password: "",
+      username: "admin",
+      password: "123456",
       verifyShow: false, // 显示验证
       verifyType: "info", // 验证按钮类型
       verifyText: "点击验证", // 验证text
@@ -136,8 +136,7 @@ export default {
       //   return false;
       // }
 
-      this.loading = true; // 登录加载  请求失败吧loading设置为false
-      // this.$router.push({path:"/appMain"})
+      this.loading = true; // 登录加载
       // 向后台发送请求获取查询结果数据
       let formData = {
         userName: this.username,
@@ -157,9 +156,8 @@ export default {
             // 把拿到的token存放在localStorage里面
             sessionStorage.setItem("token", res.data.data);
 
-            // setTimeout(()=>{
-              this.$router.push({ path: "/appMain" }); // 跳转页面
-            // },500)
+            // 设置延迟器加载菜单
+            this.$router.push({ path: "/appMain" }); // 跳转页面
             
             this.loading = false; // 关闭loading
             this.verifyType = "info"; // 设置验证按钮类型

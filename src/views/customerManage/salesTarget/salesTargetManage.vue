@@ -1,27 +1,22 @@
 <template>
   <!-- 销售目标管理 -->
   <div class="salesTargetManage">
-    销售目标管理
+    <app-breadcrumb></app-breadcrumb>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'salesTargetManage',
-  watch: {
-      
+  name: "salesTargetManage",
+  watch: {},
+  data() {
+    return {};
   },
-  data () {
-    return {
-        
-    }
-  },
-  methods: {
-    
-  },
-  mounted(){
+  methods: {},
+  mounted() {
+    this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
   }
-}
+};
 </script>
 
 <style scoped>
