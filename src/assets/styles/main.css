@@ -91,11 +91,17 @@ html, body {
   min-width: 1360px;
 }
 
+/* 除去面包屑主体 */
+.content-main {
+  height: calc(100% - 40px);
+  overflow: auto;
+}
 /* 按钮组 */
 .app-btn-group {
   padding: 10px;
 }
-/* 按钮组紧邻表格 */
+/* 按钮组紧邻的表格 */
 .app-content-table {
   padding: 10px;
+  height: calc(100% - 60px);
 }

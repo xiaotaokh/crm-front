@@ -7,6 +7,7 @@ export default new Vuex.Store({
     state: { 
       store: 0,   // 测试store
       breadcrumb: [],   // 面包屑
+      tableLoading: false,   // 表格全局loading加载
     },
     // 获取
     getters: {
@@ -28,6 +29,10 @@ export default new Vuex.Store({
         // 修改面包屑breadcrumb
         editBreadcrumb (state,breadcrumb) {
             state.breadcrumb = breadcrumb;
+        },
+        // 修改面包屑breadcrumb
+        editTableLoading (state,tableLoading) {
+            state.tableLoading = tableLoading;
         }
     },
     // 修改  判断commit哪个mutations

@@ -69,6 +69,10 @@ axios.interceptors.response.use(res => {
   if(res.data && res.data.code == 418) {
     // 状态码 418 表示未登录/token失效，退出系统，跳转到登录页
     sessionStorage.removeItem("token");  // 清除token
+    Vue.prototype.$message({
+      message: '您未登录或token失效，请重新登录！',
+      type: 'error'
+    });
     router.replace({
       path: '/login',
     })
