@@ -49,7 +49,9 @@ export default {
   watch: {},
   methods: {
     // 激活菜单事件
-    handleSelect(key, keyPath) {}
+    handleSelect(key, keyPath) {
+      console.log(key)
+    }
   },
   mounted() {
     var url = "getMenuByUser";
@@ -57,6 +59,7 @@ export default {
       .post(url)
       .then(res => {
         this.navList = res.data.data;
+        console.log(this.navList)
       })
       .catch(error => {});
   }

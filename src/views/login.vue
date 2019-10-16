@@ -127,7 +127,7 @@ export default {
           type: "warning"
         });
         return false;
-      } 
+      }
       // else if (this.verify == false) {
       //   this.$message({
       //     message: "请先点击验证解锁",
@@ -144,7 +144,7 @@ export default {
       };
       var url = "toLogin";
       this.$axios
-        .post(url,formData)
+        .post(url, formData)
         .then(res => {
           // 成功
           if (res.data.code == 1) {
@@ -158,7 +158,7 @@ export default {
 
             // 设置延迟器加载菜单
             this.$router.push({ path: "/appMain" }); // 跳转页面
-            
+
             this.loading = false; // 关闭loading
             this.verifyType = "info"; // 设置验证按钮类型
             this.verifyText = "点击验证"; // 设置验证text
@@ -180,6 +180,11 @@ export default {
           this.verifyType = "info"; // 设置验证按钮类型
           this.verifyText = "点击验证"; // 设置验证text
           this.verify = false; // 验证状态为false
+          // 弹出失败原因
+          this.$message({
+            message: "后台连接不成功，登录失败!",
+            type: "error"
+          });
         });
     }
   },

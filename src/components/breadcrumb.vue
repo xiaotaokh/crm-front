@@ -31,7 +31,7 @@ export default {
   width: 100%;
   height: 40px;
   position: relative;
-  padding: 10px;
+  padding: 13px 0 0 10px;
   border-bottom: 1px solid #eaeaea;
 }
 </style>

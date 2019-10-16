@@ -2,6 +2,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+// 处理element  NavigationDuplicated  错误
+import Router from 'vue-router'
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => err)
+}
+
 import '@/assets/styles/main.css'    // 全局主样式文件
 import '@/assets/styles/media.css'   // 响应式布局样式文件
 import '@/assets/styles/reset.css'	 // 全局样式重置
@@ -10,6 +18,10 @@ import 'es6-promise/auto'  // Vuex依赖 Promise
 import Vuex from 'vuex'    // Vuex全局状态管理
 Vue.use(Vuex)
 import store from './store/index'   // 引入vuex 全局状态管理js
+
+// 全局函数
+import common from './plugin/common' // 引入
+Vue.use(common) // 添加
 
 // ElementUI
 import ElementUI from 'element-ui'             // element-ui
@@ -69,10 +81,10 @@ axios.interceptors.response.use(res => {
   if(res.data && res.data.code == 418) {
     // 状态码 418 表示未登录/token失效，退出系统，跳转到登录页
     sessionStorage.removeItem("token");  // 清除token
-    Vue.prototype.$message({
-      message: '您未登录或token失效，请重新登录！',
-      type: 'error'
-    });
+    // Vue.prototype.$message({
+    //   message: '您未登录或token失效，请重新登录！',
+    //   type: 'error'
+    // });
     router.replace({
       path: '/login',
     })

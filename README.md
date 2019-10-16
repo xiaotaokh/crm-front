@@ -23,3 +23,22 @@ npm run build --report
 **项目简介**：
 
 > 公司crm管理平台。
+
+
+
+**全局post请求:**
+
+```javascript
+var url = "menu/getAll";
+let formData = {};
+this.$store.dispatch("postData",url,formData);
+```
+
+**post返回参数数据:**
+
+```javascript
+this.$store.state.postData
+```
+
+
+

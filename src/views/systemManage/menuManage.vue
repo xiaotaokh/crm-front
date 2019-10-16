@@ -7,7 +7,7 @@
       <!-- 按钮组 -->
       <el-row type="flex" justify="start" class="app-btn-group">
         <el-col :span="24">
-          <el-button size="mini" type="primary">添加</el-button>
+          <el-button size="mini" type="primary" @click="add">添加</el-button>
         </el-col>
       </el-row>
       <!-- 表格table -->
@@ -16,7 +16,7 @@
           <!-- row-key="id" 树形表格时必填 -->
           <el-table
             ref="tableData"
-            :data="tableData"
+            :data="this.$store.state.postData.data"
             tooltip-effect="dark"
             style="width: 100%;margin-bottom:20px table-layout:fixed"
             :max-height="tableHeight"
@@ -45,7 +45,7 @@
             <el-table-column label="路由地址" width="280" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.route }}</template>
             </el-table-column>
-            <el-table-column label="菜单说明">
+            <el-table-column label="菜单描述">
               <template slot-scope="scope">{{ scope.row.content }}</template>
             </el-table-column>
             <el-table-column fixe="right" width="140" align="center" label="操作">
@@ -72,41 +72,169 @@
     </div>
     <!-- 编辑dialog -->
     <el-dialog
-      custom-class="dialogFormDialog"
+      custom-class="editDialogFormDialog"
       append-to-body
       center
       title="编辑菜单"
-      :visible.sync="dialogFormVisible"
+      :visible.sync="editDialogFormVisible"
     >
-      <el-form :model="dialogForm" :label-width="dialogFormLabelWidth">
+      <el-form :model="editDialogForm" :label-width="editDialogFormLabelWidth">
         <el-form-item label="菜单 / 按钮名称：">
-          <el-input v-model="dialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus></el-input>
+          <el-input v-model="editDialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus></el-input>
         </el-form-item>
-        <el-form-item label="菜单图标：" v-show="dialogForm.resIcon">
-          <i class="iconfont table-icon" :class="dialogForm.resIcon"></i>
+        <el-form-item label="菜单图标：" v-show="editDialogForm.resIcon">
+          <i class="iconfont table-icon" :class="editDialogForm.resIcon"></i>
         </el-form-item>
         <el-form-item label="菜单类型：">
           <el-tag
             size="small"
-            :type="dialogForm.type == 1 ? '' : 'success' "
+            :type="editDialogForm.type == 1 ? '' : 'success' "
             effect="dark"
-          >{{ dialogForm.type == 1 ? "菜单" : '按钮' }}</el-tag>
+          >{{ editDialogForm.type == 1 ? "菜单" : '按钮' }}</el-tag>
         </el-form-item>
-        <el-form-item label="路由地址：" v-show="dialogForm.url">
-          <el-input v-model="dialogForm.url" clearable autofocus></el-input>
+        <el-form-item label="路由地址：">
+          <el-input v-model="editDialogForm.url" clearable autofocus></el-input>
         </el-form-item>
-        <el-form-item label="说明：">
+        <el-form-item label="描述：">
           <el-input
             type="textarea"
             :autosize="{ minRows: 4, maxRows: 8}"
-            placeholder="请输入说明.."
-            v-model="dialogForm.content"
+            placeholder="请输入描述.."
+            v-model="editDialogForm.content"
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click="dialogFormCancle">取 消</el-button>
-        <el-button size="small" type="primary" @click="dialogFormSubmit">确 定</el-button>
+        <el-button size="small" type="info" @click="editDialogFormCancle">取 消</el-button>
+        <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 添加dialog -->
+    <el-dialog
+      custom-class="addDialogFormDialog"
+      append-to-body
+      center
+      title="添加菜单"
+      :visible.sync="addDialogForm.addDialogFormVisible"
+    >
+      <el-form
+        :model="addDialogForm"
+        ref="addDialogForm"
+        :label-width="addDialogForm.addDialogFormLabelWidth"
+        :rules="addDialogForm.addDialogFormRules"
+      >
+        <el-form-item label="菜单 / 按钮名称：" prop="name">
+          <el-input v-model="addDialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus></el-input>
+        </el-form-item>
+        <el-form-item label="当前菜单 / 按钮级别：" prop="addMenuLevelCode">
+          <el-select
+            @change="addMenuLevelSelect"
+            v-model="addDialogForm.addMenuLevelCode"
+            placeholder="请选择菜单 / 按钮级别"
+          >
+            <el-option
+              v-for="item in addDialogForm.addMenuLevel"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="请选择一级菜单："
+          prop="firstMenuResourcesDefault"
+          v-if="addDialogForm.firstMenuResourcesVisible"
+        >
+          <el-select
+            @change="firstMenuSelect"
+            v-model="addDialogForm.firstMenuResourcesDefault"
+            placeholder="请选择一级菜单"
+          >
+            <el-option
+              v-for="item in addDialogForm.firstMenuResources"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="请选择二级菜单："
+          prop="secMenuResourcesDefault"
+          v-if="addDialogForm.secMenuResourcesVisible"
+        >
+          <el-select
+            @change="secMenuSelect"
+            v-model="addDialogForm.secMenuResourcesDefault"
+            placeholder="请选择二级菜单"
+          >
+            <el-option
+              v-for="item in addDialogForm.secMenuResources"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+              v-show="item.type == 1"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="请选择三级菜单："
+          prop="thirdMenuResourcesDefault"
+          v-if="addDialogForm.thirdMenuResourcesVisible"
+        >
+          <el-select
+            @change="thirdMenuSelect"
+            v-model="addDialogForm.thirdMenuResourcesDefault"
+            placeholder="请选择三级菜单"
+          >
+            <el-option
+              v-for="item in addDialogForm.thirdMenuResources"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+              v-show="item.type == 1"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="菜单类型：" prop="type" v-else-if="addDialogForm.addMenuLevelCode == 1">
+          <el-select disabled v-model="addDialogForm.type" placeholder="请选择菜单类型">
+            <el-option label="菜单" value="1"></el-option>
+            <el-option label="按钮" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="菜单类型：" prop="type" v-if="addDialogForm.addMenuLevelCode == 2 || addDialogForm.addMenuLevelCode == 3 ">
+          <el-select v-model="addDialogForm.type" placeholder="请选择菜单类型">
+            <el-option label="菜单" value="1"></el-option>
+            <el-option label="按钮" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="菜单类型：" prop="type" v-else-if="addDialogForm.addMenuLevelCode == 4">
+          <el-select disabled v-model="addDialogForm.type" placeholder="请选择菜单类型">
+            <el-option label="菜单" value="1"></el-option>
+            <el-option label="按钮" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="菜单图标类名：" prop="resIcon" v-if="addDialogForm.type == 1">
+          <el-input v-model="addDialogForm.resIcon" placeholder="请输入图标类名.." clearable autofocus></el-input>
+        </el-form-item>
+        <el-form-item label="路由地址：" prop="route">
+          <el-input v-model="addDialogForm.route" placeholder="请输入路由地址.." clearable autofocus></el-input>
+        </el-form-item>
+        <el-form-item label="菜单描述：" prop="content">
+          <el-input v-model="addDialogForm.content" placeholder="请输入菜单描述.." clearable autofocus></el-input>
+        </el-form-item>
+        <el-form-item label="菜单状态：" prop="menuSwitch">
+          <el-switch
+            v-model="addDialogForm.menuSwitch"
+            active-text="启用"
+            @change="menuSwitch"
+            inactive-text="禁用"
+          ></el-switch>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="info" @click="addDialogFormCancle">取 消</el-button>
+        <el-button size="small" type="primary" @click="addDialogFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -119,23 +247,91 @@ export default {
   data() {
     return {
       tableHeight: window.innerHeight - 200, // 表格高度
-      tableData: [],
-      dialogFormVisible: false, // 编辑dialog
-      dialogFormLabelWidth: "120px", // dialog form表单lable宽
-      dialogForm: {} // dialog菜单form表单
+      // tableData: [],
+      editDialogFormVisible: false, // 编辑dialog
+      editDialogFormLabelWidth: "120px", // 编辑dialog form表单lable宽
+      editDialogForm: {}, // 编辑dialog菜单form表单
+
+      addDialogForm: {
+        addDialogFormVisible: false, // 添加dialog
+        addDialogFormLabelWidth: "160px", // 添加dialog form表单lable宽
+        addMenuLevelCode: "", // 添加菜单级别
+        addMenuLevel: [
+          // 添加菜单级别数组
+          {
+            value: 1,
+            label: "一级"
+          },
+          {
+            value: 2,
+            label: "二级"
+          },
+          {
+            value: 3,
+            label: "三级"
+          },
+          {
+            value: 4,
+            label: "四级"
+          }
+        ],
+        firstMenuResources: [], // 一级菜单
+        firstMenuResourcesDefault: "", // 一级菜单默认  当前菜单pid
+        firstMenuResourcesVisible: false, // 一级菜单显示隐藏
+        secMenuResources: [], // 二级菜单
+        secMenuResourcesDefault: "", // 二级菜单默认
+        secMenuResourcesVisible: false, // 二级菜单显示隐藏
+        thirdMenuResources: [], // 三级菜单
+        thirdMenuResourcesDefault: "", // 三级菜单默认
+        thirdMenuResourcesVisible: false, // 三级菜单显示隐藏
+        // 添加dialog菜单form表单
+        name: "",
+        pid: 0,
+        ppid: 0,
+        pppid: 0,
+        route: "",
+        content: "",
+        type: "",
+        resId: "",
+        resIcon: "",
+        menuSwitch: true,
+        status: "ACTIVE",
+        addDialogFormRules: {
+          name: [
+            {
+              required: true,
+              message: "请输入菜单 / 按钮名称",
+              trigger: "blur"
+            }
+          ],
+          addMenuLevelCode: [
+            {
+              required: true,
+              message: "请选择当前菜单 / 按钮级别",
+              trigger: "change"
+            }
+          ],
+          type: [
+            { required: true, message: "请选择菜单类型", trigger: "change" }
+          ],
+          route: [
+            { required: true, message: "请输入路由地址", trigger: "blur" }
+          ]
+        }
+      }
     };
   },
   methods: {
     // 表格行编辑事件
     handleEdit(index, row) {
-      this.dialogFormVisible = true; // 打开dialog
-      this.dialogForm = row; // 行数据赋值给弹窗form表单
+      this.editDialogFormVisible = true; // 打开dialog
+      this.editDialogForm = row; // 行数据赋值给弹窗form表单
       var url = "menu/getResourcesById";
       let formData = {
         id: row.id
       };
       this.$axios.post(url, formData).then(res => {
-        this.dialogForm = res.data.data;
+        this.editDialogForm = res.data.data;
       });
     },
     // 表格行删除事件
@@ -158,17 +354,202 @@ export default {
           });
         });
     },
-    // 表格dialog确定
-    dialogFormSubmit() {
-      this.dialogFormVisible = false;
+    // 表格行编辑确定
+    editDialogFormSubmit() {
+      this.editDialogFormVisible = false;
+      var url = "";
+      this.$axios.post(res => {});
       this.$message({
         type: "success",
         message: "菜单修改成功!"
       });
     },
-    // 表格dialog取消
-    dialogFormCancle() {
-      this.dialogFormVisible = false;
+    // 表格行编辑取消
+    editDialogFormCancle() {
+      this.editDialogFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "已取消编辑!"
+      });
+    },
+    //添加
+    add() {
+      this.addDialogForm.addDialogFormVisible = true;
+    },
+    // 添加  级别select事件
+    addMenuLevelSelect() {
+      if (this.addDialogForm.addMenuLevelCode == 1) {
+        // 菜单类型为菜单
+        this.addDialogForm.type = "1";
+        this.addDialogForm.firstMenuResourcesDefault = "";
+        this.addDialogForm.secMenuResourcesDefault = "";
+        this.addDialogForm.thirdMenuResourcesDefault = "";
+        this.addDialogForm.firstMenuResourcesVisible = false; // 一级菜单显示隐藏
+        this.addDialogForm.secMenuResourcesVisible = false; // 二级菜单显示隐藏
+        this.addDialogForm.thirdMenuResourcesVisible = false; // 三级菜单显示隐藏
+      } else if (this.addDialogForm.addMenuLevelCode == 2) {
+        this.addDialogForm.firstMenuResourcesDefault = "";
+        this.addDialogForm.secMenuResourcesDefault = "";
+        this.addDialogForm.thirdMenuResourcesDefault = "";
+        this.addDialogForm.secMenuResourcesVisible = false; // 二级菜单显示隐藏
+        this.addDialogForm.thirdMenuResourcesVisible = false; // 三级菜单显示隐藏
+        // 选择二级菜单显示一级菜单
+        var url = "menu/getFirstResources";
+        let formData = {};
+        this.$axios.post(url, formData).then(res => {
+          this.addDialogForm.firstMenuResources = res.data.data;
+        });
+        this.addDialogForm.firstMenuResourcesVisible = true;
+      } else if (this.addDialogForm.addMenuLevelCode == 3) {
+        this.addDialogForm.firstMenuResourcesDefault = "";
+        this.addDialogForm.secMenuResourcesDefault = "";
+        this.addDialogForm.thirdMenuResourcesDefault = "";
+        this.addDialogForm.secMenuResourcesVisible = false; // 二级菜单显示隐藏
+        this.addDialogForm.thirdMenuResourcesVisible = false; // 三级菜单显示隐藏
+        // 选择三级菜单显示一级菜单
+        var url = "menu/getFirstResources";
+        let formData = {};
+        this.$axios.post(url, formData).then(res => {
+          this.addDialogForm.firstMenuResources = res.data.data;
+        });
+        this.addDialogForm.firstMenuResourcesVisible = true;
+      } else if (this.addDialogForm.addMenuLevelCode == 4) {
+        this.addDialogForm.firstMenuResourcesDefault = "";
+        this.addDialogForm.secMenuResourcesDefault = "";
+        this.addDialogForm.thirdMenuResourcesDefault = "";
+        this.addDialogForm.secMenuResourcesVisible = false; // 二级菜单显示隐藏
+        this.addDialogForm.thirdMenuResourcesVisible = false; // 三级菜单显示隐藏
+        // 菜单类型为按钮
+        this.addDialogForm.type = "2";
+        // 选择四级菜单显示一级菜单
+        var url = "menu/getFirstResources";
+        let formData = {};
+        this.$axios.post(url, formData).then(res => {
+          this.addDialogForm.firstMenuResources = res.data.data;
+        });
+        this.addDialogForm.firstMenuResourcesVisible = true;
+        // this.thirdMenuResourcesVisible = true;
+      }
+    },
+
+    // 一级菜单选择
+    firstMenuSelect() {
+      this.addDialogForm.secMenuResourcesDefault = "";
+      this.addDialogForm.thirdMenuResourcesDefault = "";
+      this.addDialogForm.pid = this.addDialogForm.firstMenuResourcesDefault;
+      if (this.addDialogForm.addMenuLevelCode == 2) {
+      } else if (
+        this.addDialogForm.addMenuLevelCode == 3 ||
+        this.addDialogForm.addMenuLevelCode == 4
+      ) {
+        // 如果添加的是三级菜单，显示二级
+        // 请求二级菜单
+        var url = "menu/getSecondByPid";
+        let formData = {
+          pid: this.addDialogForm.pid
+        };
+        this.$axios.post(url, formData).then(res => {
+          this.addDialogForm.secMenuResources = res.data.data;
+        });
+        this.addDialogForm.secMenuResourcesVisible = true; // 显示二级菜单
+      }
+    },
+
+    // 二级菜单选择
+    secMenuSelect() {
+      this.addDialogForm.thirdMenuResourcesDefault = "";
+      this.addDialogForm.ppid = this.addDialogForm.secMenuResourcesDefault;
+
+      if (this.addDialogForm.addMenuLevelCode == 3) {
+      } else if (this.addDialogForm.addMenuLevelCode == 4) {
+        // 如果添加的是四级菜单，显示三级
+        // 请求三级菜单
+        var url = "menu/getThirdByPpid";
+        let formData = {
+          ppid: this.addDialogForm.ppid
+        };
+        this.$axios.post(url, formData).then(res => {
+          this.addDialogForm.thirdMenuResources = res.data.data;
+        });
+        this.addDialogForm.thirdMenuResourcesVisible = true; // 显示三级菜单
+      }
+    },
+    // 三级菜单选择
+    thirdMenuSelect() {
+      this.addDialogForm.pppid = this.addDialogForm.thirdMenuResourcesDefault;
+    },
+    // 菜单switch事件
+    menuSwitch() {
+      if (this.addDialogForm.menuSwitch == true) {
+        this.addDialogForm.status = "ACTIVE";
+      } else {
+        this.addDialogForm.status = "DEL";
+      }
+    },
+    // 添加确定
+    addDialogFormSubmit() {
+      var url = "menu/addResources";
+      let formData = {
+        name: this.addDialogForm.name,
+        pid: this.addDialogForm.pid,
+        ppid: this.addDialogForm.ppid,
+        pppid: this.addDialogForm.pppid,
+        url: this.addDialogForm.route,
+        content: this.addDialogForm.content,
+        type: this.addDialogForm.type,
+        resId: this.addDialogForm.resId,
+        resIcon: this.addDialogForm.resIcon,
+        status: this.addDialogForm.status
+      };
+      this.$refs.addDialogForm.validate(valid => {
+        if (valid) {
+          this.$axios.post(url, formData).then(res => {
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+            this.addDialogForm.addDialogFormVisible = false;
+            this.addReset();
+            
+            this.getTableData();   // 重置表单数据
+          });
+        } else {
+          this.$message({
+            type: "warning",
+            message: "请先填写必填项!"
+          });
+          return false;
+        }
+      });
+    },
+    // 添加取消
+    addDialogFormCancle() {
+      this.addDialogForm.addDialogFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "已取消添加!"
+      });
+      this.addReset(); // 表单重置
+    },
+    // 添加表单重置
+    addReset() {
+      this.$refs.addDialogForm.resetFields(); // 表单重置
+      this.addDialogForm.firstMenuResourcesVisible = false; // 一级菜单显示隐藏
+      this.addDialogForm.secMenuResourcesVisible = false; // 二级菜单显示隐藏
+      this.thirdMenuResourcesVisible = false; // 三级菜单显示隐藏
+      this.addDialogForm.firstMenuResources = [];
+      this.addDialogForm.secMenuResources = [];
+      this.addDialogForm.thirdMenuResources = [];
+      this.addDialogForm.firstMenuResourcesDefault = "";
+      this.addDialogForm.secMenuResourcesDefault = "";
+      this.addDialogForm.thirdMenuResourcesDefault = "";
+    },
+    // 获取表格数据
+    getTableData() {
+      // 获取表格数据
+      var url = "menu/getAll";
+      let formData = {};
+      this.$store.dispatch("postData",url,formData);
     }
   },
   mounted() {
@@ -180,16 +561,8 @@ export default {
       self.tableHeight = document.body.clientHeight - 200;
     };
 
-    // 获取列表数据
-    let formData = {
-      userName: this.username,
-      password: this.password
-    };
-    var url = "menu/getAll";
-    this.$axios.post(url, formData).then(res => {
-      this.tableData = res.data.data;
-      // console.log(this.tableData)
-    });
+    // 获取表格数据
+    this.getTableData();
   }
 };
 </script>
@@ -206,7 +579,7 @@ export default {
   color: #38acf8;
   font-weight: 700;
 }
-.dialogFormDialog .table-icon {
+.editDialogFormDialog .table-icon {
   font-size: 24px;
   color: #38acf8;
   font-weight: 700;
