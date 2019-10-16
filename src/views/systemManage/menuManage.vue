@@ -18,7 +18,7 @@
             ref="tableData"
             :data="tableData"
             tooltip-effect="dark"
-            style="width: 100%;margin-bottom:20px"
+            style="width: 100%;margin-bottom:20px table-layout:fixed"
             :max-height="tableHeight"
             row-key="id"
             stripe
@@ -27,7 +27,7 @@
             v-loading="this.$store.state.tableLoading"
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
           >
-            <el-table-column prop="name" label="菜单 / 按钮名称" width="180"></el-table-column>
+            <el-table-column prop="navName" label="菜单 / 按钮名称" width="180"></el-table-column>
             <el-table-column label="图标" align="center" width="80">
               <template slot-scope="scope">
                 <i class="iconfont table-icon" :class="scope.row.icon"></i>
@@ -37,12 +37,17 @@
               <template slot-scope="scope">
                 <el-tag
                   size="mini"
-                  :type="scope.row.type == 'a' ? '' : 'success' "
+                  :type="scope.row.type == 1 ? '' : 'success' "
                   effect="dark"
-                >{{ scope.row.type == "a" ? "菜单" : '按钮' }}</el-tag>
+                >{{ scope.row.type == 1 ? "菜单" : '按钮' }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="route" label="路由"></el-table-column>
+            <el-table-column label="路由地址" width="280" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.route }}</template>
+            </el-table-column>
+            <el-table-column label="菜单说明">
+              <template slot-scope="scope">{{ scope.row.content }}</template>
+            </el-table-column>
             <el-table-column fixe="right" width="140" align="center" label="操作">
               <template slot-scope="scope">
                 <el-button
@@ -66,28 +71,42 @@
       </el-row>
     </div>
     <!-- 编辑dialog -->
-    <el-dialog custom-class="dialogFormDialog" append-to-body center title="菜单编辑" :visible.sync="dialogFormVisible">
+    <el-dialog
+      custom-class="dialogFormDialog"
+      append-to-body
+      center
+      title="编辑菜单"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form :model="dialogForm" :label-width="dialogFormLabelWidth">
-        <el-form-item label="菜单按钮名称">
-          <el-input v-model="dialogForm.name" clearable autofocus></el-input>
+        <el-form-item label="菜单 / 按钮名称：">
+          <el-input v-model="dialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus></el-input>
         </el-form-item>
-        <el-form-item label="菜单图标" v-show="dialogForm.icon">
-          <i class="iconfont table-icon" :class="dialogForm.icon"></i>
+        <el-form-item label="菜单图标：" v-show="dialogForm.resIcon">
+          <i class="iconfont table-icon" :class="dialogForm.resIcon"></i>
         </el-form-item>
-        <el-form-item label="菜单类型">
+        <el-form-item label="菜单类型：">
           <el-tag
             size="small"
-            :type="dialogForm.type == 'a' ? '' : 'success' "
+            :type="dialogForm.type == 1 ? '' : 'success' "
             effect="dark"
-          >{{ dialogForm.type == "a" ? "菜单" : '按钮' }}</el-tag>
+          >{{ dialogForm.type == 1 ? "菜单" : '按钮' }}</el-tag>
         </el-form-item>
-        <el-form-item label="菜单路由">
-          <el-input v-model="dialogForm.route" clearable autofocus></el-input>
+        <el-form-item label="路由地址：" v-show="dialogForm.url">
+          <el-input v-model="dialogForm.url" clearable autofocus></el-input>
+        </el-form-item>
+        <el-form-item label="说明：">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 4, maxRows: 8}"
+            placeholder="请输入说明.."
+            v-model="dialogForm.content"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button size="small" type="info" @click="dialogFormCancle">取 消</el-button>
+        <el-button size="small" type="primary" @click="dialogFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -100,65 +119,7 @@ export default {
   data() {
     return {
       tableHeight: window.innerHeight - 200, // 表格高度
-      tableData: [
-        {
-          id: 1, // id 唯一
-          name: "客户管理",
-          icon: "iconziyuan",
-          route: "/appMain/customerManage",
-          type: "a", // a：菜单，b：按钮 不同的状态码即可
-          children: [
-            {
-              id: 11,
-              name: "销售目标",
-              icon: "",
-              route: "/appMain/systemManage/menuManage",
-              type: "a",
-              children: [
-                {
-                  id: 111,
-                  name: "销售目标管理",
-                  icon: "",
-                  route: "/appMain/systemManage/menuManage",
-                  type: "a"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: "系统管理",
-          icon: "iconxitongguanli",
-          route: "/appMain/systemManage/systemManage",
-          type: "a",
-          children: [
-            {
-              id: 21,
-              name: "菜单管理",
-              icon: "",
-              route: "/appMain/systemManage/menuManage",
-              type: "a",
-              children: [
-                {
-                  id: 211,
-                  name: "添加",
-                  icon: "",
-                  route: "",
-                  type: "b"
-                }
-              ]
-            },
-            {
-              id: 22,
-              name: "用户管理",
-              icon: "",
-              route: "/appMain/userManage",
-              type: "a"
-            }
-          ]
-        }
-      ],
+      tableData: [],
       dialogFormVisible: false, // 编辑dialog
       dialogFormLabelWidth: "120px", // dialog form表单lable宽
       dialogForm: {} // dialog菜单form表单
@@ -169,10 +130,17 @@ export default {
     handleEdit(index, row) {
       this.dialogFormVisible = true; // 打开dialog
       this.dialogForm = row; // 行数据赋值给弹窗form表单
+      var url = "menu/getResourcesById";
+      let formData = {
+        id: row.id
+      };
+      this.$axios.post(url, formData).then(res => {
+        this.dialogForm = res.data.data;
+      });
     },
     // 表格行删除事件
     handleDelete(index, row) {
-      this.$confirm("此操不可逆, 是否继续?", "提示", {
+      this.$confirm("此操不可逆, 是否继续?", "删除菜单", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -186,9 +154,21 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除!"
           });
         });
+    },
+    // 表格dialog确定
+    dialogFormSubmit() {
+      this.dialogFormVisible = false;
+      this.$message({
+        type: "success",
+        message: "菜单修改成功!"
+      });
+    },
+    // 表格dialog取消
+    dialogFormCancle() {
+      this.dialogFormVisible = false;
     }
   },
   mounted() {
@@ -201,14 +181,15 @@ export default {
     };
 
     // 获取列表数据
-    // let formData = {
-    //   userName: this.username,
-    //   password: this.password
-    // };
-    // var url = "http://localhost:3001/api/action/menuManage";
-    // this.$axios.post(url,formData).then(res => {
-    //   console.log(res.data);
-    // })
+    let formData = {
+      userName: this.username,
+      password: this.password
+    };
+    var url = "menu/getAll";
+    this.$axios.post(url, formData).then(res => {
+      this.tableData = res.data.data;
+      // console.log(this.tableData)
+    });
   }
 };
 </script>

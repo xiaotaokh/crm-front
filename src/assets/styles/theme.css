@@ -294,3 +294,11 @@
   top: 10px;
   right: 10px;
 }
+/* dialog title */
+.el-dialog__header .el-dialog__title {
+  font-size: 16px;
+}
+/* message */
+.el-message-box__header .el-message-box__title {
+  font-size: 16px;
+}
