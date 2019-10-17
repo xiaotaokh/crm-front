@@ -280,8 +280,14 @@ export default {
 /* 背景图片 */
 .login .img {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: 2%;
+  bottom: 0%;
+  width: 32%;
+  height: 47%;
+}
+.login .img img {
+  width: 100%;
+  height: 100%;
 }
 /* 标题 */
 .login .header {

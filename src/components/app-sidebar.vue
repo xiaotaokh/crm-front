@@ -42,15 +42,37 @@ export default {
   name: "app-sidebar",
   data() {
     return {
-      navList: [] // 拿到的后台列表数据
+      navList: [], // 拿到的后台列表数据
+      id: "" // 菜单ID
     };
   },
   computed: {},
   watch: {},
   methods: {
-    // 激活菜单事件
+    // 激活菜单事件 
     handleSelect(key, keyPath) {
-      console.log(key)
+      // 遍历slider数组  激活菜单返回当前菜单id
+      for (var i of this.navList) {
+        if (i.second.length == 0) {
+          if (key == i.route) {
+            this.id = i.id;
+          }
+        } else {
+          for (var j of i.second) {
+            if (j.third.length == 0) {
+              if (key == j.route) {
+                this.id = j.id;
+              }
+            } else {
+              for (var k of j.third) {
+                if (key == k.route) {
+                  this.id = k.id;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   mounted() {
@@ -59,7 +81,6 @@ export default {
       .post(url)
       .then(res => {
         this.navList = res.data.data;
-        console.log(this.navList)
       })
       .catch(error => {});
   }

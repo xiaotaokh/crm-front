@@ -16,7 +16,7 @@
           <!-- row-key="id" 树形表格时必填 -->
           <el-table
             ref="tableData"
-            :data="this.$store.state.postData.data"
+            :data="this.$store.state.postTableData.data"
             tooltip-effect="dark"
             style="width: 100%;margin-bottom:20px table-layout:fixed"
             :max-height="tableHeight"
@@ -42,10 +42,22 @@
                 >{{ scope.row.type == 1 ? "菜单" : '按钮' }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="路由地址" width="280" show-overflow-tooltip>
+            <el-table-column label="路由地址" width="300" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.route }}</template>
             </el-table-column>
-            <el-table-column label="菜单描述">
+            <el-table-column label="状态" align="center" width="160">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.status"
+                  @change="menuStatus"
+                  active-value="ACTIVE"
+                  inactive-value="DEL"
+                  active-text="启用"
+                  inactive-text="禁用"
+                ></el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column min-width="180" label="菜单描述">
               <template slot-scope="scope">{{ scope.row.content }}</template>
             </el-table-column>
             <el-table-column fixe="right" width="140" align="center" label="操作">
@@ -78,8 +90,13 @@
       title="编辑菜单"
       :visible.sync="editDialogFormVisible"
     >
-      <el-form :model="editDialogForm" :label-width="editDialogFormLabelWidth">
-        <el-form-item label="菜单 / 按钮名称：">
+      <el-form
+        :model="editDialogForm"
+        :label-width="editDialogFormLabelWidth"
+        :rules="editDialogFormRules"
+        ref="editDialogForm"
+      >
+        <el-form-item label="菜单 / 按钮名称：" prop="name">
           <el-input v-model="editDialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus></el-input>
         </el-form-item>
         <el-form-item label="菜单图标：" v-show="editDialogForm.resIcon">
@@ -92,8 +109,18 @@
             effect="dark"
           >{{ editDialogForm.type == 1 ? "菜单" : '按钮' }}</el-tag>
         </el-form-item>
-        <el-form-item label="路由地址：">
+        <el-form-item label="路由地址：" prop="url">
           <el-input v-model="editDialogForm.url" clearable autofocus></el-input>
+        </el-form-item>
+        <el-form-item label="状态：" prop="status">
+          <el-switch
+            v-model="editDialogForm.status"
+            @change="menuStatus"
+            active-value="ACTIVE"
+            inactive-value="DEL"
+            active-text="启用"
+            inactive-text="禁用"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="描述：">
           <el-input
@@ -202,7 +229,11 @@
             <el-option label="按钮" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="菜单类型：" prop="type" v-if="addDialogForm.addMenuLevelCode == 2 || addDialogForm.addMenuLevelCode == 3 ">
+        <el-form-item
+          label="菜单类型："
+          prop="type"
+          v-if="addDialogForm.addMenuLevelCode == 2 || addDialogForm.addMenuLevelCode == 3 "
+        >
           <el-select v-model="addDialogForm.type" placeholder="请选择菜单类型">
             <el-option label="菜单" value="1"></el-option>
             <el-option label="按钮" value="2"></el-option>
@@ -249,7 +280,7 @@ export default {
       tableHeight: window.innerHeight - 200, // 表格高度
       // tableData: [],
       editDialogFormVisible: false, // 编辑dialog
-      editDialogFormLabelWidth: "120px", // 编辑dialog form表单lable宽
+      editDialogFormLabelWidth: "140px", // 编辑dialog form表单lable宽
       editDialogForm: {}, // 编辑dialog菜单form表单
 
       addDialogForm: {
@@ -294,9 +325,11 @@ export default {
         type: "",
         resId: "",
         resIcon: "",
-        menuSwitch: true,
+        menuSwitch: true, // 添加switch字段
+        menuStatus: true, // 表格的switch
         status: "ACTIVE",
         addDialogFormRules: {
+          // 添加菜单弹窗form表单校验规则
           name: [
             {
               required: true,
@@ -318,6 +351,20 @@ export default {
             { required: true, message: "请输入路由地址", trigger: "blur" }
           ]
         }
+      },
+      editDialogFormRules: {
+        // 编辑菜单弹窗form表单校验规则
+        name: [
+          {
+            required: true,
+            message: "请输入菜单 / 按钮名称",
+            trigger: "blur"
+          }
+        ],
+        status: [
+          { required: true, message: "请选择菜单状态", trigger: "change" }
+        ],
+        url: [{ required: true, message: "请输入路由地址", trigger: "blur" }]
       }
     };
   },
@@ -356,12 +403,24 @@ export default {
     },
     // 表格行编辑确定
     editDialogFormSubmit() {
-      this.editDialogFormVisible = false;
-      var url = "";
-      this.$axios.post(res => {});
-      this.$message({
-        type: "success",
-        message: "菜单修改成功!"
+      var url = "menu/updateResources";
+      this.$refs.editDialogForm.validate(valid => {
+        if (valid) {
+          this.$axios.post(url, this.editDialogForm).then(res => {
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+            this.editDialogFormVisible = false;
+            this.getTableData(); // 重置表单数据
+          });
+        } else {
+          this.$message({
+            type: "warning",
+            message: "请先填写必填项!"
+          });
+          return false;
+        }
       });
     },
     // 表格行编辑取消
@@ -372,6 +431,8 @@ export default {
         message: "已取消编辑!"
       });
     },
+    // 表格switch事件
+    menuStatus() {},
     //添加
     add() {
       this.addDialogForm.addDialogFormVisible = true;
@@ -478,7 +539,7 @@ export default {
     thirdMenuSelect() {
       this.addDialogForm.pppid = this.addDialogForm.thirdMenuResourcesDefault;
     },
-    // 菜单switch事件
+    // 添加菜单switch事件
     menuSwitch() {
       if (this.addDialogForm.menuSwitch == true) {
         this.addDialogForm.status = "ACTIVE";
@@ -510,8 +571,8 @@ export default {
             });
             this.addDialogForm.addDialogFormVisible = false;
             this.addReset();
-            
-            this.getTableData();   // 重置表单数据
+
+            this.getTableData(); // 重置表单数据
           });
         } else {
           this.$message({
@@ -549,7 +610,7 @@ export default {
       // 获取表格数据
       var url = "menu/getAll";
       let formData = {};
-      this.$store.dispatch("postData",url,formData);
+      this.$store.dispatch("postTableData", url, formData);
     }
   },
   mounted() {

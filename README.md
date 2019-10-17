@@ -26,18 +26,18 @@ npm run build --report
 
 
 
-**全局post请求:**
+**全局表格post请求:**
 
 ```javascript
 var url = "menu/getAll";
 let formData = {};
-this.$store.dispatch("postData",url,formData);
+this.$store.dispatch("postTableData",url,formData);
 ```
 
 **post返回参数数据:**
 
 ```javascript
-this.$store.state.postData
+this.$store.state.postTableData
 ```
 
 

@@ -8,7 +8,7 @@ export default new Vuex.Store({
       store: 0,   // 测试store
       breadcrumb: [],   // 面包屑
       tableLoading: true,   // 表格全局loading加载
-      postData:[],    // 全局post请求 数据
+      postTableData:[],    // 全局post请求 数据
     },
     // 获取
     getters: {
@@ -36,9 +36,9 @@ export default new Vuex.Store({
             state.tableLoading = tableLoading;
         },
         // 全局post请求
-        postData(state,url,formData) {
+        postTableData(state,url,formData) {
             Vue.prototype.$axios.post(url,formData).then(res => {
-                state.postData = res.data;
+                state.postTableData = res.data;
                 setTimeout(()=> {
                     state.tableLoading = false;
                 },500)
@@ -48,8 +48,8 @@ export default new Vuex.Store({
     // 修改  判断commit哪个mutations
     actions: {
         // 全局post请求
-        postData({ commit },url,formData) {
-            commit('postData',url,formData)
+        postTableData({ commit },url,formData) {
+            commit('postTableData',url,formData)
         },
     }
 })
