@@ -4,9 +4,13 @@ import router from './router'
 
 // 处理element  NavigationDuplicated  错误
 import Router from 'vue-router'
+// const originalPush = Router.prototype.push
+// Router.prototype.push = function push(location, onResolve, onReject) {
+//   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+//   return originalPush.call(this, location).catch(err => err)
+// }
 const originalPush = Router.prototype.push
-Router.prototype.push = function push(location, onResolve, onReject) {
-  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
@@ -88,6 +92,12 @@ axios.interceptors.response.use(res => {
     router.replace({
       path: '/login',
     })
+  }else if(res.data && res.data.code == 403) {
+    // 状态码 403 表示权限不足
+    Vue.prototype.$message({
+      message: res.data.msg,
+      type: 'warning'
+    });
   }
   return res;
 }, err => Promise.reject(err));

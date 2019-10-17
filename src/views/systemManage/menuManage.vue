@@ -49,7 +49,7 @@
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.status"
-                  @change="menuStatus"
+                  @change="menuStatus(scope.$index, scope.row)"
                   active-value="ACTIVE"
                   inactive-value="DEL"
                   active-text="启用"
@@ -389,10 +389,27 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
+          let url = "menu/delResourceById";
+          let formData = {
+            id: row.id
+          };
+          this.$axios
+            .post(url, formData)
+            .then(res => {
+              if (res.data.code == 1) {
+                this.$message({
+                  type: "success",
+                  message: res.data.msg
+                });
+              }
+              this.getTableData();
+            })
+            .catch(err => {
+              this.$message({
+                type: "error",
+                message: res.data.msg
+              });
+            });
         })
         .catch(() => {
           this.$message({
@@ -407,10 +424,12 @@ export default {
       this.$refs.editDialogForm.validate(valid => {
         if (valid) {
           this.$axios.post(url, this.editDialogForm).then(res => {
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+            }
             this.editDialogFormVisible = false;
             this.getTableData(); // 重置表单数据
           });
@@ -432,7 +451,30 @@ export default {
       });
     },
     // 表格switch事件
-    menuStatus() {},
+    menuStatus(index, row) {
+      let url = "menu/updateStatusById";
+      let formData = {
+        id: row.id,
+        status: row.status
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }
+          this.getTableData();
+        })
+        .catch(err => {
+          this.$message({
+            type: "error",
+            message: res.data.msg
+          });
+        });
+    },
     //添加
     add() {
       this.addDialogForm.addDialogFormVisible = true;
@@ -565,10 +607,12 @@ export default {
       this.$refs.addDialogForm.validate(valid => {
         if (valid) {
           this.$axios.post(url, formData).then(res => {
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+            }
             this.addDialogForm.addDialogFormVisible = false;
             this.addReset();
 

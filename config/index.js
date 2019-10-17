@@ -8,7 +8,8 @@ module.exports = {
     // 跨域拦截请求   设置跨域重启项目(npm start)
     proxyTable: {
       '/api':{
-        target: "http://192.168.3.40:8099/",
+        target: "http://47.92.153.134:8899/",  // 打包地址
+        // target: "http://192.168.3.40/",  // 本地后台地址
         changeOrigin:true,
         pathRewrite:{
             '^/api':''

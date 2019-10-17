@@ -1,7 +1,7 @@
 <template>
   <!-- 角色管理 -->
   <div class="roleManage">
-    角色管理
+    <app-breadcrumb></app-breadcrumb>
   </div>
 </template>
 
@@ -20,6 +20,7 @@ export default {
     
   },
   mounted(){
+    this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
   }
 }
 </script>
