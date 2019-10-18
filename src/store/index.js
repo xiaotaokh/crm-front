@@ -37,11 +37,12 @@ export default new Vuex.Store({
         },
         // 全局post请求
         postTableData(state,url,formData) {
+            state.tableLoading = true;
             Vue.prototype.$axios.post(url,formData).then(res => {
-                state.postTableData = res.data;
                 setTimeout(()=> {
                     state.tableLoading = false;
-                },500)
+                },300)
+                state.postTableData = res.data;
             })
         }
     },

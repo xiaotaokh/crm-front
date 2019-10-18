@@ -19,7 +19,7 @@ import menuManage from '@/views/systemManage/menuManage'                   // �
 Vue.use(Router)
 
 const router = new Router({
-  mode:'history',
+  mode:'history',      // build打包时候要关闭
   routes: [
     {
       path: '/', redirect: '/login', component: login,                       // 重定向到login

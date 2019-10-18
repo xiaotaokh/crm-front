@@ -27,6 +27,11 @@ import store from './store/index'   // 引入vuex 全局状态管理js
 import common from './plugin/common' // 引入
 Vue.use(common) // 添加
 
+// 时间戳filter
+import * as dateFilter from '@/common/filters/index'     // 引入时间戳
+// 全局注册  时间戳dateFilter
+Object.keys(dateFilter).forEach(key => { Vue.filter(key, dateFilter[key])})
+
 // ElementUI
 import ElementUI from 'element-ui'             // element-ui
 import 'element-ui/lib/theme-chalk/index.css'  // element-ui css
@@ -57,6 +62,7 @@ Vue.prototype.$axios = axios;  // axios  $为全局请求定义方式
 axios.defaults.baseURL = '/api'          // 跨域解决
 // axios.defaults.headers.post['Content-Type'] = 'application/json';   // 跨域解决  可以在axios.interceptors.request.us下设置  application/x-www-form-urlencoded;charset=UTF-8
 // axios.defaults.baseURL = 'http://192.168.3.40:8099/'             // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
+// axios.defaults.baseURL = 'http://47.92.153.134:8899/'             // 打包接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 axios.defaults.timeout = 3000;  // 每次请求间隔时间 3s
 // axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : "";  // 全局设置请求头 添加token
 

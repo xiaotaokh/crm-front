@@ -50,7 +50,8 @@ export default {
   height: 60px;
   background: #fff;
   z-index: 3;
-  box-shadow: 0 3px 3px rgba(189,189,189, .3);
+  /* box-shadow: 0 3px 3px rgba(189,189,189, .3); */
+  box-shadow: 0 2px 5px rgba(0,0,0, .3);
 }
 
 #app .app-sidebar {
@@ -77,7 +78,7 @@ export default {
   width: calc(100% - 240px);
   height: calc(100% - 60px);
   z-index: 1;
-  padding: 0px;
+  padding: 10px;
   overflow: auto;
   background: #eaeaea;
 }

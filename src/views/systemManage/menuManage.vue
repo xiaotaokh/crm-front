@@ -25,9 +25,10 @@
             size="medium"
             border
             v-loading="this.$store.state.tableLoading"
-            :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
           >
-            <el-table-column prop="navName" label="菜单 / 按钮名称" width="180"></el-table-column>
+            <el-table-column fixed label="菜单 / 按钮名称" width="180">
+              <template slot-scope="scope">{{ scope.row.navName }}</template>
+            </el-table-column>
             <el-table-column label="图标" align="center" width="80">
               <template slot-scope="scope">
                 <i class="iconfont table-icon" :class="scope.row.icon"></i>
@@ -60,22 +61,26 @@
             <el-table-column min-width="180" label="菜单描述">
               <template slot-scope="scope">{{ scope.row.content }}</template>
             </el-table-column>
-            <el-table-column fixe="right" width="140" align="center" label="操作">
+            <el-table-column fixed="right" width="140" align="center" label="操作">
               <template slot-scope="scope">
-                <el-button
-                  type="primary"
-                  size="small"
-                  circle
-                  @click="handleEdit(scope.$index, scope.row)"
-                  icon="el-icon-edit"
-                ></el-button>
-                <el-button
-                  size="small"
-                  circle
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="handleDelete(scope.$index, scope.row)"
-                ></el-button>
+                <el-tooltip effect="dark" content="编辑" placement="top">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    circle
+                    @click="handleEdit(scope.$index, scope.row)"
+                    icon="el-icon-edit"
+                  ></el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="删除" placement="top">
+                  <el-button
+                    size="small"
+                    circle
+                    type="danger"
+                    icon="el-icon-delete"
+                    @click="handleDelete(scope.$index, scope.row)"
+                  ></el-button>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
@@ -97,7 +102,7 @@
         ref="editDialogForm"
       >
         <el-form-item label="菜单 / 按钮名称：" prop="name">
-          <el-input v-model="editDialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus></el-input>
+          <el-input v-model="editDialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable></el-input>
         </el-form-item>
         <el-form-item label="菜单图标：" v-show="editDialogForm.resIcon">
           <i class="iconfont table-icon" :class="editDialogForm.resIcon"></i>
@@ -110,7 +115,7 @@
           >{{ editDialogForm.type == 1 ? "菜单" : '按钮' }}</el-tag>
         </el-form-item>
         <el-form-item label="路由地址：" prop="url">
-          <el-input v-model="editDialogForm.url" clearable autofocus></el-input>
+          <el-input v-model="editDialogForm.url" clearable></el-input>
         </el-form-item>
         <el-form-item label="状态：" prop="status">
           <el-switch
@@ -151,7 +156,7 @@
         :rules="addDialogForm.addDialogFormRules"
       >
         <el-form-item label="菜单 / 按钮名称：" prop="name">
-          <el-input v-model="addDialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus></el-input>
+          <el-input v-model="addDialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus="true"></el-input>
         </el-form-item>
         <el-form-item label="当前菜单 / 按钮级别：" prop="addMenuLevelCode">
           <el-select
@@ -246,13 +251,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="菜单图标类名：" prop="resIcon" v-if="addDialogForm.type == 1">
-          <el-input v-model="addDialogForm.resIcon" placeholder="请输入图标类名.." clearable autofocus></el-input>
+          <el-input v-model="addDialogForm.resIcon" placeholder="请输入图标类名.." clearable></el-input>
         </el-form-item>
         <el-form-item label="路由地址：" prop="route">
-          <el-input v-model="addDialogForm.route" placeholder="请输入路由地址.." clearable autofocus></el-input>
+          <el-input v-model="addDialogForm.route" placeholder="请输入路由地址.." clearable></el-input>
         </el-form-item>
         <el-form-item label="菜单描述：" prop="content">
-          <el-input v-model="addDialogForm.content" placeholder="请输入菜单描述.." clearable autofocus></el-input>
+          <el-input v-model="addDialogForm.content" placeholder="请输入菜单描述.." clearable></el-input>
         </el-form-item>
         <el-form-item label="菜单状态：" prop="menuSwitch">
           <el-switch
@@ -281,8 +286,21 @@ export default {
       // tableData: [],
       editDialogFormVisible: false, // 编辑dialog
       editDialogFormLabelWidth: "140px", // 编辑dialog form表单lable宽
-      editDialogForm: {}, // 编辑dialog菜单form表单
-
+      editDialogForm: {}, // 编辑dialog菜单form表单,
+      editDialogFormRules: {
+        // 编辑菜单弹窗form表单校验规则
+        name: [
+          {
+            required: true,
+            message: "请输入菜单 / 按钮名称",
+            trigger: "blur"
+          }
+        ],
+        status: [
+          { required: true, message: "请选择菜单状态", trigger: "change" }
+        ],
+        url: [{ required: true, message: "请输入路由地址", trigger: "blur" }]
+      },
       addDialogForm: {
         addDialogFormVisible: false, // 添加dialog
         addDialogFormLabelWidth: "160px", // 添加dialog form表单lable宽
@@ -351,20 +369,6 @@ export default {
             { required: true, message: "请输入路由地址", trigger: "blur" }
           ]
         }
-      },
-      editDialogFormRules: {
-        // 编辑菜单弹窗form表单校验规则
-        name: [
-          {
-            required: true,
-            message: "请输入菜单 / 按钮名称",
-            trigger: "blur"
-          }
-        ],
-        status: [
-          { required: true, message: "请选择菜单状态", trigger: "change" }
-        ],
-        url: [{ required: true, message: "请输入路由地址", trigger: "blur" }]
       }
     };
   },
