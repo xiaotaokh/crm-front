@@ -4,13 +4,30 @@
     <app-breadcrumb></app-breadcrumb>
     <!-- 除去面包屑主体 -->
     <div class="content-main">
+      <!-- 搜索 -->
+      <app-search>
+        <el-form
+          size="mini"
+          :inline="true"
+          ref="searchForm"
+          :model="searchForm"
+          label-width="80px"
+        >
+          <el-form-item label="角色名称：">
+            <el-input v-model="searchForm.name" placeholder="请输入角色名称" clearable></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="searchSubmit">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </app-search>
       <!-- 按钮组 -->
       <el-row type="flex" justify="start" class="app-btn-group">
         <el-col :span="24">
           <el-button size="mini" type="primary" @click="add">添加</el-button>
-          <el-button size="mini" type="primary" @click="add">批量启用</el-button>
-          <el-button size="mini" type="warning" @click="add">批量禁用</el-button>
-          <el-button size="mini" type="danger" @click="add">批量删除</el-button>
+          <el-button size="mini" type="primary" @click="batchStart">批量启用</el-button>
+          <el-button size="mini" type="warning" @click="batchDisable">批量禁用</el-button>
+          <el-button size="mini" type="danger" @click="batchDel">批量删除</el-button>
         </el-col>
       </el-row>
       <!-- 表格table -->
@@ -25,14 +42,15 @@
             stripe
             size="medium"
             border
+            @selection-change="handleSelectionChange"
             v-loading="this.$store.state.tableLoading"
           >
             <el-table-column align="center" fixed type="selection" width="60"></el-table-column>
             <el-table-column align="center" fixed type="index" width="60"></el-table-column>
-            <el-table-column align="center" fixed label="角色名称" width="180">
+            <el-table-column align="center" fixed label="角色名称" width="160" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.role }}</template>
             </el-table-column>
-            <el-table-column label="授权状态 / 授权" align="center" width="260">
+            <el-table-column label="授权状态 / 授权" align="center" width="200">
               <template slot-scope="scope">
                 <el-tag
                   size="mini"
@@ -43,12 +61,12 @@
                   <el-button
                     type="text"
                     class="auth-btn"
-                    @click="handleDelete(scope.$index, scope.row)"
+                    @click="handleAuth(scope.$index, scope.row)"
                   >授权</el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="状态" width="160">
+            <el-table-column align="center" label="状态" width="180">
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.status"
@@ -66,7 +84,7 @@
             <el-table-column align="center" label="修改时间" width="180">
               <template slot-scope="scope">{{ scope.row.updateAt | dateFilter }}</template>
             </el-table-column>
-            <el-table-column label="备注" min-width="180">
+            <el-table-column label="备注" min-width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.note }}</template>
             </el-table-column>
             <el-table-column fixed="right" width="140" align="center" label="操作">
@@ -143,16 +161,11 @@
         ref="editDialogForm"
       >
         <el-form-item label="角色名称：" prop="role">
-          <el-input
-            v-model="editDialogForm.editDialogFormData.role"
-            placeholder="请输入角色名称"
-            clearable
-            autofocus="true"
-          ></el-input>
+          <el-input v-model="editDialogForm.role" placeholder="请输入角色名称" clearable autofocus="true"></el-input>
         </el-form-item>
         <el-form-item label="角色状态：" prop="status">
           <el-switch
-            v-model="editDialogForm.editDialogFormData.status"
+            v-model="editDialogForm.status"
             active-text="启用"
             inactive-text="禁用"
             active-value="ACTIVE"
@@ -160,12 +173,31 @@
           ></el-switch>
         </el-form-item>
         <el-form-item label="备注" prop="note">
-          <el-input v-model="editDialogForm.editDialogFormData.note" placeholder="请输入备注" clearable></el-input>
+          <el-input v-model="editDialogForm.note" placeholder="请输入备注" clearable></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="info" @click="editDialogFormCancle">取 消</el-button>
         <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 授权dialog -->
+    <el-dialog append-to-body center title="角色授权" :visible.sync="authForm.authFormVisible">
+      <el-form :model="authForm" ref="authForm" :label-width="authForm.authFormLabelWidth">
+        <el-form-item label="请点击授权项授权：">
+          <el-tree
+            :data="authForm.authFormData"
+            show-checkbox
+            node-key="id"
+            :default-expanded-keys="authForm.authFormDefaultKey"
+            :default-checked-keys="authForm.authFormDefaultKey"
+            :props="authForm.defaultProps"
+          ></el-tree>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="info" @click="authFormCancle">取 消</el-button>
+        <el-button size="small" type="primary" @click="authFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -177,7 +209,8 @@ export default {
   watch: {},
   data() {
     return {
-      tableHeight: window.innerHeight - 200, // 表格高度
+      tableHeight: window.innerHeight - 300, // 表格高度
+      searchForm:{},  // 搜索
       // 添加dialog form
       addDialogForm: {
         addDialogFormVisible: false,
@@ -209,11 +242,33 @@ export default {
             }
           ]
         },
+        role: "",
+        status: "",
+        note: "",
         editDialogFormData: {} // 存放 根据id获取到的行信息
+      },
+      multipleSelection: [], // 存放表格选中项信息
+      ids: "", // 存放表格选中项id
+      // 授权form
+      authForm: {
+        authFormData: [],
+        authFormLabelWidth: "140px",
+        authFormVisible: false,
+        // 授权的默认字段
+        defaultProps: {
+          children: "children",
+          label: "navName"
+        },
+        // 默认展开字段
+        authFormDefaultKey: []
       }
     };
   },
   methods: {
+    // 搜索
+    searchSubmit() {
+      console.log(this.searchForm);
+    },
     // 添加
     add() {
       this.addDialogForm.addDialogFormVisible = true;
@@ -228,24 +283,32 @@ export default {
       };
       this.$axios.post(url, formData).then(res => {
         this.editDialogForm.editDialogFormData = res.data.data;
+        this.editDialogForm.role = res.data.data.role;
+        this.editDialogForm.status = res.data.data.status;
+        this.editDialogForm.note = res.data.data.note;
       });
     },
     // 表格行编辑确定
     editDialogFormSubmit() {
-      // console.log(this.editDialogForm.editDialogFormData)
       var url = "roles/updateRolesById";
+      // 把form表单值放在请求体里
+      this.editDialogForm.editDialogFormData.role = this.editDialogForm.role;
+      this.editDialogForm.editDialogFormData.status = this.editDialogForm.status;
+      this.editDialogForm.editDialogFormData.note = this.editDialogForm.note;
       this.$refs.editDialogForm.validate(valid => {
         if (valid) {
-          this.$axios.post(url, this.editDialogForm.editDialogFormData).then(res => {
-            if (res.data.code == 1) {
-              this.$message({
-                type: "success",
-                message: res.data.msg
-              });
-            }
-            this.editDialogForm.editDialogFormVisible = false;
-            this.getTableData(); // 重置表单数据
-          });
+          this.$axios
+            .post(url, this.editDialogForm.editDialogFormData)
+            .then(res => {
+              if (res.data.code == 1) {
+                this.$message({
+                  type: "success",
+                  message: res.data.msg
+                });
+              }
+              this.editDialogForm.editDialogFormVisible = false;
+              this.getTableData(); // 重置表单数据
+            });
         } else {
           this.$message({
             type: "warning",
@@ -265,7 +328,7 @@ export default {
     },
     // 表格行删除事件
     handleDelete(index, row) {
-      this.$confirm("此操不可逆, 是否继续?", "删除菜单", {
+      this.$confirm("此操不可逆, 是否继续?", "删除角色", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -370,6 +433,148 @@ export default {
       this.addDialogForm.role = "";
       this.addDialogForm.status = "ACTIVE";
     },
+    // 获取表格选中项信息
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    // 批量启用
+    batchStart() {
+      if (this.multipleSelection.length != 0) {
+        for (var i of this.multipleSelection) {
+          this.ids += i.id + ",";
+        }
+
+        let url = "roles/updateStatusByIds";
+        let formData = {
+          ids: this.ids.slice(0, -1),
+          status: "ACTIVE"
+        };
+        this.$axios
+          .post(url, formData)
+          .then(res => {
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+              this.getTableData();
+              this.ids = ""; // ids清空
+            }
+          })
+          .catch(err => {});
+      } else {
+        this.$message({
+          type: "warning",
+          message: "请先选择角色!"
+        });
+      }
+    },
+    // 批量禁用
+    batchDisable() {
+      if (this.multipleSelection.length != 0) {
+        for (var i of this.multipleSelection) {
+          this.ids += i.id + ",";
+        }
+
+        let url = "roles/updateStatusByIds";
+        let formData = {
+          ids: this.ids.slice(0, -1),
+          status: "DEL"
+        };
+        this.$axios
+          .post(url, formData)
+          .then(res => {
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+              this.getTableData();
+              this.ids = ""; // ids清空
+            }
+          })
+          .catch(err => {});
+      } else {
+        this.$message({
+          type: "warning",
+          message: "请先选择角色!"
+        });
+      }
+    },
+    // 批量删除
+    batchDel() {
+      if (this.multipleSelection.length != 0) {
+        this.$confirm("此操不可逆, 是否继续?", "删除角色", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            for (var i of this.multipleSelection) {
+              this.ids += i.id + ",";
+            }
+            let url = "roles/delByIds";
+            let formData = {
+              ids: this.ids.slice(0, -1),
+              status: "DEL"
+            };
+            this.$axios
+              .post(url, formData)
+              .then(res => {
+                if (res.data.code == 1) {
+                  this.$message({
+                    type: "success",
+                    message: res.data.msg
+                  });
+                  this.getTableData();
+                  this.ids = ""; // ids清空
+                }
+              })
+              .catch(err => {
+                this.$message({
+                  type: "error",
+                  message: res.data.msg
+                });
+              });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除!"
+            });
+          });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "请先选择角色!"
+        });
+      }
+    },
+    // 授权
+    handleAuth(index, row) {
+      this.authForm.authFormVisible = true;
+      let url = "roles/rolesAndResource";
+      let formData = {
+        roleId: row.id
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          this.authForm.authFormData = res.data.data.dataOne;
+          this.authForm.authFormDefaultKey = res.data.data.dataTow;
+        })
+        .catch(err => {});
+    },
+    // 授权确定
+    authFormSubmit() {},
+    // 授权取消
+    authFormCancle() {
+      this.authForm.authFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "已取消授权!"
+      });
+    },
     // 获取表格数据
     getTableData() {
       // 获取表格数据
@@ -384,7 +589,7 @@ export default {
     // 监听页面高度 赋值给tableHeight
     var self = this;
     window.onresize = () => {
-      self.tableHeight = document.body.clientHeight - 200;
+      self.tableHeight = document.body.clientHeight - 300;
     };
 
     // 获取表格数据

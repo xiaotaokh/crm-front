@@ -46,7 +46,7 @@
             <el-table-column label="路由地址" width="300" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.route }}</template>
             </el-table-column>
-            <el-table-column label="状态" align="center" width="160">
+            <el-table-column label="状态" align="center" width="180">
               <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.status"
