@@ -16,7 +16,7 @@
           <!-- row-key="id" 树形表格时必填 -->
           <el-table
             ref="tableData"
-            :data="this.$store.state.postTableData.data"
+            :data="tableDataList"
             tooltip-effect="dark"
             style="width: 100%;margin-bottom:20px table-layout:fixed"
             :max-height="tableHeight"
@@ -156,7 +156,12 @@
         :rules="addDialogForm.addDialogFormRules"
       >
         <el-form-item label="菜单 / 按钮名称：" prop="name">
-          <el-input v-model="addDialogForm.name" placeholder="请输入菜单 / 按钮名称.." clearable autofocus="true"></el-input>
+          <el-input
+            v-model="addDialogForm.name"
+            placeholder="请输入菜单 / 按钮名称.."
+            clearable
+            autofocus="true"
+          ></el-input>
         </el-form-item>
         <el-form-item label="当前菜单 / 按钮级别：" prop="addMenuLevelCode">
           <el-select
@@ -282,6 +287,7 @@ export default {
   watch: {},
   data() {
     return {
+      tableDataList: [], // 表格数据
       tableHeight: window.innerHeight - 200, // 表格高度
       // tableData: [],
       editDialogFormVisible: false, // 编辑dialog
@@ -659,6 +665,9 @@ export default {
       var url = "menu/getAll";
       let formData = {};
       this.$store.dispatch("postTableData", url, formData);
+      setTimeout(() => {
+        this.tableDataList = this.$store.state.postTableData;
+      }, 400);
     }
   },
   mounted() {

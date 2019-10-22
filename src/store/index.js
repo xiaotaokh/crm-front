@@ -42,15 +42,19 @@ export default new Vuex.Store({
     editTableLoading(state, tableLoading) {
       state.tableLoading = tableLoading;
     },
-    // 全局post请求
+    // 全局postTableData请求  表格
     postTableData(state, url, formData) {
       state.tableLoading = true;
       Vue.prototype.$axios.post(url, formData).then(res => {
         setTimeout(() => {
           state.tableLoading = false;
-        }, 300)
-        state.postTableData = res.data;
+        }, 400)
+        state.postTableData = res.data.data;
       })
+    },
+    // 修改tableData数据
+    setPostTableData(state,list) {
+      state.postTableData = list
     }
   },
   // 修改  判断commit哪个mutations

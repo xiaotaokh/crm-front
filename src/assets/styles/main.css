@@ -106,3 +106,7 @@ html, body {
   padding: 10px;
   height: calc(100% -50px);   /* 这个高度用于放置分页 */
 }
+/* 分页pagination */
+.el-pagination {
+  text-align: center;
+}

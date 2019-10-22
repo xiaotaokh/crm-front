@@ -109,9 +109,10 @@ axios.interceptors.response.use(res => {
   }
   return res;
 }, err => Promise.reject(
-  err
-  // 404 请求失败
-  // sessionStorage.removeItem("token"), // 清除token
+  // err
+  // 404 请求失败  清除token 返回登录页
+  sessionStorage.removeItem("token"), // 清除token
+  // 返回登录页先关闭
   // router.replace({
   //   path: '/login',
   // })

@@ -7,6 +7,7 @@
       <!-- 搜索 -->
       <app-search>
         <el-form
+          @submit.native.prevent
           size="mini"
           :inline="true"
           ref="searchForm"
@@ -14,7 +15,12 @@
           label-width="80px"
         >
           <el-form-item label="角色名称：">
-            <el-input v-model="searchForm.name" placeholder="请输入角色名称" clearable></el-input>
+            <el-input
+              v-model="searchForm.name"
+              @keyup.enter.native="searchSubmit"
+              placeholder="请输入角色名称"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="searchSubmit">查询</el-button>
@@ -36,7 +42,7 @@
           <el-table
             ref="tableData"
             class="tableData"
-            :data="this.$store.state.postTableData.data"
+            :data="tableData.slice((currentPage-1)*PageSize,currentPage*PageSize)"
             style="width: 100%; table-layout:fixed"
             :max-height="tableHeight"
             stripe
@@ -46,8 +52,12 @@
             v-loading="this.$store.state.tableLoading"
           >
             <el-table-column align="center" fixed type="selection" width="60"></el-table-column>
-            <el-table-column align="center" fixed type="index" width="60"></el-table-column>
-            <el-table-column align="center" fixed label="角色名称" width="160" show-overflow-tooltip>
+            <el-table-column label="序号" width="80" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="角色名称" width="160" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.role }}</template>
             </el-table-column>
             <el-table-column label="授权状态 / 授权" align="center" width="200">
@@ -112,6 +122,16 @@
           </el-table>
         </el-col>
       </el-row>
+      <!-- 分页 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="pageSizes"
+        :page-size="PageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalCount"
+      ></el-pagination>
     </div>
     <!-- 添加dialog -->
     <el-dialog
@@ -192,6 +212,7 @@
             :default-expanded-keys="authForm.authFormDefaultKey"
             :default-checked-keys="authForm.authFormDefaultKey"
             :props="authForm.defaultProps"
+            ref="authFormTree"
           ></el-tree>
         </el-form-item>
       </el-form>
@@ -209,8 +230,17 @@ export default {
   watch: {},
   data() {
     return {
-      tableHeight: window.innerHeight - 300, // 表格高度
-      searchForm:{},  // 搜索
+      tableData: [], // 表格数据
+      tableRowId:"", // 用于授权dialog请求使用  表格行Id
+      currentPage: 1, // 默认显示第几页
+      pageSizes: [10, 20, 50, 100], // 个数选择器（可修改）
+      PageSize: 20, // 默认每页显示的条数（可修改）
+      totalCount: 1, // 总条数，根据接口获取数据长度(注意：这里不能为空)
+
+      tableHeight: window.innerHeight - 290, // 表格高度
+      searchForm: {
+        name: ""
+      }, // 搜索
       // 添加dialog form
       addDialogForm: {
         addDialogFormVisible: false,
@@ -261,13 +291,39 @@ export default {
         },
         // 默认展开字段
         authFormDefaultKey: []
-      }
+      },
+      // 默认显示第一条
+      currentPage: 1
     };
   },
   methods: {
     // 搜索
     searchSubmit() {
-      console.log(this.searchForm);
+      // 判断查询条件是否为空
+      for (var key in this.searchForm) {
+        if (!this.searchForm[key]) {
+          this.$message({
+            message: "查询条件为空显示全部数据！",
+            type: "warning",
+            showClose: true,
+            duration: 2000
+          });
+        }
+      }
+      let url = "roles/findRolesByName";
+      let formData = {
+        role: this.searchForm.name
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          this.$store.commit("setPostTableData", res.data.data);
+          this.tableData = this.$store.state.postTableData; // 获取表格数据
+          this.totalCount = this.$store.state.postTableData.length; // 将数据的长度赋值给totalCount
+        })
+        .catch(err => {
+          return;
+        });
     },
     // 添加
     add() {
@@ -552,6 +608,7 @@ export default {
     },
     // 授权
     handleAuth(index, row) {
+      this.tableRowId = row.id; // 把表格行id传给全局，以备authFormSubmit()使用
       this.authForm.authFormVisible = true;
       let url = "roles/rolesAndResource";
       let formData = {
@@ -566,7 +623,21 @@ export default {
         .catch(err => {});
     },
     // 授权确定
-    authFormSubmit() {},
+    authFormSubmit() {
+      console.log(this.$refs.authFormTree.getCheckedKeys())
+      console.log(this.tableRowId)
+      // let url = "roles/addRolesAndResource";
+      // let formData = {
+      //   roleId: this.tableRowId,
+      //   resourcesIds: ""
+      // };
+      // this.$axios
+      //   .post(url, formData)
+      //   .then(res => {
+      //     console.log(res.data)
+      //   })
+      //   .catch(err => {});
+    },
     // 授权取消
     authFormCancle() {
       this.authForm.authFormVisible = false;
@@ -575,12 +646,24 @@ export default {
         message: "已取消授权!"
       });
     },
+    // 分页
+    handleSizeChange(val) {
+      this.PageSize = val; // 改变每页显示的条数
+      this.currentPage = 1; // 注意：在改变每页显示的条数时，要将页码显示到第一页
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val; // 改变默认的页数
+    },
     // 获取表格数据
     getTableData() {
       // 获取表格数据
       var url = "roles/getAll";
       let formData = {};
       this.$store.dispatch("postTableData", url, formData);
+      setTimeout(() => {
+        this.tableData = this.$store.state.postTableData; // 获取表格数据
+        this.totalCount = this.$store.state.postTableData.length; // 将数据的长度赋值给totalCount
+      }, 500);
     }
   },
   mounted() {
@@ -589,7 +672,7 @@ export default {
     // 监听页面高度 赋值给tableHeight
     var self = this;
     window.onresize = () => {
-      self.tableHeight = document.body.clientHeight - 300;
+      self.tableHeight = document.body.clientHeight - 290;
     };
 
     // 获取表格数据
