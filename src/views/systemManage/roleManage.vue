@@ -8,7 +8,7 @@
       <app-search>
         <el-form
           @submit.native.prevent
-          size="mini"
+          size="small"
           :inline="true"
           ref="searchForm"
           :model="searchForm"
@@ -49,7 +49,7 @@
             size="medium"
             border
             @selection-change="handleSelectionChange"
-            v-loading="this.$store.state.tableLoading"
+            v-loading="tableLoading"
           >
             <el-table-column align="center" fixed type="selection" width="60"></el-table-column>
             <el-table-column label="序号" width="80" align="center">
@@ -207,6 +207,7 @@
         <el-form-item label="请点击授权项授权：">
           <el-tree
             :data="authForm.authFormData"
+            :check-strictly="false"
             show-checkbox
             node-key="id"
             :default-expanded-keys="authForm.authFormDefaultKey"
@@ -231,13 +232,14 @@ export default {
   data() {
     return {
       tableData: [], // 表格数据
-      tableRowId:"", // 用于授权dialog请求使用  表格行Id
+      tableLoading: true, // 表格全局loading加载
+      tableRowId: "", // 用于授权dialog请求使用  表格行Id
       currentPage: 1, // 默认显示第几页
       pageSizes: [10, 20, 50, 100], // 个数选择器（可修改）
       PageSize: 20, // 默认每页显示的条数（可修改）
       totalCount: 1, // 总条数，根据接口获取数据长度(注意：这里不能为空)
 
-      tableHeight: window.innerHeight - 290, // 表格高度
+      tableHeight: window.innerHeight - 300, // 表格高度
       searchForm: {
         name: ""
       }, // 搜索
@@ -624,19 +626,19 @@ export default {
     },
     // 授权确定
     authFormSubmit() {
-      console.log(this.$refs.authFormTree.getCheckedKeys())
-      console.log(this.tableRowId)
-      // let url = "roles/addRolesAndResource";
-      // let formData = {
-      //   roleId: this.tableRowId,
-      //   resourcesIds: ""
-      // };
-      // this.$axios
-      //   .post(url, formData)
-      //   .then(res => {
-      //     console.log(res.data)
-      //   })
-      //   .catch(err => {});
+      let url = "roles/addRolesAndResource";
+      var resourcesIds = this.$refs.authFormTree.getCheckedKeys();
+      console.log(resourcesIds);
+      let formData = {
+        roleId: this.tableRowId,
+        resourcesIds: resourcesIds
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(err => {});
     },
     // 授权取消
     authFormCancle() {
@@ -654,16 +656,32 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val; // 改变默认的页数
     },
+    // 获取表格数据  全局使用
+    // getTableData() {
+    //   // 获取表格数据
+    //   var url = "roles/getAll";
+    //   let formData = {};
+    //   this.$store.dispatch("postTableData", url, formData);
+    //   setTimeout(() => {
+    //     this.tableData = this.$store.state.postTableData; // 获取表格数据
+    //     this.totalCount = this.$store.state.postTableData.length; // 将数据的长度赋值给totalCount
+    //     // console.log(this.tableData)
+    //   }, 1000);
+    // },
     // 获取表格数据
     getTableData() {
+      this.tableLoading = true;
       // 获取表格数据
       var url = "roles/getAll";
       let formData = {};
-      this.$store.dispatch("postTableData", url, formData);
-      setTimeout(() => {
-        this.tableData = this.$store.state.postTableData; // 获取表格数据
-        this.totalCount = this.$store.state.postTableData.length; // 将数据的长度赋值给totalCount
-      }, 500);
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          this.tableData = res.data.data; // 获取表格数据
+          this.tableLoading = false;
+          this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+        })
+        .catch(err => {});
     }
   },
   mounted() {
@@ -672,11 +690,13 @@ export default {
     // 监听页面高度 赋值给tableHeight
     var self = this;
     window.onresize = () => {
-      self.tableHeight = document.body.clientHeight - 290;
+      self.tableHeight = document.body.clientHeight - 300;
     };
 
     // 获取表格数据
     this.getTableData();
+
+    this.$aaa(1,3)
   }
 };
 </script>

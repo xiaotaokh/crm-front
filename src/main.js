@@ -61,12 +61,12 @@ Vue.use(SlideVerify);
 // axios
 import axios from 'axios';
 Vue.prototype.$axios = axios; // axios  $为全局请求定义方式
-axios.defaults.baseURL = '/api' // 跨域解决
-// axios.defaults.headers.post['Content-Type'] = 'application/json';   // 跨域解决  可以在axios.interceptors.request.us下设置  application/x-www-form-urlencoded;charset=UTF-8
-// axios.defaults.baseURL = 'http://192.168.3.40:8099/'             // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
+// axios.defaults.baseURL = '/api' // 跨域解决
+// axios.defaults.headers.post['Content-Type'] = 'application/json';   // 跨域解决  可以在axios.interceptors.request.use下设置  application/x-www-form-urlencoded;charset=UTF-8
+axios.defaults.baseURL = 'http://192.168.3.40:8899/'             // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 // axios.defaults.baseURL = 'http://47.92.153.134:8899/'             // 打包接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 axios.defaults.timeout = 3000; // 每次请求间隔时间 3s
-// axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : "";  // 全局设置请求头 添加token
+// axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : "";  // 全局设置请求头 添加token  错误
 
 import Qs from 'qs' // 对post请求parms进行数据格式处理
 // axios.defaults.transformRequest = [obj => Qs.stringify(obj)]
@@ -83,6 +83,7 @@ axios.interceptors.request.use(config => {
   if (config.method === "post") {
     config.data = Qs.stringify(config.data); // 转换请求体格式
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    // config.headers['Access-Control-Allow-Origin'] = '*';
   }
   return config;
 }, err => Promise.reject(err));
@@ -94,7 +95,7 @@ axios.interceptors.response.use(res => {
     // 状态码 418 表示未登录/token失效，退出系统，跳转到登录页
     sessionStorage.removeItem("token"); // 清除token
     // Vue.prototype.$message({
-    //   message: '您未登录或token失效，请重新登录！',
+    //   message: '您长时间未操作，请重新登录！',
     //   type: 'error'
     // });
     router.replace({
@@ -108,15 +109,34 @@ axios.interceptors.response.use(res => {
     });
   }
   return res;
-}, err => Promise.reject(
-  // err
-  // 404 请求失败  清除token 返回登录页
-  sessionStorage.removeItem("token"), // 清除token
-  // 返回登录页先关闭
-  // router.replace({
-  //   path: '/login',
-  // })
-));
+// }, err => Promise.reject(err));
+}, error => {
+  if (!error.response) {
+    Vue.prototype.$message({
+      message: "出错了！",
+      type: 'warning'
+    });
+  }
+  if (error.response.status === 404) {
+    Vue.prototype.$message({
+      message: "404错误！",
+      type: 'warning'
+    });
+  }
+  if (error.response.status === 401) {
+    Vue.prototype.$message({
+      message: "401错误",
+      type: 'warning'
+    });
+  }
+  if (error.response.status === 500) {
+    Vue.prototype.$message({
+      message: "500错误",
+      type: 'warning'
+    });
+  }
+  return Promise.resolve(error.response)
+})
 
 Vue.config.productionTip = false
 

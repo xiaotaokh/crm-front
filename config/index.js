@@ -11,15 +11,15 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     // 跨域拦截请求   设置跨域重启项目(npm start)
-    proxyTable: {
-      '/api': {
-        // target: "http://47.92.153.134:8899/", // 打包接口地址
-        target: "http://192.168.3.40:8899/", // 本地后台接口地址
-        pathRewrite: {
-          '^/api': ''
-        }
-      }
-    },
+    // proxyTable: {
+    //   '/api': {
+    //     // target: "http://47.92.153.134:8899/", // 打包接口地址
+    //     target: "http://192.168.3.40:8899/", // 本地后台接口地址
+    //     pathRewrite: {
+    //       '^/api': ''
+    //     }
+    //   }
+    // },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

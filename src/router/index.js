@@ -98,7 +98,7 @@ router.beforeEach((to, from, next) => {
         type: 'success'
       });
     } else {
-      
+      next();
     }
   }
   next();
