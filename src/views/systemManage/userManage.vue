@@ -39,7 +39,10 @@ export default {
   },
   data () {
     return {
-        
+      // 搜索
+      searchForm: {
+        name: ""
+      },
     }
   },
   methods: {

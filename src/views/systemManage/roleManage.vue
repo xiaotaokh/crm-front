@@ -233,6 +233,10 @@ export default {
   watch: {},
   data() {
     return {
+      // 搜索
+      searchForm: {
+        name: ""
+      },
       tableData: [], // 表格数据
       tableLoading: true, // 表格全局loading加载
       tableRowId: "", // 用于授权dialog请求使用  表格行Id
@@ -242,10 +246,6 @@ export default {
       totalCount: 1, // 总条数，根据接口获取数据长度(注意：这里不能为空)
 
       tableHeight: window.innerHeight - 300, // 表格高度
-      // 搜索
-      searchForm: {
-        name: ""
-      },
       // 添加dialog form
       addDialogForm: {
         addDialogFormVisible: false,
@@ -319,12 +319,15 @@ export default {
       let formData = {
         role: this.searchForm.name
       };
+      this.tableLoading = true;
       this.$axios
         .post(url, formData)
         .then(res => {
-          this.$store.commit("setPostTableData", res.data.data);
-          this.tableData = this.$store.state.postTableData; // 获取表格数据
-          this.totalCount = this.$store.state.postTableData.length; // 将数据的长度赋值给totalCount
+          // this.$store.commit("setPostTableData", res.data.data);
+          // this.tableData = this.$store.state.postTableData; // 获取表格数据
+          this.tableLoading = false;
+          this.tableData = res.data.data;
+          this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
         })
         .catch(err => {
           return;
