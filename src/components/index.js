@@ -6,6 +6,7 @@ import appHeader from './app-header'
 import appSidebar from './app-sidebar'
 import appSearch from './app-search'
 import breadcrumb from './breadcrumb'
+import appPagination from './app-pagination'
 
 const Components = {
 	install: function (Vue) {
@@ -13,6 +14,7 @@ const Components = {
 		Vue.component('app-sidebar', appSidebar)
 		Vue.component('app-search', appSearch)
 		Vue.component('app-breadcrumb', breadcrumb)
+		Vue.component('app-pagination', appPagination)
 	}
 }
 export default Components

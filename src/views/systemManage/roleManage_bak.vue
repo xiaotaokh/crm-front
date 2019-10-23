@@ -42,7 +42,7 @@
           <el-table
             ref="tableData"
             class="tableData"
-            :data="globalTableData.slice((currentPage-1)*PageSize,currentPage*PageSize)"
+            :data="tableData.slice((currentPage-1)*PageSize,currentPage*PageSize)"
             style="width: 100%; table-layout:fixed"
             :max-height="tableHeight"
             stripe
@@ -50,7 +50,7 @@
             border
             row-key="id"
             @selection-change="handleSelectionChange"
-            v-loading="globalTableLoading"
+            v-loading="tableLoading"
           >
             <el-table-column
               align="center"
@@ -235,9 +235,9 @@
 </template>
 
 <script>
-import { myMixins } from "@/mixins/index";
+import { myMixins } from '@/mixins/index'
 export default {
-  mixins: [myMixins],
+  mixins:[myMixins],
   name: "roleManage",
   watch: {},
   data() {
@@ -246,7 +246,13 @@ export default {
       searchForm: {
         name: ""
       },
+      tableData: [], // 表格数据
+      tableLoading: true, // 表格全局loading加载
       tableRowId: "", // 用于授权dialog请求使用  表格行Id
+      currentPage: 1, // 默认显示第几页
+      pageSizes: [10, 20, 50, 100], // 个数选择器（可修改）
+      PageSize: 20, // 默认每页显示的条数（可修改）
+      totalCount: 1, // 总条数，根据接口获取数据长度(注意：这里不能为空)
 
       tableHeight: window.innerHeight - 300, // 表格高度
       // 添加dialog form
@@ -287,7 +293,7 @@ export default {
       },
       multipleSelection: [], // 存放表格选中项信息
       ids: "", // 存放表格选中项id
-      rowRole: "", // 存放当前行id
+      rowRole:"",  // 存放当前行id
       // 授权form
       authForm: {
         authFormData: [],
@@ -308,6 +314,23 @@ export default {
   methods: {
     // 搜索
     searchSubmit() {
+      // this.searchSubmitGlobal();
+      // let url = "roles/findRolesByName";
+      // let formData = {
+      //   role: this.searchForm.name
+      // };
+      // this.$axios
+      //   .post(url, formData)
+      //   .then(res => {
+      //     // this.$store.commit("setPostTableData", res.data.data);
+      //     // this.tableData = this.$store.state.postTableData; // 获取表格数据
+      //     this.tableLoading = false;
+      //     this.tableData = res.data.data;
+      //     this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+      //   })
+      //   .catch(err => {
+      //     return;
+      //   });
       this.globalSearchUrl = "roles/findRolesByName";
       this.globalSearchFormData = {
         role: this.searchForm.name
@@ -373,11 +396,40 @@ export default {
     },
     // 表格行删除事件
     handleDelete(index, row) {
-      this.globalDeleteUrl = "roles/delById";
-      this.globalDeleteFormData = {
-        id: row.id
-      };
-      this.handleDeleteGlobal();
+      this.$confirm("此操不可逆, 是否继续?", "删除角色", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let url = "roles/delById";
+          let formData = {
+            id: row.id
+          };
+          this.$axios
+            .post(url, formData)
+            .then(res => {
+              if (res.data.code == 1) {
+                this.$message({
+                  type: "success",
+                  message: res.data.msg
+                });
+              }
+              this.getTableData();
+            })
+            .catch(err => {
+              this.$message({
+                type: "error",
+                message: res.data.msg
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除!"
+          });
+        });
     },
     // 表格switch事件
     menuStatus(index, row) {
@@ -597,7 +649,6 @@ export default {
         .post(url, formData)
         .then(res => {
           if (res.data.code == 1) {
-            this.getTableData();
             this.authForm.authFormVisible = false;
             this.$message({
               type: "success",
@@ -628,15 +679,42 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val; // 改变默认的页数
     },
+    // 获取表格数据  全局使用
+    // getTableData() {
+    //   // 获取表格数据
+    //   var url = "roles/getAll";
+    //   let formData = {};
+    //   this.$store.dispatch("postTableData", url, formData);
+    //   setTimeout(() => {
+    //     this.tableData = this.$store.state.postTableData; // 获取表格数据
+    //     this.totalCount = this.$store.state.postTableData.length; // 将数据的长度赋值给totalCount
+    //     // console.log(this.tableData)
+    //   }, 1000);
+    // },
     // 获取表格数据
     getTableData() {
-      this.globalGetTableDataUrl = "roles/getAll";
-      this.getTableDataGlobal();
+      this.tableLoading = true;
+      // 获取表格数据
+      var url = "roles/getAll";
+      let formData = {};
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          this.tableData = res.data.data; // 获取表格数据
+          this.tableLoading = false;
+          this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+        })
+        .catch(err => {});
     }
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
-    this.globalListenHeight(); // 监听页面变化，修改表格高度
+    // // 监听页面高度 赋值给tableHeight
+    // var self = this;
+    // window.onresize = () => {
+    //   self.tableHeight = document.body.clientHeight - 300;
+    // };
+    this.globalListenHeight();  // 监听页面变化，修改表格高度
 
     // 获取表格数据
     this.getTableData();

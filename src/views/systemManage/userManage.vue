@@ -30,7 +30,7 @@
       <!-- 按钮组 -->
       <el-row type="flex" justify="start" class="app-btn-group">
         <el-col :span="24">
-          <el-button size="mini" type="primary" @click="add">添加</el-button>
+          <el-button size="mini" type="primary" @click="addGlobal">添加</el-button>
           <el-button size="mini" type="primary" @click="batchStart">批量启用</el-button>
           <el-button size="mini" type="warning" @click="batchDisable">批量禁用</el-button>
           <el-button size="mini" type="danger" @click="batchDel">批量删除</el-button>
@@ -42,7 +42,7 @@
           <el-table
             ref="tableData"
             class="tableData"
-            :data="tableData.slice((currentPage-1)*PageSize,currentPage*PageSize)"
+            :data="globalTableData.slice((currentPage-1)*PageSize,currentPage*PageSize)"
             style="width: 100%; table-layout:fixed"
             :max-height="tableHeight"
             stripe
@@ -50,7 +50,7 @@
             border
             row-key="id"
             @selection-change="handleSelectionChange"
-            v-loading="tableLoading"
+            v-loading="globalTableLoading"
           >
             <el-table-column
               align="center"
@@ -78,6 +78,7 @@
                   <el-button
                     type="text"
                     class="auth-btn"
+                    @click="handleAuth(scope.$index, scope.row)"
                   >授权</el-button>
                 </el-tooltip>
               </template>
@@ -143,9 +144,8 @@
     <el-dialog
       append-to-body
       center
-      title="添加角色"
-      :visible.sync="addDialogForm.addDialogFormVisible"
-    >
+      title="添加用户"
+      :visible.sync="globalaAddDialogFormVisible">
       <el-form
         :model="addDialogForm"
         ref="addDialogForm"
@@ -169,7 +169,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click="addDialogFormCancle">取 消</el-button>
+        <el-button size="small" type="info" @click="addDialogFormCancleGlobal">取 消</el-button>
         <el-button size="small" type="primary" @click="addDialogFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
@@ -207,11 +207,36 @@
         <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 授权dialog -->
+    <el-dialog append-to-body center :title="rowRole" :visible.sync="authForm.authFormVisible">
+      <el-form :model="authForm" ref="authForm" :label-width="authForm.authFormLabelWidth">
+        <el-form-item label="请点击授权项授权：">
+          <el-tree
+            :data="authForm.authFormData"
+            :check-strictly="authForm.checkStrictly"
+            show-checkbox
+            node-key="id"
+            @node-click="nodeClick"
+            @check="nodeClick"
+            :default-expanded-keys="authForm.authFormDefaultKey"
+            :default-checked-keys="authForm.authFormDefaultKey"
+            :props="authForm.defaultProps"
+            ref="authFormTree"
+          ></el-tree>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="info" @click="authFormCancle">取 消</el-button>
+        <el-button size="small" type="primary" @click="authFormSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { myMixins } from "@/mixins/index";
 export default {
+  mixins: [myMixins],
   name: "userManage",
   watch: {},
   data() {
@@ -220,17 +245,11 @@ export default {
       searchForm: {
         name: ""
       },
-      tableData: [], // 表格数据
-      tableLoading: true, // 表格全局loading加载
       tableRowId: "", // 用于授权dialog请求使用  表格行Id
-      currentPage: 1, // 默认显示第几页
-      pageSizes: [10, 20, 50, 100], // 个数选择器（可修改）
-      PageSize: 20, // 默认每页显示的条数（可修改）
-      totalCount: 1, // 总条数，根据接口获取数据长度(注意：这里不能为空)
+
       tableHeight: window.innerHeight - 300, // 表格高度
       // 添加dialog form
       addDialogForm: {
-        addDialogFormVisible: false,
         addDialogFormLabelWidth: "140px",
         role: "",
         status: "ACTIVE",
@@ -265,7 +284,21 @@ export default {
         editDialogFormData: {} // 存放 根据id获取到的行信息
       },
       multipleSelection: [], // 存放表格选中项信息
-      ids: "", // 存放表格选中项ids
+      ids: "", // 存放表格选中项id
+      rowRole: "", // 存放当前行id
+      // 授权form
+      authForm: {
+        authFormData: [],
+        authFormLabelWidth: "140px",
+        authFormVisible: false,
+        // 授权的默认字段
+        defaultProps: {
+          children: "children",
+          label: "navName"
+        },
+        authFormDefaultKey: [], // 默认展开字段
+        checkStrictly: false // 默认父子是否联动    设置不联动状态下为true
+      },
       // 默认显示第一条
       currentPage: 1
     };
@@ -273,38 +306,11 @@ export default {
   methods: {
     // 搜索
     searchSubmit() {
-      // 判断查询条件是否为空
-      for (var key in this.searchForm) {
-        if (!this.searchForm[key]) {
-          this.$message({
-            message: "查询条件为空显示全部数据！",
-            type: "warning",
-            showClose: true,
-            duration: 2000
-          });
-        }
-      }
-      let url = "roles/findRolesByName";
-      let formData = {
+      this.globalSearchUrl = "roles/findRolesByName";
+      this.globalSearchFormData = {
         role: this.searchForm.name
       };
-      this.tableLoading = true;
-      this.$axios
-        .post(url, formData)
-        .then(res => {
-          // this.$store.commit("setPostTableData", res.data.data);
-          // this.tableData = this.$store.state.postTableData; // 获取表格数据
-          this.tableLoading = false;
-          this.tableData = res.data.data;
-          this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
-        })
-        .catch(err => {
-          return;
-        });
-    },
-    // 添加
-    add() {
-      this.addDialogForm.addDialogFormVisible = true;
+      this.searchSubmitGlobal();
     },
     // 表格行编辑事件
     handleEdit(index, row) {
@@ -361,40 +367,11 @@ export default {
     },
     // 表格行删除事件
     handleDelete(index, row) {
-      this.$confirm("此操不可逆, 是否继续?", "删除角色", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          let url = "roles/delById";
-          let formData = {
-            id: row.id
-          };
-          this.$axios
-            .post(url, formData)
-            .then(res => {
-              if (res.data.code == 1) {
-                this.$message({
-                  type: "success",
-                  message: res.data.msg
-                });
-              }
-              this.getTableData();
-            })
-            .catch(err => {
-              this.$message({
-                type: "error",
-                message: res.data.msg
-              });
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除!"
-          });
-        });
+      this.globalDeleteUrl = "roles/delById";
+      this.globalDeleteFormData = {
+        id: row.id
+      };
+      this.handleDeleteGlobal();
     },
     // 表格switch事件
     menuStatus(index, row) {
@@ -421,15 +398,6 @@ export default {
           });
         });
     },
-    // 添加取消
-    addDialogFormCancle() {
-      this.addDialogForm.addDialogFormVisible = false;
-      this.$message({
-        type: "info",
-        message: "已取消添加!"
-      });
-      this.addReset();
-    },
     // 添加确定
     addDialogFormSubmit() {
       var url = "roles/addRoles";
@@ -447,7 +415,7 @@ export default {
                 message: res.data.msg
               });
             }
-            this.addDialogForm.addDialogFormVisible = false;
+            this.globalaAddDialogFormVisible = false;
             this.addReset();
             this.getTableData(); // 重置表单数据
           });
@@ -583,6 +551,59 @@ export default {
         });
       }
     },
+    // 授权
+    handleAuth(index, row) {
+      // this.authForm.checkStrictly = true; // 改变树形组件联动状态
+      this.rowRole = row.role;
+      this.tableRowId = row.id; // 把表格行id传给全局，以备authFormSubmit()使用
+      this.authForm.authFormVisible = true;
+      let url = "roles/rolesAndResource";
+      let formData = {
+        roleId: row.id
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          this.authForm.authFormData = res.data.data.dataOne;
+          this.authForm.authFormDefaultKey = res.data.data.dataTow;
+        })
+        .catch(err => {});
+    },
+    // 授权确定
+    authFormSubmit() {
+      let url = "roles/addRolesAndResource";
+      var resourcesIds = this.$refs.authFormTree.getCheckedKeys();
+      console.log(resourcesIds);
+      let formData = {
+        roleId: this.tableRowId,
+        resourcesIds: resourcesIds
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.authForm.authFormVisible = false;
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {});
+    },
+    // 授权取消
+    authFormCancle() {
+      // this.authForm.checkStrictly = true; // 改变树形组件联动状态
+      this.authForm.authFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "已取消授权!"
+      });
+    },
+    // 树形组件被点击时触发
+    nodeClick() {
+      // this.authForm.checkStrictly = false; // 改变树形组件联动状态
+    },
     // 分页
     handleSizeChange(val) {
       this.PageSize = val; // 改变每页显示的条数
@@ -591,42 +612,15 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val; // 改变默认的页数
     },
-    // 获取表格数据  全局使用
-    // getTableData() {
-    //   // 获取表格数据
-    //   var url = "roles/getAll";
-    //   let formData = {};
-    //   this.$store.dispatch("postTableData", url, formData);
-    //   setTimeout(() => {
-    //     this.tableData = this.$store.state.postTableData; // 获取表格数据
-    //     this.totalCount = this.$store.state.postTableData.length; // 将数据的长度赋值给totalCount
-    //     // console.log(this.tableData)
-    //   }, 1000);
-    // },
     // 获取表格数据
     getTableData() {
-      this.tableLoading = true;
-      // 获取表格数据
-      var url = "roles/getAll";
-      let formData = {};
-      this.$axios
-        .post(url, formData)
-        .then(res => {
-          this.tableData = res.data.data; // 获取表格数据
-          this.tableLoading = false;
-          this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
-        })
-        .catch(err => {});
+      this.globalGetTableDataUrl = "roles/getAll";
+      this.getTableDataGlobal();
     }
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
-
-    // 监听页面高度 赋值给tableHeight
-    var self = this;
-    window.onresize = () => {
-      self.tableHeight = document.body.clientHeight - 300;
-    };
+    this.globalListenHeight(); // 监听页面变化，修改表格高度
 
     // 获取表格数据
     this.getTableData();

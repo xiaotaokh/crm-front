@@ -16,7 +16,7 @@
           <!-- row-key="id" 树形表格时必填 -->
           <el-table
             ref="tableData"
-            :data="globalTableData"
+            :data="tableDataList"
             tooltip-effect="dark"
             style="width: 100%;margin-bottom:20px table-layout:fixed"
             :max-height="tableHeight"
@@ -24,7 +24,7 @@
             stripe
             size="medium"
             border
-            v-loading="globalTableLoading"
+            v-loading="this.$store.state.tableLoading"
           >
             <el-table-column fixed label="菜单 / 按钮名称" width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.navName }}</template>
@@ -282,14 +282,14 @@
 </template>
 
 <script>
-import { myMixins } from '@/mixins/index'
 export default {
-  mixins:[myMixins],
   name: "menuManage",
   watch: {},
   data() {
     return {
+      tableDataList: [], // 表格数据
       tableHeight: window.innerHeight - 200, // 表格高度
+      // tableData: [],
       editDialogFormVisible: false, // 编辑dialog
       editDialogFormLabelWidth: "140px", // 编辑dialog form表单lable宽
       editDialogForm: {}, // 编辑dialog菜单form表单,
@@ -661,8 +661,13 @@ export default {
     },
     // 获取表格数据
     getTableData() {
-      this.globalGetTableDataUrl = "menu/getAll";
-      this.getTableDataGlobal();
+      // 获取表格数据
+      var url = "menu/getAll";
+      let formData = {};
+      this.$store.dispatch("postTableData", url, formData);
+      setTimeout(() => {
+        this.tableDataList = this.$store.state.postTableData;
+      }, 400);
     }
   },
   mounted() {

@@ -16,6 +16,11 @@ import userManage from '@/views/systemManage/userManage'                   // �
 import roleManage from '@/views/systemManage/roleManage'                   // 角色管理
 import menuManage from '@/views/systemManage/menuManage'                   // 菜单管理
 
+// 公司管理
+import companyManage from '@/views/companyManage/companyManage'                       // 公司管理
+import companyMaintains from '@/views/companyManage/companyMaintains'             // 公司维护
+import companyList from '@/views/companyManage/companyList'             // 公司列表
+
 Vue.use(Router)
 
 const router = new Router({
@@ -81,7 +86,22 @@ const router = new Router({
               path: '/appMain/systemManage/menuManage', name: 'appMain/systemManage/menuManage', component: menuManage, meta:"菜单管理",      // 菜单管理
             }
           ]
-        }
+        },
+        // 公司管理
+        {
+          path: '/appMain/companyManage/companyManage', redirect: '/appMain/companyManage/companyMaintains', component: companyMaintains,   // 公司管理重定向到公司维护
+        },
+        {
+          path: '/appMain/companyManage/companyManage', name: 'appMain/companyManage/companyManage', component: companyManage, meta:"公司管理",    // 公司管理
+          children:[
+            {
+              path: '/appMain/companyManage/companyMaintains', name: 'appMain/companyManage/companyMaintains', component: companyMaintains, meta:"公司维护",      // 公司维护
+            },
+            {
+              path: '/appMain/companyManage/companyList', name: 'appMain/companyManage/companyList', component: companyList, meta:"公司列表",      // 公司列表
+            },
+          ]
+        },
       ]
     }
   ]

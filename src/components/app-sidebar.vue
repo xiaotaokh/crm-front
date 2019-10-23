@@ -75,8 +75,8 @@ export default {
       }
 
       // 清空全局表格数据
-      var list = [];
-      this.$store.commit("setPostTableData",list)
+      // var list = [];
+      // this.$store.commit("setPostTableData",list)
       // console.log(this.$store.state.postTableData)
     }
   },
