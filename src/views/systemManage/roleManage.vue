@@ -48,10 +48,17 @@
             stripe
             size="medium"
             border
+            row-key="id"
             @selection-change="handleSelectionChange"
             v-loading="tableLoading"
           >
-            <el-table-column align="center" fixed type="selection" width="60"></el-table-column>
+            <el-table-column
+              align="center"
+              fixed
+              type="selection"
+              width="60"
+              :reserve-selection="true"
+            ></el-table-column>
             <el-table-column label="序号" width="80" align="center">
               <template slot-scope="scope">
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
