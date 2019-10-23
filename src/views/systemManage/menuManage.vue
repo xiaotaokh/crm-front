@@ -26,7 +26,7 @@
             border
             v-loading="this.$store.state.tableLoading"
           >
-            <el-table-column fixed label="菜单 / 按钮名称" width="180">
+            <el-table-column fixed label="菜单 / 按钮名称" width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.navName }}</template>
             </el-table-column>
             <el-table-column label="图标" align="center" width="80">

@@ -209,7 +209,7 @@
       </div>
     </el-dialog>
     <!-- 授权dialog -->
-    <el-dialog append-to-body center title="角色授权" :visible.sync="authForm.authFormVisible">
+    <el-dialog append-to-body center :title="rowRole" :visible.sync="authForm.authFormVisible">
       <el-form :model="authForm" ref="authForm" :label-width="authForm.authFormLabelWidth">
         <el-form-item label="请点击授权项授权：">
           <el-tree
@@ -291,6 +291,7 @@ export default {
       },
       multipleSelection: [], // 存放表格选中项信息
       ids: "", // 存放表格选中项id
+      rowRole:"",  // 存放当前行id
       // 授权form
       authForm: {
         authFormData: [],
@@ -624,6 +625,7 @@ export default {
     // 授权
     handleAuth(index, row) {
       // this.authForm.checkStrictly = true; // 改变树形组件联动状态
+      this.rowRole = row.role;
       this.tableRowId = row.id; // 把表格行id传给全局，以备authFormSubmit()使用
       this.authForm.authFormVisible = true;
       let url = "roles/rolesAndResource";

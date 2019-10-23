@@ -78,7 +78,6 @@
                   <el-button
                     type="text"
                     class="auth-btn"
-                    @click="handleAuth(scope.$index, scope.row)"
                   >授权</el-button>
                 </el-tooltip>
               </template>
@@ -208,29 +207,6 @@
         <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 授权dialog -->
-    <el-dialog append-to-body center title="角色授权" :visible.sync="authForm.authFormVisible">
-      <el-form :model="authForm" ref="authForm" :label-width="authForm.authFormLabelWidth">
-        <el-form-item label="请点击授权项授权：">
-          <el-tree
-            :data="authForm.authFormData"
-            :check-strictly="authForm.checkStrictly"
-            show-checkbox
-            node-key="id"
-            @node-click="nodeClick"
-            @check="nodeClick"
-            :default-expanded-keys="authForm.authFormDefaultKey"
-            :default-checked-keys="authForm.authFormDefaultKey"
-            :props="authForm.defaultProps"
-            ref="authFormTree"
-          ></el-tree>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click="authFormCancle">取 消</el-button>
-        <el-button size="small" type="primary" @click="authFormSubmit">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -289,20 +265,7 @@ export default {
         editDialogFormData: {} // 存放 根据id获取到的行信息
       },
       multipleSelection: [], // 存放表格选中项信息
-      ids: "", // 存放表格选中项id
-      // 授权form
-      authForm: {
-        authFormData: [],
-        authFormLabelWidth: "140px",
-        authFormVisible: false,
-        // 授权的默认字段
-        defaultProps: {
-          children: "children",
-          label: "navName"
-        },
-        authFormDefaultKey: [], // 默认展开字段
-        checkStrictly: false // 默认父子是否联动    设置不联动状态下为true
-      },
+      ids: "", // 存放表格选中项ids
       // 默认显示第一条
       currentPage: 1
     };
@@ -619,58 +582,6 @@ export default {
           message: "请先选择角色!"
         });
       }
-    },
-    // 授权
-    handleAuth(index, row) {
-      // this.authForm.checkStrictly = true; // 改变树形组件联动状态
-      this.tableRowId = row.id; // 把表格行id传给全局，以备authFormSubmit()使用
-      this.authForm.authFormVisible = true;
-      let url = "roles/rolesAndResource";
-      let formData = {
-        roleId: row.id
-      };
-      this.$axios
-        .post(url, formData)
-        .then(res => {
-          this.authForm.authFormData = res.data.data.dataOne;
-          this.authForm.authFormDefaultKey = res.data.data.dataTow;
-        })
-        .catch(err => {});
-    },
-    // 授权确定
-    authFormSubmit() {
-      let url = "roles/addRolesAndResource";
-      var resourcesIds = this.$refs.authFormTree.getCheckedKeys();
-      console.log(resourcesIds);
-      let formData = {
-        roleId: this.tableRowId,
-        resourcesIds: resourcesIds
-      };
-      this.$axios
-        .post(url, formData)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.authForm.authFormVisible = false;
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-        })
-        .catch(err => {});
-    },
-    // 授权取消
-    authFormCancle() {
-      // this.authForm.checkStrictly = true; // 改变树形组件联动状态
-      this.authForm.authFormVisible = false;
-      this.$message({
-        type: "info",
-        message: "已取消授权!"
-      });
-    },
-    // 树形组件被点击时触发
-    nodeClick() {
-      // this.authForm.checkStrictly = false; // 改变树形组件联动状态
     },
     // 分页
     handleSizeChange(val) {
