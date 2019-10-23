@@ -207,9 +207,11 @@
         <el-form-item label="请点击授权项授权：">
           <el-tree
             :data="authForm.authFormData"
-            :check-strictly="false"
+            :check-strictly="authForm.checkStrictly"
             show-checkbox
             node-key="id"
+            @node-click="nodeClick"
+            @check="nodeClick"
             :default-expanded-keys="authForm.authFormDefaultKey"
             :default-checked-keys="authForm.authFormDefaultKey"
             :props="authForm.defaultProps"
@@ -240,9 +242,10 @@ export default {
       totalCount: 1, // 总条数，根据接口获取数据长度(注意：这里不能为空)
 
       tableHeight: window.innerHeight - 300, // 表格高度
+      // 搜索
       searchForm: {
         name: ""
-      }, // 搜索
+      },
       // 添加dialog form
       addDialogForm: {
         addDialogFormVisible: false,
@@ -291,8 +294,8 @@ export default {
           children: "children",
           label: "navName"
         },
-        // 默认展开字段
-        authFormDefaultKey: []
+        authFormDefaultKey: [], // 默认展开字段
+        checkStrictly: false // 默认父子是否联动    设置不联动状态下为true
       },
       // 默认显示第一条
       currentPage: 1
@@ -610,6 +613,7 @@ export default {
     },
     // 授权
     handleAuth(index, row) {
+      // this.authForm.checkStrictly = true; // 改变树形组件联动状态
       this.tableRowId = row.id; // 把表格行id传给全局，以备authFormSubmit()使用
       this.authForm.authFormVisible = true;
       let url = "roles/rolesAndResource";
@@ -636,17 +640,28 @@ export default {
       this.$axios
         .post(url, formData)
         .then(res => {
-          console.log(res.data);
+          if (res.data.code == 1) {
+            this.authForm.authFormVisible = false;
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }
         })
         .catch(err => {});
     },
     // 授权取消
     authFormCancle() {
+      // this.authForm.checkStrictly = true; // 改变树形组件联动状态
       this.authForm.authFormVisible = false;
       this.$message({
         type: "info",
         message: "已取消授权!"
       });
+    },
+    // 树形组件被点击时触发
+    nodeClick() {
+      // this.authForm.checkStrictly = false; // 改变树形组件联动状态
     },
     // 分页
     handleSizeChange(val) {
@@ -695,8 +710,6 @@ export default {
 
     // 获取表格数据
     this.getTableData();
-
-    this.$aaa(1,3)
   }
 };
 </script>
