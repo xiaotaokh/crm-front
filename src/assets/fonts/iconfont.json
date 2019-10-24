@@ -76,6 +76,13 @@
       "unicode_decimal": 58890
     },
     {
+      "icon_id": "1965167",
+      "name": "icon_公司信息维护",
+      "font_class": "icon_gongsixinxiweihu",
+      "unicode": "e88e",
+      "unicode_decimal": 59534
+    },
+    {
       "icon_id": "4735727",
       "name": "公告",
       "font_class": "gonggao",

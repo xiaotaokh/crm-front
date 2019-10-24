@@ -63,7 +63,7 @@ import axios from 'axios';
 Vue.prototype.$axios = axios; // axios  $为全局请求定义方式
 // axios.defaults.baseURL = '/api' // 跨域解决
 // axios.defaults.headers.post['Content-Type'] = 'application/json';   // 跨域解决  可以在axios.interceptors.request.use下设置  application/x-www-form-urlencoded;charset=UTF-8
-axios.defaults.baseURL = 'http://192.168.3.40:8899/'             // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
+axios.defaults.baseURL = 'http://192.168.3.40:8899/' // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 // axios.defaults.baseURL = 'http://47.92.153.134:8899/'             // 打包接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 axios.defaults.timeout = 3000; // 每次请求间隔时间 3s
 // axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : "";  // 全局设置请求头 添加token  错误
@@ -78,12 +78,14 @@ axios.interceptors.request.use(config => {
   if (token) { // 判断是否存在token，如果存在的话，则每个http header都加上token
     config.headers.Authorization = token;
   }
-
-  // 设置post请求体parms格式以
-  if (config.method === "post") {
-    config.data = Qs.stringify(config.data); // 转换请求体格式
+  // 设置post请求体parms格式
+  if (config.method === 'post') {
+    // 如果 请求体为FormData 类型的（例如带文件的请求体），不使用qs去转换
+    if(config.data instanceof FormData) {
+    }else{
+      config.data = Qs.stringify(config.data); // 普通请求体转换请求体格式
+    }
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    // config.headers['Access-Control-Allow-Origin'] = '*';
   }
   return config;
 }, err => Promise.reject(err));
@@ -109,7 +111,7 @@ axios.interceptors.response.use(res => {
     });
   }
   return res;
-// }, err => Promise.reject(err));
+  // }, err => Promise.reject(err));
 }, error => {
   if (!error.response) {
     Vue.prototype.$message({
