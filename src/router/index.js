@@ -111,7 +111,7 @@ router.beforeEach((to, from, next) => {
   // 如果是登录页面的话，直接next()  只做/login处理，其他路由跳转 均由请求返回的code码（例如418）去处理
   if (to.path == '/login') {
     // 获取浏览器缓存的用户信息 如果已经登录的话
-    if (sessionStorage.getItem('token')) { 
+    if (localStorage.getItem('token')) { 
       next("/appMain");
       Vue.prototype.$message({
         message: '您已经登录，欢迎使用！',

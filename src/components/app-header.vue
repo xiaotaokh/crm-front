@@ -66,7 +66,7 @@ export default {
             message: "退出成功",
             type: "success"
           });
-          sessionStorage.removeItem("token"); // 清除token
+          localStorage.removeItem("token"); // 清除token
           this.$router.push({ path: "/login" }); // 跳转页面
         })
         .catch(error => {});

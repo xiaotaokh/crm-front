@@ -619,14 +619,6 @@ export default {
     nodeClick() {
       // this.authForm.checkStrictly = false; // 改变树形组件联动状态
     },
-    // 分页
-    handleSizeChange(val) {
-      this.PageSize = val; // 改变每页显示的条数
-      this.currentPage = 1; // 注意：在改变每页显示的条数时，要将页码显示到第一页
-    },
-    handleCurrentChange(val) {
-      this.currentPage = val; // 改变默认的页数
-    },
     // 获取表格数据
     getTableData() {
       this.globalGetTableDataUrl = "roles/getAll";

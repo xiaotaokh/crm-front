@@ -153,7 +153,7 @@ export default {
             });
 
             // 把拿到的token存放在localStorage里面
-            sessionStorage.setItem("token", res.data.data);
+            localStorage.setItem("token", res.data.data);
 
             // 设置延迟器加载菜单
             this.$router.push({ path: "/appMain" }); // 跳转页面

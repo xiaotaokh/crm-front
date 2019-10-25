@@ -27,6 +27,99 @@
           </el-form-item>
         </el-form>
       </app-search>
+      <!-- 表格table -->
+      <el-row class="app-content-table">
+        <el-col :span="24">
+          <el-table
+            ref="tableData"
+            :data="globalTableData.slice((currentPage-1)*PageSize,currentPage*PageSize)"
+            style="width: 100%; table-layout:fixed"
+            :max-height="tableHeight"
+            stripe
+            size="medium"
+            border
+            row-key="id"
+            v-loading="globalTableLoading"
+          >
+            <el-table-column label="序号" fixed width="80" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="公司名称" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.name }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="父公司" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.pid }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="法人" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.legalPerson }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="统一社会代码" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.unifiedSocialCode }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="状态" width="180">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.status"
+                  @change="menuStatus(scope.$index, scope.row)"
+                  active-value="ACTIVE"
+                  inactive-value="DEL"
+                  active-text="启用"
+                  inactive-text="禁用"
+                ></el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="营业执照" width="180">
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.status"
+                  @change="menuStatus(scope.$index, scope.row)"
+                  active-value="ACTIVE"
+                  inactive-value="DEL"
+                  active-text="启用"
+                  inactive-text="禁用"
+                ></el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="法人电话" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.telephone }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="成立日期" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.establishmentTime * 1000 | dateFilter }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="通讯地址" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.postalAddress }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="备注" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.note }}</template>
+            </el-table-column>
+            <el-table-column fixed="right" width="140" align="center" label="操作">
+              <template slot-scope="scope">
+                <el-tooltip effect="dark" content="删除" placement="top">
+                  <el-button
+                    size="small"
+                    circle
+                    type="danger"
+                    icon="el-icon-delete"
+                    @click="handleDelete(scope.$index, scope.row)"
+                  ></el-button>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <!-- 分页 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="pageSizes"
+        :page-size="PageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalCount"
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -35,32 +128,48 @@
 import { myMixins } from "@/mixins/index";
 export default {
   mixins: [myMixins],
-  name: 'companyList',
-  watch: {
-      
-  },
-  data () {
+  name: "companyList",
+  watch: {},
+  data() {
     return {
       // 搜索
       searchForm: {
         name: ""
       },
-    }
+      tableHeight: window.innerHeight - 300 // 表格高度
+    };
   },
   methods: {
     // 搜索
     searchSubmit() {
-      this.globalSearchUrl = "roles/findRolesByName";
+      this.globalSearchUrl = "";
       this.globalSearchFormData = {
         role: this.searchForm.name
       };
       this.searchSubmitGlobal();
     },
+    // 获取表格数据
+    getTableData() {
+      this.globalGetTableDataUrl = "company/getAll";
+      this.getTableDataGlobal();
+    },
+    // 表格行删除事件
+    handleDelete(index, row) {
+      this.globalDeleteUrl = "";
+      this.globalDeleteFormData = {
+        id: row.id
+      };
+      this.handleDeleteGlobal();
+    },
   },
-  mounted(){
+  mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
+    this.globalListenHeight(); // 监听页面变化，修改表格高度
+
+    // 获取表格数据
+    this.getTableData();
   }
-}
+};
 </script>
 
 <style scoped>

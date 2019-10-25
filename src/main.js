@@ -66,7 +66,7 @@ Vue.prototype.$axios = axios; // axios  $为全局请求定义方式
 axios.defaults.baseURL = 'http://192.168.3.40:8899/' // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 // axios.defaults.baseURL = 'http://47.92.153.134:8899/'             // 打包接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 axios.defaults.timeout = 50000; // 每次请求间隔时间 3s
-// axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : "";  // 全局设置请求头 添加token  错误
+// axios.defaults.headers.common['Authorization'] = localStorage.getItem("token") ? localStorage.getItem("token") : "";  // 全局设置请求头 添加token  错误
 
 import Qs from 'qs' // 对post请求parms进行数据格式处理
 // axios.defaults.transformRequest = [obj => Qs.stringify(obj)]
@@ -74,7 +74,7 @@ import Qs from 'qs' // 对post请求parms进行数据格式处理
 // 对axios进行请求拦截处理
 axios.interceptors.request.use(config => {
   // 添加token
-  let token = sessionStorage.getItem("token");
+  let token = localStorage.getItem("token");
   if (token) { // 判断是否存在token，如果存在的话，则每个http header都加上token
     config.headers.Authorization = token;
   }
@@ -95,7 +95,7 @@ axios.interceptors.response.use(res => {
   // 拦截所有请求，根据状态码，做出相应处理
   if (res.data && res.data.code == 418) {
     // 状态码 418 表示未登录/token失效，退出系统，跳转到登录页
-    sessionStorage.removeItem("token"); // 清除token
+    localStorage.removeItem("token"); // 清除token
     // Vue.prototype.$message({
     //   message: '您长时间未操作，请重新登录！',
     //   type: 'warning'

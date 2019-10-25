@@ -79,6 +79,7 @@ export const myMixins = {
           this.globalTableData = res.data.data; // 获取表格数据
           this.globalTableLoading = false;
           this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+          console.log(res.data)
         })
         .catch(err => {});
     },
@@ -131,6 +132,15 @@ export const myMixins = {
       });
       this.addReset();
     },
+    
+    // 分页
+    handleSizeChange(val) {
+      this.PageSize = val; // 改变每页显示的条数
+      this.currentPage = 1; // 注意：在改变每页显示的条数时，要将页码显示到第一页
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val; // 改变默认的页数
+    },
 
     /* 下载方法 */
     downFile(blob, fileName) {
@@ -151,7 +161,7 @@ export const myMixins = {
     },
     downloadFile(url, data) {
       let requestData = Object.assign({}, data, {
-        accessToken: sessionStorage.getItem("accessToken")
+        accessToken: localStorage.getItem("accessToken")
       });
 
       // 响应类型：arraybuffer, blob

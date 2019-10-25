@@ -59,7 +59,7 @@
       {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) { //响应成功
           var data = JSON.parse(xmlhttp.responseText); //解析数据
-          sessionStorage.setItem("token", data.data);
+          localStorage.setItem("token", data.data);
           console.log(data)
         }
       }
@@ -88,7 +88,7 @@
       }(postData));
 
       xmlhttp.open("POST", "http://192.168.3.40:8099/index", true); //连接到服务器
-      xmlhttp.setRequestHeader("Authorization", sessionStorage.getItem("token")); //设置头部信息
+      xmlhttp.setRequestHeader("Authorization", localStorage.getItem("token")); //设置头部信息
       xmlhttp.send(postData); //发送数据
       xmlhttp.onreadystatechange = function () //响应服务器时所做的准备
       {
@@ -119,14 +119,14 @@
       }(postData));
 
       xmlhttp.open("POST", "http://192.168.3.40:8099/logout", true); //连接到服务器
-      xmlhttp.setRequestHeader("Authorization", sessionStorage.getItem("token")); //设置头部信息
+      xmlhttp.setRequestHeader("Authorization", localStorage.getItem("token")); //设置头部信息
       xmlhttp.send(postData); //发送数据
       xmlhttp.onreadystatechange = function () //响应服务器时所做的准备
       {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) //响应成功
         {
           console.log(xmlhttp.responseText);
-          sessionStorage.clear();
+          localStorage.clear();
         }
       }
     }
