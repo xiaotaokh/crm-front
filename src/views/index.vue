@@ -1,7 +1,5 @@
 <template>
-  <div class="index">
-    主页
-  </div>
+  <div class="index">主页</div>
 </template>
 
 <script>
@@ -19,16 +17,7 @@ export default {
     return {};
   },
   methods: {},
-  mounted() {
-    // let formData = {
-    //   userName: this.username,
-    //   password: this.password
-    // };
-    // var url = "http://localhost:3001/api/action/menuManage";
-    // this.$axios.post(url,formData).then(res => {
-    //   console.log(res.data);
-    // })
-  }
+  mounted() {}
 };
 </script>
 

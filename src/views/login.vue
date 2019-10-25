@@ -95,7 +95,6 @@ export default {
     },
     // 验证码刷新
     onRefresh() {
-      console.log("onRefresh");
       this.$message({
         message: "验证码刷新成功！",
         type: "success"
@@ -181,10 +180,10 @@ export default {
           this.verifyText = "点击验证"; // 设置验证text
           this.verify = false; // 验证状态为false
           // 弹出失败原因
-          this.$message({
-            message: "后台连接不成功，登录失败!",
-            type: "error"
-          });
+          // this.$message({
+          //   message: "后台连接不成功，登录失败!",
+          //   type: "error"
+          // });
         });
     }
   },

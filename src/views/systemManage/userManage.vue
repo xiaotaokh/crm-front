@@ -573,7 +573,6 @@ export default {
     authFormSubmit() {
       let url = "roles/addRolesAndResource";
       var resourcesIds = this.$refs.authFormTree.getCheckedKeys();
-      console.log(resourcesIds);
       let formData = {
         roleId: this.tableRowId,
         resourcesIds: resourcesIds

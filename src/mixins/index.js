@@ -9,6 +9,8 @@ export const myMixins = {
       globalGetTableDataFormData: "", // 全局获取表格数据form表单
       globalTableLoading: false, // 全局表格loading
 
+      btnLoading: false, // 提交按钮loading
+
       // 分页
       currentPage: 1, // 默认显示第几页
       pageSizes: [10, 20, 50, 100], // 个数选择器（可修改）
@@ -21,6 +23,11 @@ export const myMixins = {
 
       // 全局添加
       globalaAddDialogFormVisible: false,
+
+      // 全局下载文件名
+      globalFileName:"",
+
+
     }
   },
   created() {
@@ -44,18 +51,18 @@ export const myMixins = {
             message: "查询条件为空显示全部数据！",
             type: "warning",
             showClose: true,
-            duration: 2000
+            duration: 1000
           });
         }
       }
-      this.tableLoading = true;
+      this.globalTableLoading = true;
       let url = this.globalSearchUrl;
       let formData = this.globalSearchFormData
       this.$axios
         .post(url, formData)
         .then(res => {
-          this.tableLoading = false;
-          this.tableData = res.data.data;
+          this.globalTableLoading = false;
+          this.globalTableData = res.data.data;
           this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
         })
         .catch(err => {
@@ -123,6 +130,58 @@ export const myMixins = {
         message: "已取消添加!"
       });
       this.addReset();
+    },
+
+    /* 下载方法 */
+    downFile(blob, fileName) {
+      // 非IE下载
+      if ("download" in document.createElement("a")) {
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob); // 创建下载的链接
+        link.download = fileName; // 下载后文件名
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click(); // 点击下载
+        window.URL.revokeObjectURL(link.href); // 释放掉blob对象
+        document.body.removeChild(link); // 下载完成移除元素
+      } else {
+        // IE10+下载
+        window.navigator.msSaveBlob(blob, fileName);
+      }
+    },
+    downloadFile(url, data) {
+      let requestData = Object.assign({}, data, {
+        accessToken: sessionStorage.getItem("accessToken")
+      });
+
+      // 响应类型：arraybuffer, blob
+      this.$axios
+        .post(url, requestData, {
+          responseType: "blob"
+        })
+        .then(resp => {
+          let headers = resp.headers;
+          let contentType = headers["content-type"];
+          if (!resp.data) {
+            return false;
+          } else {
+            const blob = new Blob([resp.data], {
+              type: contentType
+            });
+
+            const contentDisposition = resp.headers["content-disposition"];
+            let fileName = this.globalFileName; // this.globalFileName 从后台获取的文件名字
+            if (contentDisposition) {
+              fileName = window.decodeURI(
+                resp.headers["content-disposition"].split("=")[1]
+              );
+            }
+            this.downFile(blob, fileName);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   }
 }

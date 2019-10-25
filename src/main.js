@@ -65,7 +65,7 @@ Vue.prototype.$axios = axios; // axios  $为全局请求定义方式
 // axios.defaults.headers.post['Content-Type'] = 'application/json';   // 跨域解决  可以在axios.interceptors.request.use下设置  application/x-www-form-urlencoded;charset=UTF-8
 axios.defaults.baseURL = 'http://192.168.3.40:8899/' // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 // axios.defaults.baseURL = 'http://47.92.153.134:8899/'             // 打包接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
-axios.defaults.timeout = 3000; // 每次请求间隔时间 3s
+axios.defaults.timeout = 50000; // 每次请求间隔时间 3s
 // axios.defaults.headers.common['Authorization'] = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : "";  // 全局设置请求头 添加token  错误
 
 import Qs from 'qs' // 对post请求parms进行数据格式处理
@@ -98,7 +98,7 @@ axios.interceptors.response.use(res => {
     sessionStorage.removeItem("token"); // 清除token
     // Vue.prototype.$message({
     //   message: '您长时间未操作，请重新登录！',
-    //   type: 'error'
+    //   type: 'warning'
     // });
     router.replace({
       path: '/login',
@@ -115,7 +115,7 @@ axios.interceptors.response.use(res => {
 }, error => {
   if (!error.response) {
     Vue.prototype.$message({
-      message: "出错了！",
+      message: "后台接口访问失败！",
       type: 'warning'
     });
   }

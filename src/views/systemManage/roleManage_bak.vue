@@ -640,7 +640,6 @@ export default {
     authFormSubmit() {
       let url = "roles/addRolesAndResource";
       var resourcesIds = this.$refs.authFormTree.getCheckedKeys();
-      console.log(resourcesIds);
       let formData = {
         roleId: this.tableRowId,
         resourcesIds: resourcesIds
@@ -688,7 +687,6 @@ export default {
     //   setTimeout(() => {
     //     this.tableData = this.$store.state.postTableData; // 获取表格数据
     //     this.totalCount = this.$store.state.postTableData.length; // 将数据的长度赋值给totalCount
-    //     // console.log(this.tableData)
     //   }, 1000);
     // },
     // 获取表格数据

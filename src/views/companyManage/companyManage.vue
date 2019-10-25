@@ -1,7 +1,7 @@
 <template>
   <!-- 公司管理 -->
   <div class="companyManage">
-    <router-view></router-view>
+    <router-view v-if="isRouterAlive"></router-view>
   </div>
 </template>
 
@@ -9,10 +9,24 @@
 export default {
   name: "companyManage",
   watch: {},
-  data() {
-    return {};
+  provide() {
+    return {
+      reload: this.reload
+    };
   },
-  methods: {},
+  data() {
+    return {
+      isRouterAlive: true
+    };
+  },
+  methods: {
+    reload() {
+      this.isRouterAlive = false;
+      this.$nextTick(() => {
+        this.isRouterAlive = true;
+      });
+    }
+  },
   mounted() {}
 };
 </script>
