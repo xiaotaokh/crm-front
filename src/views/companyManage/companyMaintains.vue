@@ -22,12 +22,8 @@
             <el-input v-model="companyMaintainsForm.name" placeholder="请输入公司名称" clearable></el-input>
           </el-form-item>
           <el-form-item label="父公司：" prop="fatherCompany">
-            <el-select
-              @focus="fatherCompanyChange"
-              clearable
-              v-model="companyMaintainsForm.fatherCompany"
-              placeholder="请选择父公司"
-            >
+            <el-select clearable v-model="companyMaintainsForm.fatherCompany" placeholder="请选择父公司">
+              <el-option label="无" value="0"></el-option>
               <el-option
                 v-for="item in companyMaintainsForm.fatherCompanyList"
                 :key="item.id"
@@ -113,6 +109,8 @@
               :autosize="{ minRows: 4, maxRows: 8}"
               placeholder="请输入备注"
               v-model="note"
+              maxlength="250"
+              show-word-limit
             ></el-input>
           </el-form-item>
         </el-form>
@@ -134,7 +132,7 @@
 import areaJs from "../../plugin/select_area.js";
 import { myMixins } from "@/mixins/index";
 export default {
-  inject:["reload"],
+  inject: ["reload"],
   mixins: [myMixins],
   name: "companyMaintains",
   watch: {},
@@ -148,13 +146,25 @@ export default {
       }
       callback();
     };
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("请输入法人电话"));
+      } else {
+        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+        if (reg.test(value)) {
+          callback();
+        } else {
+          return callback(new Error("请输入正确的手机号"));
+        }
+      }
+    };
     return {
       // 表单
       companyMaintainsForm: {
         name: "", // 公司名称
         // 父公司
         fatherCompany: "", // 父公司下拉菜单默认值
-        fatherCompanyList:[], // 父公司下拉菜单
+        fatherCompanyList: [], // 父公司下拉菜单
         // 省市县
         area: "", // 省市县
         options2: areajson,
@@ -222,13 +232,7 @@ export default {
             trigger: "blur"
           }
         ],
-        telephone: [
-          {
-            required: true,
-            message: "请输入法人电话",
-            trigger: "blur"
-          }
-        ],
+        telephone: [{ validator: checkPhone, trigger: "blur" }],
         establishmentTime: [
           {
             required: true,
@@ -280,26 +284,37 @@ export default {
             this.note = res.data.data.note;
             this.companyMaintainsForm.companyMaintainsShow = false;
 
-            this.globalFileName = res.data.data.fileName;  // 用于下载问件时候的文件名
+            this.globalFileName = res.data.data.fileName; // 用于下载问件时候的文件名
+
+            this.handleFatherCompanyChange();  // 父公司
           }
         })
         .catch(err => {
           return err;
         });
     },
-    // 父级公司
-    fatherCompanyChange() {
+    // 父公司下拉框
+    handleFatherCompanyChange() {
       let url = "company/getCompanyByStatus";
       let formData = {
-        status:"ACTIVE",
+        status: "ACTIVE"
       };
       this.$axios
         .post(url, formData)
         .then(res => {
           this.companyMaintainsForm.fatherCompanyList = res.data.data;
+          for (let item of res.data.data) {
+            if (item.pid == 0) {
+              this.companyMaintainsForm.fatherCompany = "无";
+            } else {
+              if (this.companyMaintainsForm.fatherCompany == item.id) {
+                this.companyMaintainsForm.fatherCompany = item.name;
+              }
+            }
+          }
         })
         .catch(err => {
-          return err
+          return err;
         });
     },
     // 选择文件之后
@@ -339,7 +354,17 @@ export default {
                 "companyMaintainsForm"
               );
               let formData = new FormData(companyMaintainsForm);
-              formData.append("pid", this.companyMaintainsForm.fatherCompany);
+              let pid;
+              // 父公司pid
+              for(var i of this.companyMaintainsForm.fatherCompanyList) {
+                if(this.companyMaintainsForm.fatherCompany == "无" || this.companyMaintainsForm.fatherCompany == 0) {
+                  pid = 0;
+                }else if(this.companyMaintainsForm.fatherCompany == i.id || this.companyMaintainsForm.fatherCompany == i.name) {
+                  pid = i.id
+                }
+              }
+
+              formData.append("pid", pid);
               formData.append("name", this.companyMaintainsForm.name);
               formData.append(
                 "unifiedSocialCode",
@@ -358,7 +383,10 @@ export default {
                 "legalPerson",
                 this.companyMaintainsForm.legalPerson
               );
-              formData.append("telephone", this.companyMaintainsForm.telephone);
+              formData.append(
+                "telephone",
+                Number(this.companyMaintainsForm.telephone)
+              );
               formData.append(
                 "file",
                 this.companyMaintainsForm.selFileList[0].file
@@ -470,7 +498,7 @@ export default {
         id: this.companyMaintainsForm.companyNewsList.id
       };
       this.downloadFile(url, formData);
-    },
+    }
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
@@ -491,6 +519,10 @@ export default {
   padding: 10px;
   width: 700px;
   overflow: auto;
+}
+/* 父公司select */
+.companyMaintains .el-select{
+  width: 280px;
 }
 /* 上传 */
 .companyMaintains .el-upload__tip span {

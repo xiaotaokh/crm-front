@@ -1,7 +1,7 @@
 <template>
   <!-- 销售目标统计 -->
   <div class="salesTargetStatistic">
-    销售目标统计
+    <app-breadcrumb></app-breadcrumb>
   </div>
 </template>
 
@@ -20,6 +20,7 @@ export default {
     
   },
   mounted(){
+    this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
   }
 }
 </script>

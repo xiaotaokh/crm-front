@@ -79,7 +79,6 @@ export const myMixins = {
           this.globalTableData = res.data.data; // 获取表格数据
           this.globalTableLoading = false;
           this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
-          console.log(res.data)
         })
         .catch(err => {});
     },
