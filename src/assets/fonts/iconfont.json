@@ -118,6 +118,13 @@
       "unicode_decimal": 58902
     },
     {
+      "icon_id": "8666837",
+      "name": "用户",
+      "font_class": "yonghu",
+      "unicode": "e674",
+      "unicode_decimal": 58996
+    },
+    {
       "icon_id": "9351375",
       "name": "公司管理",
       "font_class": "gongsiguanli",

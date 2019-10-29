@@ -14,11 +14,11 @@
           :model="searchForm"
           label-width="80px"
         >
-          <el-form-item label="角色名称：">
+          <el-form-item label="姓名：">
             <el-input
               v-model="searchForm.name"
               @keyup.enter.native="searchSubmit"
-              placeholder="请输入角色名称"
+              placeholder="请输入用户名称"
               clearable
             ></el-input>
           </el-form-item>
@@ -27,13 +27,44 @@
           </el-form-item>
         </el-form>
       </app-search>
-      <!-- 按钮组 -->
-      <el-row type="flex" justify="start" class="app-btn-group">
+      <!-- 下拉菜单和按钮组 -->
+      <el-row type="flex" justify="start" class="select-btn-group">
         <el-col :span="24">
-          <el-button size="mini" type="primary" @click="addGlobal">添加</el-button>
-          <el-button size="mini" type="primary" @click="batchStart">批量启用</el-button>
-          <el-button size="mini" type="warning" @click="batchDisable">批量禁用</el-button>
-          <el-button size="mini" type="danger" @click="batchDel">批量删除</el-button>
+          <el-form
+            inline
+            ref="selectCompanyAllForm"
+            :model="selectCompanyAllForm"
+            label-width="90px"
+          >
+            <el-form-item label="所属公司：" v-if="selectCompanyAllForm.isShowSelectCompanyList">
+              <el-select
+                v-model="selectCompanyAllForm.selectCompanyDefault"
+                size="small"
+                @change="selectCompanyAll"
+                placeholder="请选择公司"
+              >
+                <el-option label="未设置公司的员工" value="0"></el-option>
+                <el-option
+                  v-for="item in selectCompanyAllForm.selectCompanyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="form-item-add">
+              <el-button size="mini" type="primary" @click="addGlobal">添加</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button size="mini" type="primary" @click="batchStart">批量启用</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button size="mini" type="warning" @click="batchDisable">批量禁用</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button size="mini" type="danger" @click="batchDel">批量删除</el-button>
+            </el-form-item>
+          </el-form>
         </el-col>
       </el-row>
       <!-- 表格table -->
@@ -64,24 +95,23 @@
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="角色名称" width="160" show-overflow-tooltip>
-              <template slot-scope="scope">{{ scope.row.role }}</template>
+            <el-table-column align="center" label="用户名" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.userName }}</template>
             </el-table-column>
-            <el-table-column label="授权状态 / 授权" align="center" width="200">
-              <template slot-scope="scope">
-                <el-tag
-                  size="mini"
-                  :type="scope.row.typeStatus == '1' ? 'success' : 'warning' "
-                  effect="dark"
-                >{{ scope.row.typeStatus == '1' ? "已授权" : '未授权' }}</el-tag>
-                <el-tooltip effect="dark" content="修改授权状态" placement="top">
-                  <el-button
-                    type="text"
-                    class="auth-btn"
-                    @click="handleAuth(scope.$index, scope.row)"
-                  >授权</el-button>
-                </el-tooltip>
-              </template>
+            <el-table-column align="center" label="姓名" width="160" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.name }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="性别" width="100">
+              <template slot-scope="scope">{{ scope.row.gender }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="年龄" width="120">
+              <template slot-scope="scope">{{ scope.row.age }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="手机号码" width="140">
+              <template slot-scope="scope">{{ scope.row.phoneNumber }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="出生日期" width="180">
+              <template slot-scope="scope">{{ scope.row.birthday | dateFilter }}</template>
             </el-table-column>
             <el-table-column align="center" label="状态" width="180">
               <template slot-scope="scope">
@@ -94,6 +124,9 @@
                   inactive-text="禁用"
                 ></el-switch>
               </template>
+            </el-table-column>
+            <el-table-column align="center" label="入职日期" width="180">
+              <template slot-scope="scope">{{ scope.row.entryDate | dateFilter }}</template>
             </el-table-column>
             <el-table-column align="center" label="创建时间" width="180">
               <template slot-scope="scope">{{ scope.row.createAt | dateFilter }}</template>
@@ -141,21 +174,79 @@
       ></el-pagination>
     </div>
     <!-- 添加dialog -->
-    <el-dialog
-      append-to-body
-      center
-      title="添加用户"
-      :visible.sync="globalaAddDialogFormVisible">
+    <el-dialog append-to-body center title="添加用户" :visible.sync="globalaAddDialogFormVisible">
       <el-form
         :model="addDialogForm"
         ref="addDialogForm"
         :label-width="addDialogForm.addDialogFormLabelWidth"
         :rules="addDialogForm.addDialogFormRules"
       >
-        <el-form-item label="角色名称：" prop="role">
-          <el-input v-model="addDialogForm.role" placeholder="请输入角色名称" clearable autofocus="true"></el-input>
+        <el-form-item label="用户名：" prop="userName">
+          <el-input
+            @blur="userNmaeBlur"
+            v-model="addDialogForm.userName"
+            placeholder="请输入用户名"
+            clearable
+          ></el-input>
         </el-form-item>
-        <el-form-item label="角色状态：" prop="status">
+        <el-form-item label="密码：" prop="password">
+          <el-input v-model="addDialogForm.password" placeholder="请输入密码" show-password clearable></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" prop="name">
+          <el-input v-model="addDialogForm.name" placeholder="请输入姓名" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="性别：" prop="gender">
+          <el-radio-group v-model="addDialogForm.gender">
+            <el-radio label="男">男</el-radio>
+            <el-radio label="女">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="所属公司：" v-if="addDialogForm.addSelectCompanyList.length == 0">
+          <el-input
+            v-model="addDialogForm.addDialogCompany.name"
+            placeholder="请输入所属公司"
+            disabled
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="所属公司："
+          prop="companyId"
+          v-if="addDialogForm.addSelectCompanyList.length != 0"
+        >
+          <el-select v-model="addDialogForm.companyId" size="small" placeholder="请选择公司">
+            <el-option label="暂无所属公司" value="0"></el-option>
+            <el-option
+              v-for="item in addDialogForm.addSelectCompanyList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入职日期：" prop="entryDate">
+          <el-date-picker
+            v-model="addDialogForm.entryDate"
+            type="date"
+            placeholder="请选择入职日期"
+            value-format="timestamp"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="年龄：">
+          <el-input v-model="addDialogForm.age" placeholder="请输入年龄" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码：" prop="phoneNumber">
+          <el-input v-model="addDialogForm.phoneNumber" placeholder="请输入手机号码" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="出生日期：">
+          <el-date-picker
+            v-model="addDialogForm.birthday"
+            type="date"
+            placeholder="请选择出生日期"
+            value-format="timestamp"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="状态：">
           <el-switch
             v-model="addDialogForm.status"
             active-text="启用"
@@ -165,7 +256,14 @@
           ></el-switch>
         </el-form-item>
         <el-form-item label="备注" prop="note">
-          <el-input v-model="addDialogForm.note" placeholder="请输入备注" clearable></el-input>
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 4, maxRows: 8}"
+            placeholder="请输入备注"
+            v-model="addDialogForm.note"
+            maxlength="250"
+            show-word-limit
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -174,22 +272,71 @@
       </div>
     </el-dialog>
     <!-- 编辑dialog -->
-    <el-dialog
-      append-to-body
-      center
-      title="编辑角色"
-      :visible.sync="editDialogForm.editDialogFormVisible"
-    >
+    <el-dialog append-to-body center title="编辑用户信息" :visible.sync="globalaEditDialogFormVisible">
       <el-form
         :model="editDialogForm"
         :label-width="editDialogForm.editDialogFormLabelWidth"
         :rules="editDialogForm.editDialogFormRules"
         ref="editDialogForm"
       >
-        <el-form-item label="角色名称：" prop="role">
-          <el-input v-model="editDialogForm.role" placeholder="请输入角色名称" clearable autofocus="true"></el-input>
+        <el-form-item label="用户名：">
+          <el-input v-model="editDialogForm.userName" disabled></el-input>
         </el-form-item>
-        <el-form-item label="角色状态：" prop="status">
+        <el-form-item label="姓名：" prop="name">
+          <el-input v-model="editDialogForm.name" placeholder="请输入姓名" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="性别：" prop="gender">
+          <el-radio-group v-model="editDialogForm.gender">
+            <el-radio label="男">男</el-radio>
+            <el-radio label="女">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="所属公司：" v-if="editDialogForm.addSelectCompanyList.length == 0">
+          <el-input
+            v-model="editDialogForm.addDialogCompany.name"
+            placeholder="请输入所属公司"
+            disabled
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="所属公司："
+          prop="companyId"
+          v-if="editDialogForm.addSelectCompanyList.length != 0"
+        >
+          <el-select v-model="editDialogForm.companyId" size="small" placeholder="请选择公司">
+            <el-option label="暂无所属公司" value="0"></el-option>
+            <el-option
+              v-for="item in editDialogForm.addSelectCompanyList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入职日期：" prop="entryDate">
+          <el-date-picker
+            v-model="editDialogForm.entryDate"
+            type="date"
+            placeholder="请选择入职日期"
+            value-format="timestamp"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="年龄：">
+          <el-input v-model="editDialogForm.age" placeholder="请输入年龄" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码：" prop="phoneNumber">
+          <el-input v-model="editDialogForm.phoneNumber" placeholder="请输入手机号码" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="出生日期：">
+          <el-date-picker
+            v-model="editDialogForm.birthday"
+            type="date"
+            placeholder="请选择出生日期"
+            value-format="timestamp"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="状态：">
           <el-switch
             v-model="editDialogForm.status"
             active-text="启用"
@@ -199,35 +346,19 @@
           ></el-switch>
         </el-form-item>
         <el-form-item label="备注" prop="note">
-          <el-input v-model="editDialogForm.note" placeholder="请输入备注" clearable></el-input>
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 4, maxRows: 8}"
+            placeholder="请输入备注"
+            v-model="editDialogForm.note"
+            maxlength="250"
+            show-word-limit
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click="editDialogFormCancle">取 消</el-button>
+        <el-button size="small" type="info" @click="editDialogFormCancleGlobal">取 消</el-button>
         <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 授权dialog -->
-    <el-dialog append-to-body center :title="rowRole" :visible.sync="authForm.authFormVisible">
-      <el-form :model="authForm" ref="authForm" :label-width="authForm.authFormLabelWidth">
-        <el-form-item label="请点击授权项授权：">
-          <el-tree
-            :data="authForm.authFormData"
-            :check-strictly="authForm.checkStrictly"
-            show-checkbox
-            node-key="id"
-            @node-click="nodeClick"
-            @check="nodeClick"
-            :default-expanded-keys="authForm.authFormDefaultKey"
-            :default-checked-keys="authForm.authFormDefaultKey"
-            :props="authForm.defaultProps"
-            ref="authFormTree"
-          ></el-tree>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click="authFormCancle">取 消</el-button>
-        <el-button size="small" type="primary" @click="authFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -240,7 +371,21 @@ export default {
   name: "userManage",
   watch: {},
   data() {
+    // 检测电话
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("请输入手机号码"));
+      } else {
+        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+        if (reg.test(value)) {
+          callback();
+        } else {
+          return callback(new Error("请输入正确的手机号"));
+        }
+      }
+    };
     return {
+      tableDataObj: {}, // 公司数据对象
       // 搜索
       searchForm: {
         name: ""
@@ -248,57 +393,99 @@ export default {
       tableRowId: "", // 用于授权dialog请求使用  表格行Id
 
       tableHeight: window.innerHeight - 300, // 表格高度
+      // select 公司
+      selectCompanyAllForm: {
+        isShowSelectCompanyList: false, // 是否显示下拉菜单
+        selectCompanyDefault: "", // 默认值
+        selectCompanyDefaultInvariant: "", // 公司列表默认值不变（一直为父公司）
+        selectCompanyList: []
+      },
       // 添加dialog form
       addDialogForm: {
         addDialogFormLabelWidth: "140px",
-        role: "",
-        status: "ACTIVE",
-        note: "",
+        userName: "", // 用户名
+        password: "", // 密码
+        name: "", //  姓名
+        gender: "", //  性别
+        companyId: "", // 所属公司
+        age: "", //  年龄
+        phoneNumber: "", //  手机号码
+        birthday: "", //  出生日期
+        status: "ACTIVE", //  状态
+        entryDate: "", //  入职日期
+        note: "", //  备注
         addDialogFormRules: {
-          role: [
-            {
-              required: true,
-              message: "请输入角色名称",
-              trigger: "blur"
-            }
-          ]
-        }
+          userName: {
+            required: true,
+            message: "请输入用户名",
+            trigger: "blur"
+          },
+          password: { required: true, message: "请输入密码", trigger: "blur" },
+          name: { required: true, message: "请输入姓名", trigger: "blur" },
+          gender: { required: true, message: "请选择性别", trigger: "change" },
+          companyId: {
+            required: true,
+            message: "请选择所属公司",
+            trigger: "change"
+          },
+          entryDate: {
+            required: true,
+            message: "请选择入职日期",
+            trigger: "change"
+          },
+          phoneNumber: {
+            required: true,
+            validator: checkPhone,
+            trigger: "blur"
+          }
+        },
+        addSelectCompanyList: [], // 添加dialog父公司select
+        addDialogCompany: {} // 当分公司时候，所属公司定死
       },
       // 编辑dialog form
       editDialogForm: {
-        editDialogFormVisible: false,
         editDialogFormLabelWidth: "140px",
+        userName: "", // 用户名
+        password: "", // 密码
+        name: "", //  姓名
+        gender: "", //  性别
+        companyId: "", // 所属公司
+        age: "", //  年龄
+        phoneNumber: "", //  手机号码
+        birthday: "", //  出生日期
+        status: "ACTIVE", //  状态
+        entryDate: "", //  入职日期
+        note: "", //  备注
+        updateAt:"",
+        createAt:"",
+        id:"",
         // 编辑菜单弹窗form表单校验规则
         editDialogFormRules: {
-          role: [
-            {
-              required: true,
-              message: "请输入角色名称",
-              trigger: "blur"
-            }
-          ]
+          password: { required: true, message: "请输入密码", trigger: "blur" },
+          name: { required: true, message: "请输入姓名", trigger: "blur" },
+          gender: { required: true, message: "请选择性别", trigger: "change" },
+          companyId: {
+            required: true,
+            message: "请选择所属公司",
+            trigger: "change"
+          },
+          entryDate: {
+            required: true,
+            message: "请选择入职日期",
+            trigger: "change"
+          },
+          phoneNumber: {
+            required: true,
+            validator: checkPhone,
+            trigger: "blur"
+          }
         },
-        role: "",
-        status: "",
-        note: "",
-        editDialogFormData: {} // 存放 根据id获取到的行信息
+        addSelectCompanyList: [], // 添加dialog父公司select
+        addDialogCompany: {} // 当分公司时候，所属公司定死
       },
       multipleSelection: [], // 存放表格选中项信息
       ids: "", // 存放表格选中项id
       rowRole: "", // 存放当前行id
-      // 授权form
-      authForm: {
-        authFormData: [],
-        authFormLabelWidth: "140px",
-        authFormVisible: false,
-        // 授权的默认字段
-        defaultProps: {
-          children: "children",
-          label: "navName"
-        },
-        authFormDefaultKey: [], // 默认展开字段
-        checkStrictly: false // 默认父子是否联动    设置不联动状态下为true
-      },
       // 默认显示第一条
       currentPage: 1
     };
@@ -306,48 +493,164 @@ export default {
   methods: {
     // 搜索
     searchSubmit() {
-      this.globalSearchUrl = "roles/findRolesByName";
+      this.globalSearchUrl = "user/selectUserByName";
       this.globalSearchFormData = {
-        role: this.searchForm.name
+        name: this.searchForm.name
       };
-      this.searchSubmitGlobal();
+      // 判断查询条件是否为空
+      for (var key in this.searchForm) {
+        if (!this.searchForm[key]) {
+          this.$message({
+            message: "查询条件为空显示全部数据！",
+            type: "warning",
+            showClose: true,
+            duration: 1000
+          });
+        }
+      }
+      this.globalTableLoading = true;
+      this.$axios
+        .post(this.globalSearchUrl, this.globalSearchFormData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.globalTableLoading = false;
+            if (res.data.data instanceof Array == true) {
+              // 分公司
+              this.globalTableData = res.data.data;
+              this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+              this.selectCompanyAllForm.isShowSelectCompanyList = false; // 隐藏公司列表
+            } else if (
+              res.data.data == null &&
+              res.data.data instanceof Array == false
+            ) {
+              // 分公司没有该用户
+              this.$message({
+                message: "没有该用户，请重新查询！",
+                type: "warning",
+                showClose: true,
+                duration: 1000
+              });
+              this.globalTableData = [];
+              this.totalCount = 0; // 将数据的长度赋值给totalCount
+              this.selectCompanyAllForm.isShowSelectCompanyList = false; // 隐藏公司列表
+            } else if (
+              JSON.stringify(res.data.data) != "{}" &&
+              !(res.data.data instanceof Array)
+            ) {
+              // 父公司搜索有该用户
+
+              this.tableDataObj = res.data.data;
+              if (res.data.data[1]) {
+                this.selectCompanyAllForm.selectCompanyDefault = this.selectCompanyAllForm.selectCompanyDefaultInvariant; // 下拉菜单显示父公司
+                this.globalTableData = res.data.data[1];
+                this.totalCount = res.data.data[1].length; // 将数据的长度赋值给totalCount
+                this.selectCompanyAllForm.isShowSelectCompanyList = true; // 显示公司列表
+              } else {
+                this.selectCompanyAllForm.selectCompanyDefault = this.selectCompanyAllForm.selectCompanyDefaultInvariant; // 下拉菜单显示父公司
+                this.globalTableData = [];
+                this.totalCount = 0; // 将数据的长度赋值给totalCount
+                this.selectCompanyAllForm.isShowSelectCompanyList = true; // 显示公司列表
+              }
+            } else if (
+              JSON.stringify(res.data.data) == "{}" &&
+              !(res.data.data instanceof Array)
+            ) {
+              // 父公司没有该用户
+              this.$message({
+                message: "没有该用户，请重新查询！",
+                type: "warning",
+                showClose: true,
+                duration: 1000
+              });
+              this.globalTableData = [];
+              this.totalCount = 0; // 将数据的长度赋值给totalCount
+              this.selectCompanyAllForm.isShowSelectCompanyList = false; // 隐藏公司列表
+            }
+          }
+        })
+        .catch(err => {
+          return;
+        });
+    },
+    // 选择公司
+    selectCompanyAll(val) {
+      this.globalTableLoading = true;
+      setTimeout(() => {
+        this.globalTableLoading = false;
+        if (this.tableDataObj[val]) {
+          // tableDataObj下存在val
+          this.globalTableData = this.tableDataObj[val];
+        } else {
+          this.globalTableData = [];
+        }
+      }, 500);
     },
     // 表格行编辑事件
     handleEdit(index, row) {
-      this.editDialogForm.editDialogFormVisible = true; // 打开dialog
-      this.editDialogForm.editDialogFormData = row; // 行数据赋值给弹窗form表单
-      var url = "roles/getRolesById";
+      this.editDialogGlobal();
+      var url = "user/getUserById";
       let formData = {
         id: row.id
       };
-      this.$axios.post(url, formData).then(res => {
-        this.editDialogForm.editDialogFormData = res.data.data;
-        this.editDialogForm.role = res.data.data.role;
-        this.editDialogForm.status = res.data.data.status;
-        this.editDialogForm.note = res.data.data.note;
-      });
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.editDialogForm.userName = res.data.data.userName;
+            this.editDialogForm.password = res.data.data.password;
+            this.editDialogForm.name = res.data.data.name;
+            this.editDialogForm.gender = res.data.data.gender;
+            this.editDialogForm.companyId = res.data.data.companyId;
+            this.editDialogForm.age = res.data.data.age;
+            this.editDialogForm.phoneNumber = res.data.data.phoneNumber;
+            this.editDialogForm.birthday = res.data.data.birthday;
+            this.editDialogForm.status = res.data.data.status;
+            this.editDialogForm.entryDate = res.data.data.entryDate;
+            this.editDialogForm.note = res.data.data.note;
+            this.editDialogForm.updateAt = res.data.data.updateAt;
+            this.editDialogForm.createAt = res.data.data.createAt;
+            this.editDialogForm.id = res.data.data.id;
+          }
+        })
+        .catch(err => {});
     },
     // 表格行编辑确定
     editDialogFormSubmit() {
-      var url = "roles/updateRolesById";
-      // 把form表单值放在请求体里
-      this.editDialogForm.editDialogFormData.role = this.editDialogForm.role;
-      this.editDialogForm.editDialogFormData.status = this.editDialogForm.status;
-      this.editDialogForm.editDialogFormData.note = this.editDialogForm.note;
+      var url = "user/getCurrentUser";
+      var companyId = "";
+      if (this.editDialogForm.addSelectCompanyList.length == 0) {
+        companyId = this.editDialogForm.addDialogCompany.id;
+      } else {
+        companyId = this.editDialogForm.companyId;
+      }
+      let formData = {
+        userName: this.editDialogForm.userName,
+        password: this.editDialogForm.password,
+        name: this.editDialogForm.name,
+        gender: this.editDialogForm.gender,
+        companyId: companyId,
+        age: this.editDialogForm.age,
+        phoneNumber: this.editDialogForm.phoneNumber,
+        birthday: this.editDialogForm.birthday,
+        status: this.editDialogForm.status,
+        entryDate: this.editDialogForm.entryDate,
+        updateAt: this.editDialogForm.updateAt,
+        note: this.editDialogForm.note,
+        createAt: this.editDialogForm.createAt,
+        id: this.editDialogForm.id,
+      };
       this.$refs.editDialogForm.validate(valid => {
         if (valid) {
-          this.$axios
-            .post(url, this.editDialogForm.editDialogFormData)
-            .then(res => {
-              if (res.data.code == 1) {
-                this.$message({
-                  type: "success",
-                  message: res.data.msg
-                });
-              }
-              this.editDialogForm.editDialogFormVisible = false;
-              this.getTableData(); // 重置表单数据
-            });
+          this.$axios.post(url, formData).then(res => {
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+              this.globalaEditDialogFormVisible = false;
+              this.getTableData();
+            }
+          });
         } else {
           this.$message({
             type: "warning",
@@ -355,14 +658,6 @@ export default {
           });
           return false;
         }
-      });
-    },
-    // 表格行编辑取消
-    editDialogFormCancle() {
-      this.editDialogForm.editDialogFormVisible = false;
-      this.$message({
-        type: "info",
-        message: "已取消编辑!"
       });
     },
     // 表格行删除事件
@@ -400,11 +695,25 @@ export default {
     },
     // 添加确定
     addDialogFormSubmit() {
-      var url = "roles/addRoles";
+      var url = "user/addUser";
+      var companyId = "";
+      if (this.addDialogForm.addSelectCompanyList.length == 0) {
+        companyId = this.addDialogForm.addDialogCompany.id;
+      } else {
+        companyId = this.addDialogForm.companyId;
+      }
       let formData = {
-        note: this.addDialogForm.note,
-        role: this.addDialogForm.role,
-        status: this.addDialogForm.status
+        userName: this.addDialogForm.userName,
+        password: this.addDialogForm.password,
+        name: this.addDialogForm.name,
+        gender: this.addDialogForm.gender,
+        companyId: companyId,
+        age: this.addDialogForm.age,
+        phoneNumber: this.addDialogForm.phoneNumber,
+        birthday: this.addDialogForm.birthday / 1000,
+        status: this.addDialogForm.status,
+        entryDate: this.addDialogForm.entryDate / 1000,
+        note: this.addDialogForm.note
       };
       this.$refs.addDialogForm.validate(valid => {
         if (valid) {
@@ -414,10 +723,10 @@ export default {
                 type: "success",
                 message: res.data.msg
               });
+              this.globalaAddDialogFormVisible = false;
+              this.addReset();
+              this.getTableData(); // 重置表单数据
             }
-            this.globalaAddDialogFormVisible = false;
-            this.addReset();
-            this.getTableData(); // 重置表单数据
           });
         } else {
           this.$message({
@@ -428,11 +737,40 @@ export default {
         }
       });
     },
+    // 添加用户名失去焦点
+    userNmaeBlur() {
+      let url = "user/checkUserName";
+      let formData = {
+        userName: this.addDialogForm.userName
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.code == 0) {
+            this.$message({
+              message: res.data.msg,
+              type: "warning",
+              showClose: true,
+              duration: 1000
+            });
+            this.addDialogForm.userName = "";
+          }
+        })
+        .catch(err => {});
+    },
     // 添加表单重置
     addReset() {
-      this.addDialogForm.note = "";
-      this.addDialogForm.role = "";
+      this.addDialogForm.userName = "";
+      this.addDialogForm.password = "";
+      this.addDialogForm.name = "";
+      this.addDialogForm.gender = "";
+      this.addDialogForm.companyId = "";
+      this.addDialogForm.age = "";
+      this.addDialogForm.phoneNumber = "";
+      this.addDialogForm.birthday = "";
       this.addDialogForm.status = "ACTIVE";
+      this.addDialogForm.entryDate = "";
+      this.addDialogForm.note = "";
     },
     // 获取表格选中项信息
     handleSelectionChange(val) {
@@ -551,58 +889,6 @@ export default {
         });
       }
     },
-    // 授权
-    handleAuth(index, row) {
-      // this.authForm.checkStrictly = true; // 改变树形组件联动状态
-      this.rowRole = row.role;
-      this.tableRowId = row.id; // 把表格行id传给全局，以备authFormSubmit()使用
-      this.authForm.authFormVisible = true;
-      let url = "roles/rolesAndResource";
-      let formData = {
-        roleId: row.id
-      };
-      this.$axios
-        .post(url, formData)
-        .then(res => {
-          this.authForm.authFormData = res.data.data.dataOne;
-          this.authForm.authFormDefaultKey = res.data.data.dataTow;
-        })
-        .catch(err => {});
-    },
-    // 授权确定
-    authFormSubmit() {
-      let url = "roles/addRolesAndResource";
-      var resourcesIds = this.$refs.authFormTree.getCheckedKeys();
-      let formData = {
-        roleId: this.tableRowId,
-        resourcesIds: resourcesIds
-      };
-      this.$axios
-        .post(url, formData)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.authForm.authFormVisible = false;
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-        })
-        .catch(err => {});
-    },
-    // 授权取消
-    authFormCancle() {
-      // this.authForm.checkStrictly = true; // 改变树形组件联动状态
-      this.authForm.authFormVisible = false;
-      this.$message({
-        type: "info",
-        message: "已取消授权!"
-      });
-    },
-    // 树形组件被点击时触发
-    nodeClick() {
-      // this.authForm.checkStrictly = false; // 改变树形组件联动状态
-    },
     // 分页
     handleSizeChange(val) {
       this.PageSize = val; // 改变每页显示的条数
@@ -613,8 +899,54 @@ export default {
     },
     // 获取表格数据
     getTableData() {
-      this.globalGetTableDataUrl = "roles/getAll";
-      this.getTableDataGlobal();
+      this.globalTableLoading = true;
+      let url = "user/selectAll";
+      let formData = {};
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          this.globalTableLoading = false;
+          this.tableDataObj = res.data.data;
+          if (res.data.data[1][0]) {
+            this.globalTableData = res.data.data[1];
+            this.totalCount = res.data.data[1].length; // 将数据的长度赋值给totalCount
+            this.selectCompanyAllForm.isShowSelectCompanyList = true; // 显示公司列表
+          } else {
+            this.globalTableData = res.data.data;
+            this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+            this.selectCompanyAllForm.isShowSelectCompanyList = false; // 隐藏公司列表
+          }
+        })
+        .catch(err => {
+          return err;
+        });
+    },
+
+    // 获取所有公司信息
+    getCompanyAll() {
+      let url = "user/selectCompanyByUser";
+      let formData = {
+        status: "ACTIVE"
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.data instanceof Array) {
+            this.selectCompanyAllForm.selectCompanyList = res.data.data; // 赋给公司下拉select
+            this.addDialogForm.addSelectCompanyList = res.data.data; // 赋给添加dialog父公司select
+            this.editDialogForm.addSelectCompanyList = res.data.data; // 赋给编辑dialog父公司select
+            this.selectCompanyAllForm.selectCompanyDefault =
+              res.data.data[0].name; // 公司列表默认值
+            this.selectCompanyAllForm.selectCompanyDefaultInvariant =
+              res.data.data[0].name; // 公司列表默认值不变（一直为父公司）
+          } else {
+            this.addDialogForm.addDialogCompany = res.data.data; // 添加时候公司名称
+            this.editDialogForm.addDialogCompany = res.data.data; // 添加时候公司名称
+          }
+        })
+        .catch(err => {
+          return err;
+        });
     }
   },
   mounted() {
@@ -623,6 +955,9 @@ export default {
 
     // 获取表格数据
     this.getTableData();
+
+    // 获取所有公司
+    this.getCompanyAll();
   }
 };
 </script>
@@ -633,13 +968,10 @@ export default {
   height: 100%;
   position: relative;
 }
-/* 授权按钮 */
-.userManage .tableData .el-table__row .cell {
-  position: relative;
+.userManage .select-btn-group .el-form-item {
+  margin: 10px 18px 0 0;
 }
-.userManage .tableData .el-table__row .cell .auth-btn {
-  position: absolute;
-  top: 20px;
-  right: 15px;
+.userManage .select-btn-group .form-item-add {
+  margin-left: 10px;
 }
 </style>

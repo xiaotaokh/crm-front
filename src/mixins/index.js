@@ -21,15 +21,18 @@ export const myMixins = {
       globalDeleteUrl: "",
       globalDeleteFormData: {},
 
-      // 全局添加
+      // 全局添加dialog显示与否
       globalaAddDialogFormVisible: false,
+      
+      // 全局编辑dialog显示与否
+      globalaEditDialogFormVisible: false,
 
       // 全局下载文件名
-      globalFileName:"",
+      globalFileName: "",
 
       // 全局表格行switch
-      globalMenuStatusUrl:"",
-      globalMenuStatusFormData:{},
+      globalMenuStatusUrl: "",
+      globalMenuStatusFormData: {},
 
 
     }
@@ -65,9 +68,11 @@ export const myMixins = {
       this.$axios
         .post(url, formData)
         .then(res => {
-          this.globalTableLoading = false;
-          this.globalTableData = res.data.data;
-          this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+          if (res.data.code == 1) {
+            this.globalTableLoading = false;
+            this.globalTableData = res.data.data;
+            this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+          }
         })
         .catch(err => {
           return;
@@ -134,6 +139,20 @@ export const myMixins = {
         message: "已取消添加!"
       });
       this.addReset();
+    },
+
+    // 全局编辑显示编辑dialog
+    editDialogGlobal() {
+      this.globalaEditDialogFormVisible = true
+    },
+
+    // 全局编辑取消事件
+    editDialogFormCancleGlobal() {
+      this.globalaEditDialogFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "已取消编辑!"
+      });
     },
     
     // 分页
