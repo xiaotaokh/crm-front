@@ -88,7 +88,7 @@
                   :content="scope.row.note"
                 >
                   <span slot="reference">{{scope.row.note}}</span>
-                </el-popover> -->
+                </el-popover>-->
                 {{scope.row.note}}
               </template>
             </el-table-column>
@@ -128,6 +128,59 @@
         :total="totalCount"
       ></el-pagination>
     </div>
+    <!-- 查看详情dialog -->
+    <el-dialog append-to-body center title="查看公司详情" :visible.sync="viewDetailFormVisible">
+      <el-form :model="viewDetailForm" :label-width="viewDetailFormLabelWidth" ref="viewDetailForm">
+        <el-form-item label="公司名称：">
+          <el-input v-model="viewDetailForm.name" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="法人：">
+          <el-input v-model="viewDetailForm.legalPerson" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="父公司：">
+          <el-input v-model="viewDetailForm.fatherCompany" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="统一社会代码：">
+          <el-input v-model="viewDetailForm.unifiedSocialCode" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-switch
+            v-model="viewDetailForm.status"
+            disabled
+            active-text="启用"
+            inactive-text="禁用"
+            active-value="ACTIVE"
+            inactive-value="DEL"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item label="法人电话：">
+          <el-input v-model="viewDetailForm.telephone" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="成立日期：">
+          <el-input v-model="viewDetailForm.establishmentTimeFilters" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="通讯地址：">
+          <el-input v-model="viewDetailForm.postalAddress" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="营业执照：">
+          <el-tooltip class="item" effect="dark" content="点击下载" placement="right">
+            <el-button type="text" @click="uploadDown">{{ viewDetailForm.fileName }}</el-button>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 4, maxRows: 8}"
+            disabled
+            v-model="viewDetailForm.note"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="info" @click="editDialogFormCancle">取 消</el-button>
+        <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -138,14 +191,15 @@ export default {
   mixins: [myMixins],
   name: "companyList",
   filters: {
+    // 父公司过滤器
     fatherCompany: function(value) {
       if (value == 0) {
         // 当父公司pid为0时候，显示无
         return "无";
       } else {
-        for(let item of that.fatherCompanyList) {
-          if(value == item.id) {
-            return item.name
+        for (let item of that.fatherCompanyList) {
+          if (value == item.id) {
+            return item.name;
           }
         }
       }
@@ -159,15 +213,19 @@ export default {
         name: ""
       },
       tableHeight: window.innerHeight - 300, // 表格高度
-      fatherCompanyList: [] // 父公司列表
+      fatherCompanyList: [], // 父公司列表
+      // 查看详情dialog
+      viewDetailForm: {},
+      viewDetailFormVisible: false,
+      viewDetailFormLabelWidth: "140px"
     };
   },
   methods: {
     // 搜索
     searchSubmit() {
-      this.globalSearchUrl = "";
+      this.globalSearchUrl = "company/findCompanyByName";
       this.globalSearchFormData = {
-        role: this.searchForm.name
+        name: this.searchForm.name
       };
       this.searchSubmitGlobal();
     },
@@ -178,17 +236,64 @@ export default {
     },
     // 表格行查看详情
     handleDetail(index, row) {
-      console.log(row);
+      let url = "company/getCompanyById";
+      let formData = {
+        id: row.id
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.viewDetailForm = res.data.data;
+            this.globalFileName = this.viewDetailForm.fileName; // 用于下载问件时候的文件名
+            this.viewDetailFormVisible = true;  // 弹出层
+            this.viewDetailForm["fatherCompany"] = this.$options.filters[
+              "fatherCompany"
+            ](this.viewDetailForm.pid); // 新增父公司key - value
+            this.viewDetailForm[
+              "establishmentTimeFilters"
+            ] = this.$options.filters["dateFilter"](this.viewDetailForm.establishmentTime); // 新增转换后的成立日期key - value
+          }
+        })
+        .catch(err => {});
     },
     // 表格行删除事件
     handleDelete(index, row) {
-      this.globalDeleteUrl = "";
+      this.globalDeleteUrl = "company/delCompanyById";
       this.globalDeleteFormData = {
         id: row.id
       };
       this.handleDeleteGlobal();
     },
-
+    // 表格行查看详情取消
+    editDialogFormCancle() {
+      this.viewDetailFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "已取消查看详情!"
+      });
+    },
+    // 表格行查看详情确定
+    editDialogFormSubmit() {
+      this.viewDetailFormVisible = false;
+    },
+    // 表格switch事件
+    menuStatus(index, row) {
+      this.globalMenuStatusUrl = "company/updateCompanyStatus";
+      this.globalMenuStatusFormData = {
+        id: row.id,
+        status: row.status
+      };
+      this.globalMenuStatus();
+    },
+    // 查看详情营业执照下载
+    uploadDown() {
+      let url = "company/getBusinessLicenseByCompanyId";
+      let formData = {
+        id: this.viewDetailForm.id
+      };
+      this.downloadFile(url, formData);
+    },
     // 父公司列表
     handleFatherCompanyList() {
       let url = "company/getCompanyByStatus";
@@ -214,9 +319,9 @@ export default {
         });
     }
   },
- beforeCreate: function () {
-     that = this;
- },
+  beforeCreate: function() {
+    that = this;
+  },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
     this.globalListenHeight(); // 监听页面变化，修改表格高度

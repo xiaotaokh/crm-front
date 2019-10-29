@@ -27,6 +27,10 @@ export const myMixins = {
       // 全局下载文件名
       globalFileName:"",
 
+      // 全局表格行switch
+      globalMenuStatusUrl:"",
+      globalMenuStatusFormData:{},
+
 
     }
   },
@@ -192,5 +196,26 @@ export const myMixins = {
           console.log(error);
         });
     },
+
+    // 全局修改表格行状态
+    globalMenuStatus() {
+      this.$axios
+        .post(this.globalMenuStatusUrl, this.globalMenuStatusFormData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.$message({
+              type: "success",
+              message: res.data.msg
+            });
+          }
+          this.getTableData();
+        })
+        .catch(err => {
+          this.$message({
+            type: "error",
+            message: res.data.msg
+          });
+        });
+    }
   }
 }

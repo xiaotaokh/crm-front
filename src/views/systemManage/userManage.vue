@@ -1,5 +1,5 @@
 <template>
-  <!-- 角色管理 -->
+  <!-- 用户管理 -->
   <div class="userManage">
     <app-breadcrumb></app-breadcrumb>
     <!-- 除去面包屑主体 -->

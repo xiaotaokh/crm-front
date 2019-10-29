@@ -6,11 +6,6 @@
 export default {
   name: "index",
   computed: {
-    // evenNumbers: function () {
-    //   return this.numbers.filter(function (number) {
-    //     return number % 2 === 0
-    //   })
-    // }
   },
   watch: {},
   data() {

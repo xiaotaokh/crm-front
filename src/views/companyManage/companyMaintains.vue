@@ -266,7 +266,8 @@ export default {
         .get(url)
         .then(res => {
           if (res.data.code == 1) {
-            this.companyMaintainsForm.companyNewsList = res.data.data;
+            this.companyMaintainsForm.companyNewsList = res.data.data; // 赋给公司信息表单
+
             this.companyMaintainsForm.fatherCompany = res.data.data.pid;
             this.companyMaintainsForm.name = res.data.data.name;
             this.companyMaintainsForm.unifiedSocialCode =
@@ -286,7 +287,18 @@ export default {
 
             this.globalFileName = res.data.data.fileName; // 用于下载问件时候的文件名
 
-            this.handleFatherCompanyChange();  // 父公司
+            this.handleFatherCompanyChange(); // 获取父公司下拉列表
+            // 父公司默认值
+            if (this.companyMaintainsForm.fatherCompany == 0) {
+              this.companyMaintainsForm.fatherCompany = "无"; // pid为0 显示无
+            } else {
+              // 通过父公司pid 找到父公司name
+              for (var i of this.companyMaintainsForm.fatherCompanyList) {
+                if (this.companyMaintainsForm.fatherCompany == i.id) {
+                  this.companyMaintainsForm.fatherCompany == i.name;
+                }
+              }
+            }
           }
         })
         .catch(err => {
@@ -303,13 +315,10 @@ export default {
         .post(url, formData)
         .then(res => {
           this.companyMaintainsForm.fatherCompanyList = res.data.data;
-          for (let item of res.data.data) {
-            if (item.pid == 0) {
-              this.companyMaintainsForm.fatherCompany = "无";
-            } else {
-              if (this.companyMaintainsForm.fatherCompany == item.id) {
-                this.companyMaintainsForm.fatherCompany = item.name;
-              }
+          // 截取掉父公司里相同的option
+          for(var index in this.companyMaintainsForm.fatherCompanyList) {
+            if(this.companyMaintainsForm.fatherCompanyList[index].name == this.companyMaintainsForm.companyNewsList.name) {
+              this.companyMaintainsForm.fatherCompanyList.splice(index, 1); 
             }
           }
         })
@@ -354,16 +363,23 @@ export default {
                 "companyMaintainsForm"
               );
               let formData = new FormData(companyMaintainsForm);
-              let pid;
               // 父公司pid
-              for(var i of this.companyMaintainsForm.fatherCompanyList) {
-                if(this.companyMaintainsForm.fatherCompany == "无" || this.companyMaintainsForm.fatherCompany == 0) {
-                  pid = 0;
-                }else if(this.companyMaintainsForm.fatherCompany == i.id || this.companyMaintainsForm.fatherCompany == i.name) {
-                  pid = i.id
+              let pid = 0;
+              if (this.companyMaintainsForm.fatherCompanyList.length != 0) {
+                for (var i of this.companyMaintainsForm.fatherCompanyList) {
+                  if (
+                    this.companyMaintainsForm.fatherCompany == "无" ||
+                    this.companyMaintainsForm.fatherCompany == 0
+                  ) {
+                    pid = 0;
+                  } else if (
+                    this.companyMaintainsForm.fatherCompany == i.id ||
+                    this.companyMaintainsForm.fatherCompany == i.name
+                  ) {
+                    pid = i.id;
+                  }
                 }
               }
-
               formData.append("pid", pid);
               formData.append("name", this.companyMaintainsForm.name);
               formData.append(
@@ -401,6 +417,7 @@ export default {
                   .then(res => {
                     this.btnLoading = false;
                     if (res.data.code == 1) {
+                      this.reload();
                       this.$message({
                         message: res.data.msg,
                         type: "success"
@@ -521,7 +538,7 @@ export default {
   overflow: auto;
 }
 /* 父公司select */
-.companyMaintains .el-select{
+.companyMaintains .el-select {
   width: 280px;
 }
 /* 上传 */

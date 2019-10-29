@@ -4,9 +4,9 @@
       <img src="../assets/images/login.svg" alt />
     </div>
     <div class="header">
-      <span>国威永耀</span>
+      <!-- <span>国威永耀</span>
       crm
-      <span>管理平台</span>
+      <span>管理平台</span> -->
     </div>
     <div class="login-form">
       <div class="login-form-title">用户登录</div>
@@ -16,7 +16,7 @@
             <i class="iconfont iconxingmingyonghumingnicheng"></i>
           </template>
         </el-input>
-        <el-input show-password placeholder="请输入密码" v-model="password" clearable size="medium">
+        <el-input show-password placeholder="请输入密码" v-model="password" @keyup.enter.native="login" clearable size="medium">
           <template slot="prepend">
             <i class="iconfont iconmima"></i>
           </template>

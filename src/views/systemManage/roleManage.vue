@@ -381,28 +381,12 @@ export default {
     },
     // 表格switch事件
     menuStatus(index, row) {
-      let url = "roles/updateStatusById";
-      let formData = {
+      this.globalMenuStatusUrl = "roles/updateStatusById";
+      this.globalMenuStatusFormData = {
         id: row.id,
         status: row.status
       };
-      this.$axios
-        .post(url, formData)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.$message({
-              type: "success",
-              message: res.data.msg
-            });
-          }
-          this.getTableData();
-        })
-        .catch(err => {
-          this.$message({
-            type: "error",
-            message: res.data.msg
-          });
-        });
+      this.globalMenuStatus();
     },
     // 添加取消
     addDialogFormCancle() {
