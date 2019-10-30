@@ -45,6 +45,23 @@ export const myMixins = {
 
   },
   methods: {
+    // 全局获取当前用户信息
+    getUserInformationGlobal() {
+      let url = "user/getCurrentUser";
+      let formData = {};
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if(res.data.code == 1) {
+            this.$store.dispatch("setGlobalUserInformation",res.data.data)
+            // console.log(this.$store.state.globalUserInformation)
+          }
+        })
+        .catch(err => {
+          return err;
+        });
+    },
+
     // 全局监听页面高度 赋值给tableHeight
     globalListenHeight() {
       var self = this;

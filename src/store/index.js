@@ -9,9 +9,8 @@ export default new Vuex.Store({
     breadcrumb: [], // 面包屑
     tableLoading: true, // 表格全局loading加载
     postTableData: [], // 全局post请求 数据
-    searchForm: {
-        name:"1234"
-    }, // 全局搜索对象
+
+    globalUserInformation: {}, // 全局当前用户信息
   },
   // 获取
   getters: {
@@ -23,9 +22,9 @@ export default new Vuex.Store({
     getBreadcrumb(state) {
       return state.breadcrumb
     },
-    // 获取search
-    getSearchForm(state) {
-      return state.searchForm
+    // 全局当前用户信息
+    getGlobalUserInformation(state) {
+      return state.globalUserInformation
     }
   },
   // 修改
@@ -53,8 +52,15 @@ export default new Vuex.Store({
       })
     },
     // 修改tableData数据
-    setPostTableData(state,list) {
+    setPostTableData(state, list) {
       state.postTableData = list
+    },
+
+    // 修改全局当前用户信息
+    setGlobalUserInformation(state, obj) {
+      if (obj) {
+        state.globalUserInformation = obj;
+      }
     }
   },
   // 修改  判断commit哪个mutations
@@ -64,6 +70,12 @@ export default new Vuex.Store({
       commit
     }, url, formData) {
       commit('postTableData', url, formData)
+    },
+    // 修改全局当前用户信息
+    setGlobalUserInformation({
+      commit
+    }, obj) {
+      commit('setGlobalUserInformation', obj)
     },
   }
 })

@@ -168,7 +168,7 @@
                     icon="el-icon-edit"
                   ></el-button>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="授权" placement="top">
+                <el-tooltip effect="dark" content="赋予角色" placement="top">
                   <el-button
                     type="primary"
                     size="small"
@@ -455,16 +455,16 @@
         <el-button size="small" type="primary" @click="viewDetailDialogFormSubmitGlobal">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 授权dialog -->
+    <!-- 赋予角色dialog -->
     <el-dialog
       append-to-body
       center
-      :title="rowName + ' 角色授权'"
+      :title="rowName + ' 赋予角色'"
       :visible.sync="authForm.authFormVisible"
     >
       <el-form :model="authForm" ref="authForm" :label-width="authForm.authFormLabelWidth">
-        <el-form-item label="请选择授权角色：">
-          <el-select v-model="authForm.defaultAuthRoleId" placeholder="请选择授权角色">
+        <el-form-item label="请选择角色：">
+          <el-select v-model="authForm.defaultAuthRoleId" placeholder="请选择赋予角色">
             <el-option
               v-for="item in authForm.authFormData"
               :key="item.id"
@@ -491,9 +491,13 @@ export default {
   filters: {
     // 所属角色过滤器
     rolesFilter: function(value) {
-      for (let item of that.rolesFilterList) {
-        if (value == item.id) {
-          return item.role;
+      if (value == null) {
+        return "无";
+      } else {
+        for (let item of that.rolesFilterList) {
+          if (value == item.id) {
+            return item.role;
+          }
         }
       }
     }
@@ -617,9 +621,9 @@ export default {
       viewDetailForm: {},
       viewDetailFormLabelWidth: "140px",
 
-      tableRowId: "", // 用于授权dialog请求使用  表格行用户Id
+      tableRowId: "", // 用于赋予角色dialog请求使用  表格行用户Id
       rowName: "", // 存放当前行用户名称
-      // 授权form
+      // 赋予角色form
       authForm: {
         authFormData: [],
         authFormLabelWidth: "38%",
@@ -791,6 +795,8 @@ export default {
               this.globalaEditDialogFormVisible = false;
               this.getTableData();
               this.selectCompanyAllForm.selectCompanyDefault = this.selectCompanyAllForm.selectCompanyDefaultInvariant; // 当前页面公司下拉菜单默认值
+              
+              this.getUserInformationGlobal(); // 头部信息同步更改
             }
           });
         } else {
@@ -926,10 +932,11 @@ export default {
         })
         .catch(err => {});
     },
-    // 授权
+    // 赋予角色
     handleAuth(index, row) {
       this.rowName = row.name;
       this.tableRowId = row.id; // 把表格行id传给全局，以备authFormSubmit()使用
+      this.authForm.defaultAuthRoleId = row.rolesId; // 赋予角色下拉菜单默认值
       this.authForm.authFormVisible = true;
       let url = "roles/getActiveRoles";
       let formData = {};
@@ -940,7 +947,7 @@ export default {
         })
         .catch(err => {});
     },
-    // 授权确定
+    // 赋予角色确定
     authFormSubmit() {
       let url = "user/updateRoles";
       let formData = {
@@ -957,16 +964,17 @@ export default {
               type: "success",
               message: res.data.msg
             });
+            this.getUserInformationGlobal(); // 头部信息同步更改
           }
         })
         .catch(err => {});
     },
-    // 授权取消
+    // 赋予角色取消
     authFormCancle() {
       this.authForm.authFormVisible = false;
       this.$message({
         type: "info",
-        message: "已取消授权!"
+        message: "已取消赋予角色!"
       });
     },
     // 获取表格数据
@@ -1056,7 +1064,7 @@ export default {
   },
   beforeCreate: function() {
     that = this;
-  },
+  }
 };
 </script>
 

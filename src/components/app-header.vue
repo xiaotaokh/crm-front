@@ -13,14 +13,16 @@
       <ul class="clearfix">
         <!-- 用户名 -->
         <li class="userIcon">
-          <i class="iconfont iconyonghu"></i>
-          <!-- <el-button type="text" class="user-name">admin</el-button> -->
-          <el-dropdown class="user-name">
-            <span class="el-dropdown-link">admin</span>
+            <el-button type="text" class="user-name-icon">
+              <i class="iconfont iconyonghu"></i>
+            </el-button>
+          <el-dropdown>
+            <span class="el-dropdown-link">{{ this.$store.state.globalUserInformation.name }}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>用户名：admin</el-dropdown-item>
-              <el-dropdown-item>手机号：18595847514</el-dropdown-item>
+              <!-- <el-dropdown-item>用户名：{{ this.$store.getters.globalUserInformation.userName }}</el-dropdown-item> -->
+              <!-- <el-dropdown-item>角色：{{ this.$store.getters.globalUserInformation.userName }}</el-dropdown-item>
+              <el-dropdown-item>所属公司：{{ this.$store.getters.globalUserInformation.userName }}</el-dropdown-item> -->
               <el-dropdown-item class="update-pass">
                 <el-button type="primary" size="mini" @click="updateNews" plain>修改信息</el-button>
                 <el-button type="primary" size="mini" @click="updatePass" plain>修改密码</el-button>
@@ -64,12 +66,25 @@
 </template>
 
 <script>
+import { myMixins } from "@/mixins/index";
+let that;
 export default {
+  mixins: [myMixins],
   name: "app-header",
+  filters: {
+    // 所属角色过滤器
+    rolesFilter: function(value) {
+      for (let item of that.rolesFilterList) {
+        if (value == item.id) {
+          return item.role;
+        }
+      }
+    }
+  },
   computed: {},
   data() {
     return {
-      headerSearch: ""
+      headerSearch: "" // 头部搜索
     };
   },
   methods: {
@@ -94,8 +109,14 @@ export default {
     },
     // 修改密码
     updatePass() {
-      console.log("修改密码")
+      console.log("修改密码");
     }
+  },
+  beforeCreate: function() {
+    that = this;
+  },
+  mounted() {
+    this.getUserInformationGlobal(); // 获取用户信息
   }
 };
 </script>
@@ -147,21 +168,15 @@ export default {
 }
 /* user */
 .app-header .header-right .userIcon {
-  position: relative;
   height: 60px;
-  width: 90px;
+}
+.user-name-icon {
+  color: #303133;
 }
 .app-header .header-right .userIcon .iconyonghu {
   font-size: 24px;
-  position: absolute;
-  left: 0;
-  top: -3px;
 }
-.app-header .header-right .userIcon .user-name {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
+
 .app-header .header-right .userIcon .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
