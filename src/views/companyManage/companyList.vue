@@ -100,7 +100,7 @@
                     size="small"
                     @click="handleDetail(scope.$index, scope.row)"
                     circle
-                    icon="el-icon-edit"
+                    icon="el-icon-tickets"
                   ></el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="删除" placement="top">
@@ -129,7 +129,7 @@
       ></el-pagination>
     </div>
     <!-- 查看详情dialog -->
-    <el-dialog append-to-body center title="查看公司详情" :visible.sync="viewDetailFormVisible">
+    <el-dialog append-to-body center :title="viewDetailForm.name" :visible.sync="viewDetailFormVisible">
       <el-form :model="viewDetailForm" :label-width="viewDetailFormLabelWidth" ref="viewDetailForm">
         <el-form-item label="公司名称：">
           <el-input v-model="viewDetailForm.name" disabled></el-input>
@@ -177,8 +177,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click="editDialogFormCancle">取 消</el-button>
-        <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
+        <el-button size="small" type="info" @click="viewDetailDialogFormCancle">取 消</el-button>
+        <el-button size="small" type="primary" @click="viewDetailDialogFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -266,7 +266,7 @@ export default {
       this.handleDeleteGlobal();
     },
     // 表格行查看详情取消
-    editDialogFormCancle() {
+    viewDetailDialogFormCancle() {
       this.viewDetailFormVisible = false;
       this.$message({
         type: "info",
@@ -274,7 +274,7 @@ export default {
       });
     },
     // 表格行查看详情确定
-    editDialogFormSubmit() {
+    viewDetailDialogFormSubmit() {
       this.viewDetailFormVisible = false;
     },
     // 表格switch事件

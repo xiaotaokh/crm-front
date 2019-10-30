@@ -92,7 +92,7 @@
       custom-class="editDialogFormDialog"
       append-to-body
       center
-      title="编辑菜单"
+      :title="editDialogForm.name"
       :visible.sync="editDialogFormVisible"
     >
       <el-form

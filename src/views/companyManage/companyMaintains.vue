@@ -273,7 +273,7 @@ export default {
             this.companyMaintainsForm.unifiedSocialCode =
               res.data.data.unifiedSocialCode;
             this.companyMaintainsForm.establishmentTime =
-              res.data.data.establishmentTime * 1000;
+              res.data.data.establishmentTime;
             this.companyMaintainsForm.postalAddress =
               res.data.data.postalAddress;
             this.companyMaintainsForm.legalPerson = res.data.data.legalPerson;
@@ -388,7 +388,7 @@ export default {
               );
               formData.append(
                 "establishmentTime",
-                this.companyMaintainsForm.establishmentTime / 1000
+                this.companyMaintainsForm.establishmentTime
               );
               formData.append(
                 "postalAddress",

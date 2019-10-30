@@ -178,7 +178,7 @@
     <el-dialog
       append-to-body
       center
-      title="编辑角色"
+      :title="editDialogForm.role"
       :visible.sync="editDialogForm.editDialogFormVisible"
     >
       <el-form
@@ -287,7 +287,7 @@ export default {
       },
       multipleSelection: [], // 存放表格选中项信息
       ids: "", // 存放表格选中项id
-      rowRole: "", // 存放当前行id
+      rowRole: "", // 存放当前行名称
       // 授权form
       authForm: {
         authFormData: [],
@@ -515,8 +515,7 @@ export default {
             }
             let url = "roles/delByIds";
             let formData = {
-              ids: this.ids.slice(0, -1),
-              status: "DEL"
+              ids: this.ids.slice(0, -1)
             };
             this.$axios
               .post(url, formData)

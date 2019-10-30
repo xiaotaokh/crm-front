@@ -23,7 +23,7 @@ export const myMixins = {
 
       // 全局添加dialog显示与否
       globalaAddDialogFormVisible: false,
-      
+
       // 全局编辑dialog显示与否
       globalaEditDialogFormVisible: false,
 
@@ -34,7 +34,11 @@ export const myMixins = {
       globalMenuStatusUrl: "",
       globalMenuStatusFormData: {},
 
+      // 存放表格选中项信息
+      globalMultipleSelection: [],
 
+      // 表格全局查看详情
+      globalViewDetailFormVisible:false,
     }
   },
   created() {
@@ -94,7 +98,7 @@ export const myMixins = {
 
     // 表格行全局删除事件
     handleDeleteGlobal(index, row) {
-      this.$confirm("此操不可逆, 是否继续?", "删除角色", {
+      this.$confirm("此操不可逆, 是否继续?", "删除信息", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -125,6 +129,53 @@ export const myMixins = {
           });
         });
     },
+    // 表格行全局批量删除
+    batchDelGlobal(url) {
+      if (this.globalMultipleSelection.length != 0) {
+        this.$confirm("此操不可逆, 是否继续?", "删除信息", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          })
+          .then(() => {
+            for (var i of this.globalMultipleSelection) {
+              this.ids += i.id + ",";
+            }
+            let formData = {
+              ids: this.ids.slice(0, -1)
+            };
+            this.$axios
+              .post(url, formData)
+              .then(res => {
+                if (res.data.code == 1) {
+                  this.$message({
+                    type: "success",
+                    message: res.data.msg
+                  });
+                  this.getTableData();
+                  this.ids = ""; // ids清空
+                }
+              })
+              .catch(err => {
+                this.$message({
+                  type: "error",
+                  message: res.data.msg
+                });
+              });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除!"
+            });
+          });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "请先勾选表格项!"
+        });
+      }
+    },
 
     // 全局添加
     addGlobal() {
@@ -154,7 +205,7 @@ export const myMixins = {
         message: "已取消编辑!"
       });
     },
-    
+
     // 分页
     handleSizeChange(val) {
       this.PageSize = val; // 改变每页显示的条数
@@ -235,6 +286,85 @@ export const myMixins = {
             message: res.data.msg
           });
         });
-    }
+    },
+
+    // 表格选中项
+    handleSelectionChangeGlobal(val) {
+      this.globalMultipleSelection = val;
+    },
+
+    // 批量启用  请求体字段为 ids status
+    batchStartGlobal(url) {
+      if (this.globalMultipleSelection.length != 0) {
+        for (var i of this.globalMultipleSelection) {
+          this.ids += i.id + ",";
+        }
+        let formData = {
+          ids: this.ids.slice(0, -1),
+          status: "ACTIVE"
+        };
+        this.$axios
+          .post(url, formData)
+          .then(res => {
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+              this.getTableData();
+              this.ids = ""; // ids清空
+            }
+          })
+          .catch(err => {});
+      } else {
+        this.$message({
+          type: "warning",
+          message: "请先勾选表格项!"
+        });
+      }
+    },
+
+    // 批量禁用  请求体字段为 ids status
+    batchDisableGlobal(url) {
+      if (this.globalMultipleSelection.length != 0) {
+        for (var i of this.globalMultipleSelection) {
+          this.ids += i.id + ",";
+        }
+        let formData = {
+          ids: this.ids.slice(0, -1),
+          status: "DEL"
+        };
+        this.$axios
+          .post(url, formData)
+          .then(res => {
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+              this.getTableData();
+              this.ids = ""; // ids清空
+            }
+          })
+          .catch(err => {});
+      } else {
+        this.$message({
+          type: "warning",
+          message: "请先勾选表格项!"
+        });
+      }
+    },
+    // 表格行查看详情全局取消
+    viewDetailDialogFormCancleGlobal() {
+      this.globalViewDetailFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "已取消查看详情!"
+      });
+    },
+    // 表格行查看详情全局确定
+    viewDetailDialogFormSubmitGlobal() {
+      this.globalViewDetailFormVisible = false;
+    },
   }
 }
