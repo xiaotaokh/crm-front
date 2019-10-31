@@ -304,15 +304,6 @@ export default {
         .post(url, formData)
         .then(res => {
           this.fatherCompanyList = res.data.data;
-          // for (let item of res.data.data) {
-          //   if (item.pid == 0) {
-          //     this.companyMaintainsForm.fatherCompany = "无";
-          //   } else {
-          //     if (this.companyMaintainsForm.fatherCompany == item.id) {
-          //       this.companyMaintainsForm.fatherCompany = item.name;
-          //     }
-          //   }
-          // }
         })
         .catch(err => {
           return err;
@@ -325,10 +316,8 @@ export default {
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
     this.globalListenHeight(); // 监听页面变化，修改表格高度
-
-    // 获取表格数据
-    this.getTableData();
-    this.handleFatherCompanyList();
+    this.getTableData();// 获取表格数据
+    this.handleFatherCompanyList();  // 获取父公司列表
   }
 };
 </script>

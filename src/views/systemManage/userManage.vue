@@ -683,7 +683,6 @@ export default {
               !(res.data.data instanceof Array)
             ) {
               // 父公司搜索有该用户
-
               this.tableDataObj = res.data.data;
               if (res.data.data[1]) {
                 this.selectCompanyAllForm.selectCompanyDefault = this.selectCompanyAllForm.selectCompanyDefaultInvariant; // 下拉菜单显示父公司
@@ -795,8 +794,8 @@ export default {
               this.globalaEditDialogFormVisible = false;
               this.getTableData();
               this.selectCompanyAllForm.selectCompanyDefault = this.selectCompanyAllForm.selectCompanyDefaultInvariant; // 当前页面公司下拉菜单默认值
-              
-              this.getUserInformationGlobal(); // 头部信息同步更改
+
+              this.getUserInformationGlobal(); // 全局同步用户信息
             }
           });
         } else {
@@ -964,7 +963,7 @@ export default {
               type: "success",
               message: res.data.msg
             });
-            this.getUserInformationGlobal(); // 头部信息同步更改
+            this.getUserInformationGlobal(); // 全局同步用户信息
           }
         })
         .catch(err => {});
@@ -1019,17 +1018,22 @@ export default {
       this.$axios
         .post(url, formData)
         .then(res => {
-          if (res.data.data instanceof Array) {
-            this.selectCompanyAllForm.selectCompanyList = res.data.data; // 赋给公司下拉select
-            this.addDialogForm.addSelectCompanyList = res.data.data; // 赋给添加dialog父公司select
-            this.editDialogForm.addSelectCompanyList = res.data.data; // 赋给编辑dialog父公司select
-            this.selectCompanyAllForm.selectCompanyDefault =
-              res.data.data[0].name; // 公司列表默认值
-            this.selectCompanyAllForm.selectCompanyDefaultInvariant =
-              res.data.data[0].name; // 公司列表默认值不变（一直为父公司）
+          if (res.data.data == null) {   // 未设置公司的员工 所属公司为空
+            return
           } else {
-            this.addDialogForm.addDialogCompany = res.data.data; // 添加时候公司名称
-            this.editDialogForm.addDialogCompany = res.data.data; // 添加时候公司名称
+            if (res.data.data instanceof Array) {
+              this.selectCompanyAllForm.selectCompanyList = res.data.data; // 赋给公司下拉select
+              this.addDialogForm.addSelectCompanyList = res.data.data; // 赋给添加dialog父公司select
+              this.editDialogForm.addSelectCompanyList = res.data.data; // 赋给编辑dialog父公司select
+
+              this.selectCompanyAllForm.selectCompanyDefault =
+                res.data.data[0].name; // 公司列表默认值
+              this.selectCompanyAllForm.selectCompanyDefaultInvariant =
+                res.data.data[0].name; // 公司列表默认值不变（一直为父公司）
+            } else {
+              this.addDialogForm.addDialogCompany = res.data.data; // 添加时候公司名称
+              this.editDialogForm.addDialogCompany = res.data.data; // 编辑时候公司名称
+            }
           }
         })
         .catch(err => {

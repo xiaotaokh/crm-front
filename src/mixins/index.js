@@ -54,7 +54,7 @@ export const myMixins = {
         .then(res => {
           if(res.data.code == 1) {
             this.$store.dispatch("setGlobalUserInformation",res.data.data)
-            // console.log(this.$store.state.globalUserInformation)
+            // console.log(this.$store.state.globalUserInformation)  // 打印用户信息
           }
         })
         .catch(err => {
@@ -296,6 +296,7 @@ export const myMixins = {
             });
           }
           this.getTableData();
+          this.getUserInformationGlobal(); // 全局同步用户信息
         })
         .catch(err => {
           this.$message({

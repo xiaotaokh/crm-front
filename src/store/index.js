@@ -10,7 +10,15 @@ export default new Vuex.Store({
     tableLoading: true, // 表格全局loading加载
     postTableData: [], // 全局post请求 数据
 
-    globalUserInformation: {}, // 全局当前用户信息
+    // 全局当前用户信息
+    globalUserInformation: {
+      userName: "",
+      status: "ACTIVE",
+      rolesId:"",
+      companyId:"",
+      phoneNumber:"",
+      name:""
+    },
   },
   // 获取
   getters: {
