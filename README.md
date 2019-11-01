@@ -127,12 +127,12 @@ proxyTable: {
 **插件js文件**
 - plugin/xx.js
 
-    省市县三级联动在select_area.js里面
+        省市县三级联动在select_area.js里面
 
 **静态文件**
 - /assets
 
-    iconfont在assets/fonts里面
+        iconfont在assets/fonts里面
     
 **面包屑**
 ```javascript
