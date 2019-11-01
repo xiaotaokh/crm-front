@@ -34,6 +34,41 @@ npm run build --report
 this.getUserInformationGlobal();
 ```
 
+**跨域拦截处理：**
+- config/index.js
+```javascript
+// 跨域拦截请求   设置跨域重启项目(npm start)
+proxyTable: {
+    '/api': {
+    // target: "http://47.92.153.134:8899/", // 打包接口地址
+    target: "http://192.168.3.40:8899/", // 本地后台接口地址
+    pathRewrite: {
+        '^/api': ''
+    }
+    }
+},
+```
+
+**插件js文件**
+- plugin/xx.js
+
+        省市县三级联动在select_area.js里面
+
+**静态文件**
+- /assets
+
+        iconfont在assets/fonts里面
+    
+**面包屑**
+```javascript
+this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
+```
+
+**监听页面变化，修改表格高度**
+```javascript
+this.globalListenHeight(); // 监听页面变化，修改表格高度
+```
+
 **axios请求拦截**
 - min.js
 
@@ -107,39 +142,4 @@ axios.interceptors.response.use(res => {
   }
   return Promise.resolve(error.response)
 })
-```
-
-**跨域拦截处理：**
-- config/index.js
-```javascript
-// 跨域拦截请求   设置跨域重启项目(npm start)
-proxyTable: {
-    '/api': {
-    // target: "http://47.92.153.134:8899/", // 打包接口地址
-    target: "http://192.168.3.40:8899/", // 本地后台接口地址
-    pathRewrite: {
-        '^/api': ''
-    }
-    }
-},
-```
-
-**插件js文件**
-- plugin/xx.js
-
-        省市县三级联动在select_area.js里面
-
-**静态文件**
-- /assets
-
-        iconfont在assets/fonts里面
-    
-**面包屑**
-```javascript
-this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
-```
-
-**监听页面变化，修改表格高度**
-```javascript
-this.globalListenHeight(); // 监听页面变化，修改表格高度
 ```
