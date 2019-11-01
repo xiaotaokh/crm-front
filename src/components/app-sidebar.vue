@@ -10,7 +10,7 @@
       class="el-menu-vertical-demo"
       @select="handleSelect"
     >
-      <el-submenu v-for="(item,i) in navList" :key="i" :index="item.route">
+      <el-submenu v-for="(item,i) in this.$store.state.globalNavList" :key="i" :index="item.route">
         <template slot="title">
           <i class="iconfont" :class="item.icon"></i>
           {{ item.navName }}
@@ -38,11 +38,12 @@
 </template>
 
 <script>
+import { myMixins } from '@/mixins/index'
 export default {
+  mixins:[myMixins],
   name: "app-sidebar",
   data() {
     return {
-      navList: [], // 拿到的后台列表数据
       id: "" // 菜单ID
     };
   },
@@ -52,7 +53,7 @@ export default {
     // 激活菜单事件 
     handleSelect(key, keyPath) {
       // 遍历slider数组  激活菜单返回当前菜单id
-      for (var i of this.navList) {
+      for (var i of this.$store.state.globalNavList) {
         if (i.second.length == 0) {
           if (key == i.route) {
             this.id = i.id;
@@ -76,13 +77,7 @@ export default {
     }
   },
   mounted() {
-    var url = "getMenuByUser";
-    this.$axios
-      .post(url)
-      .then(res => {
-        this.navList = res.data.data;
-      })
-      .catch(error => {});
+    this.getSliderBarGlobal();   // 获取左边侧边栏slider
   }
 };
 </script>

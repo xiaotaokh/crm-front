@@ -60,11 +60,7 @@
               width="60"
               :reserve-selection="true"
             ></el-table-column>
-            <el-table-column
-              label="序号"
-              width="80"
-              align="center"
-            >
+            <el-table-column label="序号" width="80" align="center">
               <template slot-scope="scope">
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
@@ -588,6 +584,12 @@ export default {
             this.authForm.authFormVisible = false;
             this.$message({
               type: "success",
+              message: res.data.msg
+            });
+            this.getSliderBarGlobal(); // 刷新左边侧边栏slider
+          } else if (res.data.code == 0) {
+            this.$message({
+              type: "warning",
               message: res.data.msg
             });
           }

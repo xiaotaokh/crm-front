@@ -38,7 +38,7 @@ export const myMixins = {
       globalMultipleSelection: [],
 
       // 表格全局查看详情
-      globalViewDetailFormVisible:false,
+      globalViewDetailFormVisible: false,
     }
   },
   created() {
@@ -52,14 +52,25 @@ export const myMixins = {
       this.$axios
         .post(url, formData)
         .then(res => {
-          if(res.data.code == 1) {
-            this.$store.dispatch("setGlobalUserInformation",res.data.data)
+          if (res.data.code == 1) {
+            this.$store.dispatch("setGlobalUserInformation", res.data.data)
             // console.log(this.$store.state.globalUserInformation)  // 打印用户信息
           }
         })
         .catch(err => {
           return err;
         });
+    },
+
+    // 获取左边侧边栏slider
+    getSliderBarGlobal() {
+      var url = "getMenuByUser";
+      this.$axios
+        .post(url)
+        .then(res => {
+          this.$store.commit("getGlobalNavList",res.data.data)
+        })
+        .catch(error => {error});
     },
 
     // 全局监听页面高度 赋值给tableHeight

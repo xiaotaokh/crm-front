@@ -313,7 +313,12 @@
       </div>
     </el-dialog>
     <!-- 编辑dialog -->
-    <el-dialog append-to-body center :title="editDialogForm.name" :visible.sync="globalaEditDialogFormVisible">
+    <el-dialog
+      append-to-body
+      center
+      :title="editDialogForm.name"
+      :visible.sync="globalaEditDialogFormVisible"
+    >
       <el-form
         :model="editDialogForm"
         :label-width="editDialogForm.editDialogFormLabelWidth"
@@ -983,26 +988,42 @@ export default {
       });
     },
     // 密码重置
-    resetPassword(index,row) {
-      let url = "user/updatePassword";
-      let formData = {
-        id:row.id
-      };
-      this.$axios.post(url,formData).then(res => {
-        if(res.data.code == 418) {
-          this.$message({
-            message: res.data.msg,
-            type: "success"
-          });
-        }else if(res.data.code == 1) {
-          this.$message({
-            message: res.data.msg,
-            type: "success"
-          });
-        }
-      }).catch(err => {
-        return err;
+    resetPassword(index, row) {
+      this.$confirm("此操作将重置该用户密码, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          let url = "user/updatePassword";
+          let formData = {
+            id: row.id
+          };
+          this.$axios
+            .post(url, formData)
+            .then(res => {
+              if (res.data.code == 418) {
+                this.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+              } else if (res.data.code == 1) {
+                this.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+              }
+            })
+            .catch(err => {
+              return err;
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消重置密码"
+          });
+        });
     },
     // 获取表格数据
     getTableData() {
@@ -1046,8 +1067,9 @@ export default {
       this.$axios
         .post(url, formData)
         .then(res => {
-          if (res.data.data == null) {   // 未设置公司的员工 所属公司为空
-            return
+          if (res.data.data == null) {
+            // 未设置公司的员工 所属公司为空
+            return;
           } else {
             if (res.data.data instanceof Array) {
               this.selectCompanyAllForm.selectCompanyList = res.data.data; // 赋给公司下拉select

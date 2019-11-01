@@ -6,6 +6,7 @@ export default new Vuex.Store({
   // 全局管理的状态  定义
   state: {
     store: 0, // 测试store
+    globalNavList:[], // 侧边栏slider列表数据
     breadcrumb: [], // 面包屑
     tableLoading: true, // 表格全局loading加载
     postTableData: [], // 全局post请求 数据
@@ -40,6 +41,11 @@ export default new Vuex.Store({
     // 测试store
     addStore(state, num) {
       state.store = state.store + num;
+    },
+
+    // 侧边栏slider列表数据
+    getGlobalNavList(state,list) {
+      state.globalNavList = list;
     },
     // 修改面包屑breadcrumb
     editBreadcrumb(state, breadcrumb) {
