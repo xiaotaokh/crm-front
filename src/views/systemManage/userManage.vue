@@ -89,6 +89,7 @@
             border
             row-key="id"
             @selection-change="handleSelectionChangeGlobal"
+            :default-sort="{prop: 'entryDate', order: 'descending'}"
             v-loading="globalTableLoading"
           >
             <el-table-column
@@ -136,7 +137,7 @@
                 ></el-switch>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="入职日期" width="180">
+            <el-table-column align="center" label="入职日期" width="180" prop="entryDate" sortable>
               <template slot-scope="scope">{{ scope.row.entryDate | dateFilter }}</template>
             </el-table-column>
             <el-table-column align="center" label="创建时间" width="180">

@@ -88,7 +88,7 @@
                 文件不能超过
                 <span>10M</span>
               </div>
-              <div slot class v-if="companyMaintainsForm.fileList[0].fileName">
+              <div slot v-if="companyMaintainsForm.fileList[0].fileName">
                 已上传文件：
                 <el-tooltip class="item" effect="dark" content="点击下载" placement="right">
                   <el-button
@@ -97,7 +97,7 @@
                   >{{ companyMaintainsForm.fileList[0].fileName }}</el-button>
                 </el-tooltip>
               </div>
-              <div slot class v-if="companyMaintainsForm.selFileList[0].name != ''">
+              <div slot v-if="companyMaintainsForm.selFileList[0].name != ''">
                 已选择文件：
                 <el-button type="text">{{ companyMaintainsForm.selFileList[0].name }}</el-button>
               </div>
@@ -266,6 +266,7 @@ export default {
         .get(url)
         .then(res => {
           if (res.data.code == 1) {
+            console.log(res.data)
             this.companyMaintainsForm.companyNewsList = res.data.data; // 赋给公司信息表单
 
             this.companyMaintainsForm.fatherCompany = res.data.data.pid;
@@ -316,9 +317,12 @@ export default {
         .then(res => {
           this.companyMaintainsForm.fatherCompanyList = res.data.data;
           // 截取掉父公司里相同的option
-          for(var index in this.companyMaintainsForm.fatherCompanyList) {
-            if(this.companyMaintainsForm.fatherCompanyList[index].name == this.companyMaintainsForm.companyNewsList.name) {
-              this.companyMaintainsForm.fatherCompanyList.splice(index, 1); 
+          for (var index in this.companyMaintainsForm.fatherCompanyList) {
+            if (
+              this.companyMaintainsForm.fatherCompanyList[index].name ==
+              this.companyMaintainsForm.companyNewsList.name
+            ) {
+              this.companyMaintainsForm.fatherCompanyList.splice(index, 1);
             }
           }
         })

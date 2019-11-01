@@ -4,9 +4,9 @@
       <img src="../assets/images/login.svg" alt />
     </div>
     <div class="header">
-      <!-- <span>国威永耀</span>
+      <span>国威永耀</span>
       crm
-      <span>管理平台</span> -->
+      <span>管理平台</span>
     </div>
     <div class="login-form">
       <div class="login-form-title">用户登录</div>

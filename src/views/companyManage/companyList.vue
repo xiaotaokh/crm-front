@@ -39,6 +39,7 @@
             size="medium"
             border
             row-key="id"
+            :default-sort = "{prop: 'establishmentTime', order: 'ascending'}"
             v-loading="globalTableLoading"
           >
             <el-table-column label="序号" fixed width="80" align="center">
@@ -73,7 +74,7 @@
             <el-table-column align="center" label="法人电话" width="140">
               <template slot-scope="scope">{{ scope.row.telephone }}</template>
             </el-table-column>
-            <el-table-column align="center" label="成立日期" width="160">
+            <el-table-column align="center" label="成立日期" width="160" prop="establishmentTime" sortable>
               <template slot-scope="scope">{{ scope.row.establishmentTime | dateFilter }}</template>
             </el-table-column>
             <el-table-column label="通讯地址" width="320" show-overflow-tooltip>

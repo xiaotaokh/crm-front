@@ -50,6 +50,7 @@
             border
             row-key="id"
             @selection-change="handleSelectionChange"
+            :default-sort="{prop: 'createAt', order: 'ascending'}"
             v-loading="globalTableLoading"
           >
             <el-table-column
@@ -59,7 +60,11 @@
               width="60"
               :reserve-selection="true"
             ></el-table-column>
-            <el-table-column label="序号" width="80" align="center">
+            <el-table-column
+              label="序号"
+              width="80"
+              align="center"
+            >
               <template slot-scope="scope">
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
@@ -95,7 +100,7 @@
                 ></el-switch>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="创建时间" width="180">
+            <el-table-column align="center" label="创建时间" width="180" prop="createAt" sortable>
               <template slot-scope="scope">{{ scope.row.createAt | dateFilter }}</template>
             </el-table-column>
             <el-table-column align="center" label="修改时间" width="180">
