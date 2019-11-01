@@ -24,6 +24,11 @@ export default {
         this.isRouterAlive = true;
       });
     }
+  },
+  mounted() {
+    // window.onunload = function() {
+    //   localStorage.removeItem("token"); // 强制退出浏览器清除token
+    // };
   }
 };
 </script>

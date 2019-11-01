@@ -61,18 +61,20 @@
         <!-- 首页 -->
         <li>
           <router-link to="/appMain">
-            <!-- <el-tooltip class="item" effect="dark" content="返回首页" placement="left"> -->
-            <el-button type="text" class="returnHome">
-              <i class="iconfont iconiconfontzhizuobiaozhun023101"></i>
-            </el-button>
-            <!-- </el-tooltip> -->
+            <el-tooltip class="item" effect="dark" content="返回首页" placement="left">
+              <el-button type="text" class="returnHome">
+                <i class="iconfont iconiconfontzhizuobiaozhun023101"></i>
+              </el-button>
+            </el-tooltip>
           </router-link>
         </li>
         <!-- 退出 -->
         <li>
-          <el-button type="text" class="exitOut" @click="exit">
-            <i class="iconfont icon084tuichu"></i>
-          </el-button>
+          <el-tooltip effect="dark" content="退出" placement="left">
+            <el-button type="text" class="exitOut" @click="exit">
+              <i class="iconfont icon084tuichu"></i>
+            </el-button>
+          </el-tooltip>
         </li>
       </ul>
     </div>
@@ -80,7 +82,7 @@
     <el-dialog
       append-to-body
       center
-      :title="this.$store.state.globalUserInformation.name + ' 密码修改'"
+      :title="this.$store.state.globalUserInformation.name + ' - 密码修改'"
       :visible.sync="updatePassForm.updatePassFormVisible"
     >
       <el-form
@@ -123,7 +125,7 @@
     <el-dialog
       append-to-body
       center
-      :title="updateNewsForm.updateNewsFormlist.name + '信息修改'"
+      :title="updateNewsForm.updateNewsFormlist.name + ' - 信息修改'"
       :visible.sync="updateNewsForm.updateNewsFormVisible"
     >
       <el-form
@@ -326,18 +328,26 @@ export default {
   methods: {
     // 退出
     exit() {
-      var url = "logout";
-      this.$axios
-        .post(url)
-        .then(res => {
-          this.$message({
-            message: res.data.msg,
-            type: "success"
-          });
-          localStorage.removeItem("token"); // 清除token
-          this.$router.push({ path: "/login" }); // 跳转页面
+      this.$confirm("是否继续?", "退出登录", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          var url = "logout";
+          this.$axios
+            .post(url)
+            .then(res => {
+              this.$message({
+                message: "退出成功!",
+                type: "success"
+              });
+              localStorage.removeItem("token"); // 清除token
+              this.$router.push({ path: "/login" }); // 跳转页面
+            })
+            .catch(error => {});
         })
-        .catch(error => {});
+        .catch(() => {});
     },
     // 修改信息
     updateNews() {
@@ -445,7 +455,7 @@ export default {
           let url = "user/updateCurrentUserPassword";
           let formData = {
             id: this.$store.getters.getGlobalUserInformation.id,
-            oldPassword: this.$store.getters.getGlobalUserInformation.password,
+            oldPassword: this.updatePassForm.oldlPassword,
             password: this.updatePassForm.newPassword_v2
           };
           this.$axios.post(url, formData).then(res => {
@@ -455,8 +465,20 @@ export default {
                 message: "密码已修改，请重新登录!"
               });
               this.updatePassForm.updatePassFormVisible = false;
-              this.exit(); // 退出
+              // this.exit(); // 退出
+              this.$axios
+                .post("logout")
+                .then(res => {
+                  this.$message({
+                    message: "退出成功!",
+                    type: "success"
+                  });
+                  localStorage.removeItem("token"); // 清除token
+                  this.$router.push({ path: "/login" }); // 跳转页面
+                })
+                .catch(error => {});
             } else if (res.data.code == 0) {
+              // 原密码不一样
               this.$message({
                 type: "error",
                 message: res.data.msg
@@ -612,7 +634,7 @@ export default {
 .app-header .header-right .userIcon {
   height: 60px;
 }
-.user-name-icon {
+.app-header .user-name-icon {
   color: #303133;
 }
 .app-header .header-right .userIcon .iconyonghu {
@@ -627,7 +649,7 @@ export default {
   font-size: 12px;
 }
 /* 修改密码 */
-.update-pass {
+.app-header .update-pass {
   background: #fff !important;
   text-align: center;
 }

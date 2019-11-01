@@ -90,6 +90,13 @@
       "unicode_decimal": 59534
     },
     {
+      "icon_id": "4512455",
+      "name": "重置密码",
+      "font_class": "zhongzhimima",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
       "icon_id": "4735727",
       "name": "公告",
       "font_class": "gonggao",
@@ -109,6 +116,13 @@
       "font_class": "guanbi",
       "unicode": "e608",
       "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "7171936",
+      "name": "密码重置",
+      "font_class": "mimazhongzhi",
+      "unicode": "e633",
+      "unicode_decimal": 58931
     },
     {
       "icon_id": "7407666",

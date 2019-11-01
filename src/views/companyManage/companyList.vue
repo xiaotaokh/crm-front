@@ -76,10 +76,10 @@
             <el-table-column align="center" label="成立日期" width="160">
               <template slot-scope="scope">{{ scope.row.establishmentTime | dateFilter }}</template>
             </el-table-column>
-            <el-table-column align="center" label="通讯地址" width="320" show-overflow-tooltip>
+            <el-table-column label="通讯地址" width="320" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.postalAddress }}</template>
             </el-table-column>
-            <el-table-column align="center" label="备注" min-width="280" show-overflow-tooltip>
+            <el-table-column label="备注" min-width="280" show-overflow-tooltip>
               <template slot-scope="scope">
                 <!-- <el-popover
                   placement="top-start"

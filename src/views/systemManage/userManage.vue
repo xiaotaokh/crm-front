@@ -178,6 +178,16 @@
                     <i class="iconfont iconshouquan" style="font-size:12px"></i>
                   </el-button>
                 </el-tooltip>
+                <el-tooltip effect="dark" content="密码重置" placement="top">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="resetPassword(scope.$index, scope.row)"
+                    circle
+                  >
+                    <i class="iconfont iconmimazhongzhi" style="font-size:12px"></i>
+                  </el-button>
+                </el-tooltip>
                 <el-tooltip effect="dark" content="删除" placement="top">
                   <el-button
                     size="small"
@@ -302,12 +312,7 @@
       </div>
     </el-dialog>
     <!-- 编辑dialog -->
-    <el-dialog
-      append-to-body
-      center
-      :title="editDialogForm.name"
-      :visible.sync="globalaEditDialogFormVisible"
-    >
+    <el-dialog append-to-body center :title="editDialogForm.name" :visible.sync="globalaEditDialogFormVisible">
       <el-form
         :model="editDialogForm"
         :label-width="editDialogForm.editDialogFormLabelWidth"
@@ -504,7 +509,7 @@ export default {
   },
   watch: {},
   data() {
-    // 检测电话
+    // 检测手机号
     var checkPhone = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("请输入手机号码"));
@@ -975,6 +980,28 @@ export default {
         type: "info",
         message: "已取消赋予角色!"
       });
+    },
+    // 密码重置
+    resetPassword(index,row) {
+      let url = "user/updatePassword";
+      let formData = {
+        id:row.id
+      };
+      this.$axios.post(url,formData).then(res => {
+        if(res.data.code == 418) {
+          this.$message({
+            message: res.data.msg,
+            type: "success"
+          });
+        }else if(res.data.code == 1) {
+          this.$message({
+            message: res.data.msg,
+            type: "success"
+          });
+        }
+      }).catch(err => {
+        return err;
+      })
     },
     // 获取表格数据
     getTableData() {
