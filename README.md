@@ -26,14 +26,16 @@ npm run build --report
 
 
 
-**全局方法在mixins/index.js**
+**全局方法**
+- mixins/index.js
 
 ```javascript
 // 例如：全局获取当前用户信息
 this.getUserInformationGlobal();
 ```
 
-**min.js**
+**axios请求拦截**
+- min.js
 
 ```javascript
 // 对axios进行请求拦截处理  
@@ -122,3 +124,22 @@ proxyTable: {
 },
 ```
 
+**插件js文件**
+- plugin/xx.js
+
+    省市县三级联动在select_area.js里面
+
+**静态文件**
+- /assets
+
+    iconfont在assets/fonts里面
+    
+**面包屑**
+```javascript
+this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
+```
+
+**监听页面变化，修改表格高度**
+```javascript
+this.globalListenHeight(); // 监听页面变化，修改表格高度
+```
