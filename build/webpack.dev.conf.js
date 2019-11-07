@@ -42,7 +42,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
-    }
+    },
+    useLocalIp: true,//避免打开浏览器为0.0.0.0，需手动改IP的情况
   },
   plugins: [
     new webpack.DefinePlugin({

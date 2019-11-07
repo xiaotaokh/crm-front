@@ -100,7 +100,7 @@
 
 <script>
 import G2 from "@antv/g2";
-import shine from "@/plugin/shine.js";
+import dataSet from "../plugin/data-set.min.js";
 export default {
   name: "index",
   computed: {},
@@ -109,40 +109,40 @@ export default {
     return {
       data: [
         {
-          year: "1573034469",
-          value: 15468
+          year: "1",
+          value: 11
         },
         {
-          year: "1573032222",
-          value: 16100
+          year: "2",
+          value: 12
         },
         {
-          year: "1573033456",
-          value: 15900
+          year: "3",
+          value: 32
         },
         {
-          year: "1573034211",
-          value: 17409
+          year: "4",
+          value: 47
         },
         {
-          year: "1573034329",
-          value: 17000
+          year: "5",
+          value: 5
         },
         {
-          year: "1573023469",
-          value: 31056
+          year: "6",
+          value: 16
         },
         {
-          year: "1573324469",
-          value: 31982
+          year: "7",
+          value: 76
         },
         {
-          year: "1573434469",
-          value: 32040
+          year: "8",
+          value: 38
         },
         {
-          year: "1573124469",
-          value: 33233
+          year: "9",
+          value: 29
         }
       ]
     };
@@ -159,14 +159,6 @@ export default {
         height: 300
       });
       chart.source(this.data);
-      chart.scale({
-        // value: {
-        //   min: 10000
-        // },
-        // year: {
-        //   range: [0, 1]
-        // }
-      });
       chart.axis("value", {
         label: {
           // formatter: function formatter(val) {
@@ -179,11 +171,15 @@ export default {
           type: "line"
         }
       });
-      chart.area().position("year*value");
+      chart
+        .area()
+        .position("year*value")
+        .shape("smooth")
       chart
         .line()
         .position("year*value")
-        .size(2);
+        .size(1)
+        .shape("smooth");
       chart.render();
     }
   },
