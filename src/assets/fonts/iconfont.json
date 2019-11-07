@@ -34,6 +34,20 @@
       "unicode_decimal": 58976
     },
     {
+      "icon_id": "829816",
+      "name": "下降",
+      "font_class": "xiajiang",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "829818",
+      "name": "增长",
+      "font_class": "zengchang",
+      "unicode": "e692",
+      "unicode_decimal": 59026
+    },
+    {
       "icon_id": "982375",
       "name": "邮箱",
       "font_class": "youxiang",

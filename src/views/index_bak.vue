@@ -39,7 +39,8 @@
             <div class="card-number">
               <span class="card-number-span">8846</span>
             </div>
-            <div class="card-figure"></div>
+            <div class="card-figure">
+            </div>
             <div class="card-bot">
               <span>日访问量</span>
               <span>1234</span>
@@ -92,108 +93,124 @@
           </el-card>
         </el-col>
       </el-row>
-      <!-- 访问量area图 -->
-      <div id="mini-area"></div>
+              <div id="myChart" :style="{width: '100%', height: '100px'}"></div>
     </div>
   </div>
 </template>
 
 <script>
 import G2 from "@antv/g2";
-import shine from "@/plugin/shine.js";
+import shine from "@/plugin/shine.js"
 export default {
   name: "index",
   computed: {},
   watch: {},
   data() {
     return {
-      data: [
-        {
-          year: "1573034469",
-          value: 15468
-        },
-        {
-          year: "1573032222",
-          value: 16100
-        },
-        {
-          year: "1573033456",
-          value: 15900
-        },
-        {
-          year: "1573034211",
-          value: 17409
-        },
-        {
-          year: "1573034329",
-          value: 17000
-        },
-        {
-          year: "1573023469",
-          value: 31056
-        },
-        {
-          year: "1573324469",
-          value: 31982
-        },
-        {
-          year: "1573434469",
-          value: 32040
-        },
-        {
-          year: "1573124469",
-          value: 33233
-        }
-      ]
+      data: {
+        xData: [
+          "2019-10-1",
+          "2019-10-2",
+          "2019-10-3",
+          "2019-10-4",
+          "2019-10-5",
+          "2019-10-6",
+          "2019-10-7",
+          "2019-10-8",
+          "2019-10-9",
+          "2019-10-10",
+          "2019-10-11",
+          "2019-10-12",
+          "2019-10-13",
+          "2019-10-14",
+          "2019-10-15",
+          "2019-10-16",
+          "2019-10-17",
+          "2019-10-18",
+          "2019-10-19"
+        ],
+        yData: [
+          1,
+          21,
+          13,
+          4,
+          12,
+          6,
+          7,
+          18,
+          9,
+          10,
+          11,
+          4,
+          56,
+          1,
+          15,
+          16,
+          16,
+          8,
+          3
+        ]
+      }
     };
   },
   methods: {
-    format(percentage) {
-      return percentage === 100 ? "完成" : `${percentage}%`;
-    },
-    // mini area chart
-    miniArea() {
-      var chart = new G2.Chart({
-        container: "mini-area",
-        forceFit: true,
-        height: 300
+    
+      format(percentage) {
+        return percentage === 100 ? '完成' : `${percentage}%`;
+      },
+    drawLine() {
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$echarts.init(document.getElementById("myChart"),'shine');
+      // 绘制图表
+      myChart.setOption({
+        tooltip: {},
+        xAxis: {
+          show: false,
+          data: this.data.xData,
+          splitLine: {
+            show: false
+          }
+        },
+        yAxis: [
+          {
+            show: false,
+            type: "category",
+            boundaryGap: false,
+            //y轴
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              //y轴刻度线
+              show: false
+            },
+            //网格线
+            splitLine: {
+              show: false
+            }
+          }
+        ],
+        series: [
+          {
+            name: "访问量",
+            type: "line",
+            data: this.data.yData,
+             areaStyle: {}
+          }
+        ]
       });
-      chart.source(this.data);
-      chart.scale({
-        // value: {
-        //   min: 10000
-        // },
-        // year: {
-        //   range: [0, 1]
-        // }
-      });
-      chart.axis("value", {
-        label: {
-          // formatter: function formatter(val) {
-          //   return (val / 10000).toFixed(1) + "k";
-          // }
-        }
-      });
-      chart.tooltip({
-        crosshairs: {
-          type: "line"
-        }
-      });
-      chart.area().position("year*value");
-      chart
-        .line()
-        .position("year*value")
-        .size(2);
-      chart.render();
     }
   },
   mounted() {
-    this.miniArea();
+    this.drawLine();
   }
 };
 </script>
 
 <style scoped>
+#myChart {
+  border:1px solid #000;
+}
 .index {
   width: 100%;
   height: 100%;
