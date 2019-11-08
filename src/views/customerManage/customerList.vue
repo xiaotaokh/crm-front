@@ -27,6 +27,12 @@
           </el-form-item>
         </el-form>
       </app-search>
+      <!-- 按钮组 -->
+      <el-row type="flex" justify="start" class="app-btn-group">
+        <el-col :span="24">
+          <el-button size="mini" type="primary" @click="addGlobal">添加</el-button>
+        </el-col>
+      </el-row>
       <!-- 表格table -->
       <el-row class="app-content-table">
         <el-col :span="24">
@@ -39,7 +45,7 @@
             size="medium"
             border
             row-key="id"
-            :default-sort = "{prop: 'establishmentTime', order: 'ascending'}"
+            :default-sort="{prop: 'createAt', order: 'ascending'}"
             v-loading="globalTableLoading"
           >
             <el-table-column label="序号" fixed width="80" align="center">
@@ -47,17 +53,17 @@
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="客户名称" width="240" show-overflow-tooltip>
+            <el-table-column align="center" label="客户名称" width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
-            <el-table-column align="center" label="法人" width="120">
-              <template slot-scope="scope">{{ scope.row.legalPerson }}</template>
+            <el-table-column align="center" label="性别" width="100">
+              <template slot-scope="scope">{{ scope.row.gender }}</template>
             </el-table-column>
-            <el-table-column align="center" label="父公司" width="240" show-overflow-tooltip>
-              <template slot-scope="scope">{{ scope.row.pid | fatherCompany }}</template>
+            <el-table-column align="center" label="年龄" width="100">
+              <template slot-scope="scope">{{ scope.row.age }}</template>
             </el-table-column>
-            <el-table-column align="center" label="统一社会代码" width="180">
-              <template slot-scope="scope">{{ scope.row.unifiedSocialCode }}</template>
+            <el-table-column align="center" label="联系电话" width="240">
+              <template slot-scope="scope">{{ scope.row.phone }}</template>
             </el-table-column>
             <el-table-column align="center" label="状态" width="180">
               <template slot-scope="scope">
@@ -71,29 +77,16 @@
                 ></el-switch>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="法人电话" width="140">
-              <template slot-scope="scope">{{ scope.row.telephone }}</template>
+            <el-table-column align="center" label="添加时间" width="160" prop="createAt" sortable>
+              <template slot-scope="scope">{{ scope.row.createAt | dateFilter }}</template>
             </el-table-column>
-            <el-table-column align="center" label="成立日期" width="160" prop="establishmentTime" sortable>
-              <template slot-scope="scope">{{ scope.row.establishmentTime | dateFilter }}</template>
+            <el-table-column align="center" label="修改时间" width="160">
+              <template slot-scope="scope">{{ scope.row.updateAt | dateFilter }}</template>
             </el-table-column>
-            <el-table-column label="通讯地址" width="320" show-overflow-tooltip>
-              <template slot-scope="scope">{{ scope.row.postalAddress }}</template>
+            <el-table-column label="单位" min-width="100">
+              <template slot-scope="scope">{{ scope.row.company }}</template>
             </el-table-column>
-            <el-table-column label="备注" min-width="280" show-overflow-tooltip>
-              <template slot-scope="scope">
-                <!-- <el-popover
-                  placement="top-start"
-                  width="400"
-                  trigger="hover"
-                  :content="scope.row.note"
-                >
-                  <span slot="reference">{{scope.row.note}}</span>
-                </el-popover>-->
-                {{scope.row.note}}
-              </template>
-            </el-table-column>
-            <el-table-column fixed="right" width="140" align="center" label="操作">
+            <el-table-column fixed="right" width="180" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="查看详情" placement="top">
                   <el-button
@@ -102,6 +95,15 @@
                     @click="handleDetail(scope.$index, scope.row)"
                     circle
                     icon="el-icon-tickets"
+                  ></el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="编辑" placement="top">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="handleEdit(scope.$index, scope.row)"
+                    circle
+                    icon="el-icon-edit"
                   ></el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="删除" placement="top">
@@ -129,57 +131,107 @@
         :total="totalCount"
       ></el-pagination>
     </div>
+    <!-- 添加dialog -->
+    <el-dialog append-to-body center title="添加客户" :visible.sync="globalaAddDialogFormVisible">
+      <el-form
+        :model="addDialogForm"
+        ref="addDialogForm"
+        :label-width="addDialogForm.addDialogFormLabelWidth"
+        :rules="addDialogForm.addDialogFormRules"
+      >
+        <el-form-item label="客户名称：" prop="name">
+          <el-input v-model="addDialogForm.name" placeholder="请输入客户名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="单位：">
+          <el-input
+            v-model="addDialogForm.company"
+            placeholder="请输入客户单位"
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="性别：">
+          <el-radio-group v-model="addDialogForm.gender">
+            <el-radio label="男">男</el-radio>
+            <el-radio label="女">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="年龄：">
+          <el-input v-model="addDialogForm.age" placeholder="请输入客户年龄" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话：" prop="phone">
+          <el-input v-model="addDialogForm.phone" placeholder="请输入联系电话" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="地址：">
+          <el-input v-model="addDialogForm.address" placeholder="请输入地址" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="备注：">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 4, maxRows: 8}"
+            placeholder="请输入备注"
+            v-model="addDialogForm.note"
+            maxlength="250"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="info" @click="addDialogFormCancleGlobal">取 消</el-button>
+        <el-button size="small" type="primary" @click="addDialogFormSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
     <!-- 查看详情dialog -->
-    <el-dialog append-to-body center :title="viewDetailForm.name" :visible.sync="viewDetailFormVisible">
+    <el-dialog
+      append-to-body
+      center
+      :title="viewDetailForm.name"
+      :visible.sync="globalViewDetailFormVisible"
+    >
       <el-form :model="viewDetailForm" :label-width="viewDetailFormLabelWidth" ref="viewDetailForm">
-        <el-form-item label="公司名称：">
+        <el-form-item label="客户名称：">
           <el-input v-model="viewDetailForm.name" disabled></el-input>
         </el-form-item>
-        <el-form-item label="法人：">
-          <el-input v-model="viewDetailForm.legalPerson" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="父公司：">
-          <el-input v-model="viewDetailForm.fatherCompany" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="统一社会代码：">
-          <el-input v-model="viewDetailForm.unifiedSocialCode" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-switch
-            v-model="viewDetailForm.status"
+        <el-form-item label="单位：">
+          <el-input
+            v-model="viewDetailForm.company"
             disabled
-            active-text="启用"
-            inactive-text="禁用"
-            active-value="ACTIVE"
-            inactive-value="DEL"
-          ></el-switch>
+          ></el-input>
         </el-form-item>
-        <el-form-item label="法人电话：">
-          <el-input v-model="viewDetailForm.telephone" disabled></el-input>
+        <el-form-item label="性别：">
+          <el-radio-group disabled v-model="viewDetailForm.gender">
+            <el-radio label="男">男</el-radio>
+            <el-radio label="女">女</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="成立日期：">
-          <el-input v-model="viewDetailForm.establishmentTimeFilters" disabled></el-input>
+        <el-form-item label="年龄：">
+          <el-input v-model="viewDetailForm.age" disabled></el-input>
         </el-form-item>
-        <el-form-item label="通讯地址：">
-          <el-input v-model="viewDetailForm.postalAddress" disabled></el-input>
+        <el-form-item label="联系电话：" prop="phone">
+          <el-input v-model="viewDetailForm.phone" disabled></el-input>
         </el-form-item>
-        <el-form-item label="营业执照：">
-          <el-tooltip class="item" effect="dark" content="点击下载" placement="right">
-            <el-button type="text" @click="uploadDown">{{ viewDetailForm.fileName }}</el-button>
-          </el-tooltip>
+        <el-form-item label="地址：">
+          <el-input v-model="viewDetailForm.address" disabled></el-input>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="修改时间：">
+          <el-input v-model="viewDetailForm.updateAt_new" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="创建时间：">
+          <el-input v-model="viewDetailForm.createAt_new" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="备注：">
           <el-input
             type="textarea"
             :autosize="{ minRows: 4, maxRows: 8}"
             disabled
             v-model="viewDetailForm.note"
+            maxlength="250"
+            show-word-limit
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click="viewDetailDialogFormCancle">取 消</el-button>
-        <el-button size="small" type="primary" @click="viewDetailDialogFormSubmit">确 定</el-button>
+        <el-button size="small" type="info" @click="viewDetailDialogFormCancleGlobal">取 消</el-button>
+        <el-button size="small" type="primary" @click="viewDetailDialogFormSubmitGlobal">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -214,17 +266,36 @@ export default {
         name: ""
       },
       tableHeight: window.innerHeight - 300, // 表格高度
+      // 添加dialog form
+      addDialogForm: {
+        addDialogFormVisible: false,
+        addDialogFormLabelWidth: "140px",
+        name: "",
+        company: "",
+        gender: "",
+        age: "",
+        phone: "",
+        address: "",
+        note: "",
+        addDialogFormRules: {
+          name: [
+            { required: true, message: "请输入客户名称", trigger: "blur" }
+          ],
+          phone: [
+            { required: true, message: "请输入联系方式", trigger: "blur" }
+          ]
+        }
+      },
       fatherCompanyList: [], // 父公司列表
       // 查看详情dialog
       viewDetailForm: {},
-      viewDetailFormVisible: false,
-      viewDetailFormLabelWidth: "140px"
+      viewDetailFormLabelWidth: "140px",
     };
   },
   methods: {
     // 搜索
     searchSubmit() {
-      this.globalSearchUrl = "company/findCompanyByName";
+      this.globalSearchUrl = "customer/getustomerByName";
       this.globalSearchFormData = {
         name: this.searchForm.name
       };
@@ -232,12 +303,56 @@ export default {
     },
     // 获取表格数据
     getTableData() {
-      this.globalGetTableDataUrl = "company/getAll";
+      this.globalGetTableDataUrl = "customer/getAll";
       this.getTableDataGlobal();
+    },
+    // 添加表单重置
+    addReset() {
+      this.addDialogForm.address = "";
+      this.addDialogForm.gender = "";
+      this.addDialogForm.name = "";
+      this.addDialogForm.company = "";
+      this.addDialogForm.age = "";
+      this.addDialogForm.phone = "";
+      this.addDialogForm.note = "";
+    },
+    // 添加确定
+    addDialogFormSubmit() {
+      var url = "customer/addCustomer";
+      let formData = {
+        address: this.addDialogForm.address,
+        gender: this.addDialogForm.gender,
+        name: this.addDialogForm.name,
+        company: this.addDialogForm.company,
+        age: this.addDialogForm.age,
+        phone: this.addDialogForm.phone,
+        note: this.addDialogForm.note
+      };
+      this.$refs.addDialogForm.validate(valid => {
+        if (valid) {
+          this.$axios.post(url, formData).then(res => {
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+              this.globalaAddDialogFormVisible = false;
+              this.addReset();
+              this.getTableData(); // 重置表单数据
+            }
+          });
+        } else {
+          this.$message({
+            type: "warning",
+            message: "请先填写必填项!"
+          });
+          return false;
+        }
+      });
     },
     // 表格行查看详情
     handleDetail(index, row) {
-      let url = "company/getCompanyById";
+      let url = "customer/getCustomerById";
       let formData = {
         id: row.id
       };
@@ -245,71 +360,35 @@ export default {
         .post(url, formData)
         .then(res => {
           if (res.data.code == 1) {
+            this.globalViewDetailFormVisible = true; // 弹出层
             this.viewDetailForm = res.data.data;
-            this.globalFileName = this.viewDetailForm.fileName; // 用于下载问件时候的文件名
-            this.viewDetailFormVisible = true;  // 弹出层
-            this.viewDetailForm["fatherCompany"] = this.$options.filters[
-              "fatherCompany"
-            ](this.viewDetailForm.pid); // 新增父公司key - value
-            this.viewDetailForm[
-              "establishmentTimeFilters"
-            ] = this.$options.filters["dateFilter"](this.viewDetailForm.establishmentTime); // 新增转换后的成立日期key - value
+            this.viewDetailForm["updateAt_new"] = this.$options.filters[
+              "dateFilter"
+            ](this.viewDetailForm.updateAt); // 新增转换后的修改时间key - value
+            this.viewDetailForm["createAt_new"] = this.$options.filters[
+              "dateFilter"
+            ](this.viewDetailForm.createAt); // 新增转换后的创建时间key - value
           }
         })
         .catch(err => {});
     },
     // 表格行删除事件
     handleDelete(index, row) {
-      this.globalDeleteUrl = "company/delCompanyById";
+      this.globalDeleteUrl = "customer/deleteCustomer";
       this.globalDeleteFormData = {
         id: row.id
       };
       this.handleDeleteGlobal();
     },
-    // 表格行查看详情取消
-    viewDetailDialogFormCancle() {
-      this.viewDetailFormVisible = false;
-      this.$message({
-        type: "info",
-        message: "已取消查看详情!"
-      });
-    },
-    // 表格行查看详情确定
-    viewDetailDialogFormSubmit() {
-      this.viewDetailFormVisible = false;
-    },
     // 表格switch事件
     menuStatus(index, row) {
-      this.globalMenuStatusUrl = "company/updateCompanyStatus";
+      this.globalMenuStatusUrl = "customer/udateStatus";
       this.globalMenuStatusFormData = {
         id: row.id,
         status: row.status
       };
       this.globalMenuStatus();
     },
-    // 查看详情营业执照下载
-    uploadDown() {
-      let url = "company/getBusinessLicenseByCompanyId";
-      let formData = {
-        id: this.viewDetailForm.id
-      };
-      this.downloadFile(url, formData);
-    },
-    // 父公司列表
-    handleFatherCompanyList() {
-      let url = "company/getCompanyByStatus";
-      let formData = {
-        status: "ACTIVE"
-      };
-      this.$axios
-        .post(url, formData)
-        .then(res => {
-          this.fatherCompanyList = res.data.data;
-        })
-        .catch(err => {
-          return err;
-        });
-    }
   },
   beforeCreate: function() {
     that = this;
@@ -317,8 +396,7 @@ export default {
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
     this.globalListenHeight(); // 监听页面变化，修改表格高度
-    this.getTableData();// 获取表格数据
-    this.handleFatherCompanyList();  // 获取父公司列表
+    this.getTableData(); // 获取表格数据
   }
 };
 </script>
