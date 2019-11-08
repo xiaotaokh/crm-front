@@ -1,9 +1,11 @@
 <template>
   <div class="index">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
+    <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/appMain/index' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>dashboard</el-breadcrumb-item>
-    </el-breadcrumb>
+    </el-breadcrumb>-->
+
+    <app-breadcrumb></app-breadcrumb>
     <!-- 除去面包屑主体 -->
     <div class="content-main">
       <el-row :gutter="20" class="card">
@@ -100,7 +102,7 @@
 
 <script>
 import G2 from "@antv/g2";
-import dataSet from "../plugin/data-set.min.js";
+// import dataSet from "../plugin/data-set";
 export default {
   name: "index",
   computed: {},
@@ -153,11 +155,16 @@ export default {
     },
     // mini area chart
     miniArea() {
+      // var ds = new DataSet();
+      // var dv = ds.createView().source(this.data);
+      // Step 1: 创建 Chart 对象
       var chart = new G2.Chart({
         container: "mini-area",
         forceFit: true,
         height: 300
       });
+      // Step 2: 载入数据源
+      // chart.source(dv);
       chart.source(this.data);
       chart.axis("value", {
         label: {
@@ -171,19 +178,22 @@ export default {
           type: "line"
         }
       });
+      // Step 3：创建图形语法，绘制折线区域图
       chart
         .area()
         .position("year*value")
-        .shape("smooth")
+        .shape("smooth"); // 折线使用曲线
       chart
         .line()
         .position("year*value")
         .size(1)
         .shape("smooth");
+      // Step 4: 渲染图表
       chart.render();
     }
   },
   mounted() {
+    this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
     this.miniArea();
   }
 };

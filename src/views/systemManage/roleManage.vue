@@ -75,7 +75,7 @@
                   :type="scope.row.typeStatus == '1' ? 'success' : 'warning' "
                   effect="dark"
                 >{{ scope.row.typeStatus == '1' ? "已授权" : '未授权' }}</el-tag>
-                <el-tooltip effect="dark" content="修改授权状态" placement="top">
+                <el-tooltip effect="dark" content="角色授权" placement="top">
                   <el-button
                     type="text"
                     class="auth-btn"

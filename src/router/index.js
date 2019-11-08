@@ -9,6 +9,7 @@ import customerManage from '@/views/customerManage/customerManage'              
 import salesTarget from '@/views/customerManage/salesTarget/salesTarget'            // 销售目标
 import salesTargetManage from '@/views/customerManage/salesTarget/salesTargetManage'                     // 销售目标管理
 import salesTargetStatistic from '@/views/customerManage/salesTarget/salesTargetStatistic'               // 销售目标管理
+import customerList from '@/views/customerManage/customerList'            // 客户列表
 
 // 系统管理
 import systemManage from '@/views/systemManage/systemManage'               // 系统管理
@@ -39,15 +40,19 @@ const router = new Router({
       path: '/appMain', name: '/appMain', component: appMain, meta:"首页",       // 主体页
       children:[
         {
-          path: '/appMain/index', name: 'appMain/index', component: index,        // 首页
+          path: '/appMain/index', name: 'appMain/index', component: index, meta:"dashboard",        // 首页
         },
         // 客户管理
         {
-          path: '/appMain/customerManage/customerManage', redirect: '/appMain/customerManage/salesTarget/salesTargetManage', component: salesTargetManage                 // 客户管理重定向到销售目标管理
+          path: '/appMain/customerManage/customerManage', redirect: '/appMain/customerManage/customerList', component: customerList                 // 客户管理重定向到客户列表
         },
         {
           path: '/appMain/customerManage/customerManage', name: 'appMain/customerManage/customerManage', component: customerManage, meta:"客户管理",                               // 客户管理
           children:[
+            // 客户列表
+            {
+              path: '/appMain/customerManage/customerList', name: 'appMain/customerManage/customerList', component: customerList, meta:"客户列表",        // 客户列表
+            },
             // 销售目标
             {
               path: '/appMain/customerManage/salesTarget/salesTarget', redirect: '/appMain/customerManage/salesTarget/salesTargetManage', component: salesTargetManage                  // 销售目标重定向到销售目标管理
@@ -63,10 +68,6 @@ const router = new Router({
                 }
               ]
             },
-            // 公海客户
-            // {
-            //   path: '', name: '', component: ""
-            // }
           ]
         },
         // 系统管理 
