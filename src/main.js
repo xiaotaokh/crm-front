@@ -18,6 +18,10 @@ import '@/assets/styles/main.css' // 全局主样式文件
 import '@/assets/styles/media.css' // 响应式布局样式文件
 import '@/assets/styles/reset.css' // 全局样式重置
 
+// 引入echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+
 import 'es6-promise/auto' // Vuex依赖 Promise
 import Vuex from 'vuex' // Vuex全局状态管理
 Vue.use(Vuex)
