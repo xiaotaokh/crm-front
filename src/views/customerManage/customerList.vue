@@ -53,7 +53,7 @@
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="客户名称" width="180" show-overflow-tooltip>
+            <el-table-column align="center" label="客户名称" width="160" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
             <el-table-column align="center" label="性别" width="100">
@@ -143,11 +143,7 @@
           <el-input v-model="addDialogForm.name" placeholder="请输入客户名称" clearable></el-input>
         </el-form-item>
         <el-form-item label="单位：">
-          <el-input
-            v-model="addDialogForm.company"
-            placeholder="请输入客户单位"
-            clearable
-          ></el-input>
+          <el-input v-model="addDialogForm.company" placeholder="请输入客户单位" clearable></el-input>
         </el-form-item>
         <el-form-item label="性别：">
           <el-radio-group v-model="addDialogForm.gender">
@@ -192,10 +188,7 @@
           <el-input v-model="viewDetailForm.name" disabled></el-input>
         </el-form-item>
         <el-form-item label="单位：">
-          <el-input
-            v-model="viewDetailForm.company"
-            disabled
-          ></el-input>
+          <el-input v-model="viewDetailForm.company" disabled></el-input>
         </el-form-item>
         <el-form-item label="性别：">
           <el-radio-group disabled v-model="viewDetailForm.gender">
@@ -211,6 +204,16 @@
         </el-form-item>
         <el-form-item label="地址：">
           <el-input v-model="viewDetailForm.address" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="状态：" prop="name">
+          <el-switch
+            disabled
+            v-model="viewDetailForm.status"
+            active-value="ACTIVE"
+            inactive-value="DEL"
+            active-text="启用"
+            inactive-text="禁用"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="修改时间：">
           <el-input v-model="viewDetailForm.updateAt_new" disabled></el-input>
@@ -234,6 +237,72 @@
         <el-button size="small" type="primary" @click="viewDetailDialogFormSubmitGlobal">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 编辑dialog -->
+    <el-dialog
+      append-to-body
+      center
+      :title="editDialogForm.name"
+      :visible.sync="globalaEditDialogFormVisible"
+    >
+      <el-form
+        :model="editDialogForm"
+        ref="editDialogForm"
+        label-width="100px"
+        :rules="editDialogForm.editDialogFormRules"
+      >
+        <el-form-item label="客户名称：" prop="name">
+          <el-input v-model="editDialogForm.name" placeholder="请输入客户名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="单位：">
+          <el-input v-model="editDialogForm.company" placeholder="请输入客户单位" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="性别：">
+          <el-radio-group v-model="editDialogForm.gender">
+            <el-radio label="男">男</el-radio>
+            <el-radio label="女">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="年龄：">
+          <el-input v-model="editDialogForm.age" placeholder="请输入客户年龄" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话：" prop="phone">
+          <el-input v-model="editDialogForm.phone" placeholder="请输入联系电话" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="地址：">
+          <el-input v-model="editDialogForm.address" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="状态：" prop="name">
+          <el-switch
+            disabled
+            v-model="editDialogForm.status"
+            active-value="ACTIVE"
+            inactive-value="DEL"
+            active-text="启用"
+            inactive-text="禁用"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item label="修改时间：">
+          <el-input v-model="editDialogForm.updateAt_new" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="创建时间：">
+          <el-input v-model="editDialogForm.createAt_new" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="备注：">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 4, maxRows: 8}"
+            placeholder="请输入备注"
+            v-model="editDialogForm.note"
+            maxlength="250"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="info" @click="editDialogFormCancleGlobal">取 消</el-button>
+        <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -243,21 +312,6 @@ let that;
 export default {
   mixins: [myMixins],
   name: "customerList",
-  filters: {
-    // 父公司过滤器
-    fatherCompany: function(value) {
-      if (value == 0) {
-        // 当父公司pid为0时候，显示无
-        return "无";
-      } else {
-        for (let item of that.fatherCompanyList) {
-          if (value == item.id) {
-            return item.name;
-          }
-        }
-      }
-    }
-  },
   watch: {},
   data() {
     return {
@@ -265,11 +319,13 @@ export default {
       searchForm: {
         name: ""
       },
+
       tableHeight: window.innerHeight - 300, // 表格高度
+
       // 添加dialog form
       addDialogForm: {
         addDialogFormVisible: false,
-        addDialogFormLabelWidth: "140px",
+        addDialogFormLabelWidth: "100px",
         name: "",
         company: "",
         gender: "",
@@ -286,16 +342,36 @@ export default {
           ]
         }
       },
-      fatherCompanyList: [], // 父公司列表
+
       // 查看详情dialog
       viewDetailForm: {},
-      viewDetailFormLabelWidth: "140px",
+      viewDetailFormLabelWidth: "100px",
+
+      // 编辑dialog form
+      editDialogForm: {
+        name: "", // 客户名称
+        company: "", // 单位
+        gender: "", // 性别
+        age: "", // 年龄
+        phone: "", // 联系电话
+        address: "", // 地址
+        note: "", // 备注
+        // 编辑菜单弹窗form表单校验规则
+        editDialogFormRules: {
+          name: [
+            { required: true, message: "请输入客户名称", trigger: "blur" }
+          ],
+          phone: [
+            { required: true, message: "请输入联系方式", trigger: "blur" }
+          ]
+        }
+      }
     };
   },
   methods: {
     // 搜索
     searchSubmit() {
-      this.globalSearchUrl = "customer/getustomerByName";
+      this.globalSearchUrl = "customer/getCustomerByName";
       this.globalSearchFormData = {
         name: this.searchForm.name
       };
@@ -372,6 +448,65 @@ export default {
         })
         .catch(err => {});
     },
+    // 表格行编辑事件
+    handleEdit(index, row) {
+      let url = "customer/getCustomerById";
+      let formData = {
+        id: row.id
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.globalaEditDialogFormVisible = true; // 弹出层
+            this.editDialogForm = res.data.data;
+            this.editDialogForm["updateAt_new"] = this.$options.filters[
+              "dateFilter"
+            ](this.editDialogForm.updateAt); // 新增转换后的修改时间key - value
+            this.editDialogForm["createAt_new"] = this.$options.filters[
+              "dateFilter"
+            ](this.editDialogForm.createAt); // 新增转换后的创建时间key - value
+          }
+        })
+        .catch(err => {});
+    },
+    // 表格行编辑确定
+    editDialogFormSubmit() {
+      var url = "customer/updateCustomer";
+      let formData = {
+        address: this.editDialogForm.address,
+        gender: this.editDialogForm.gender,
+        updateAt: this.editDialogForm.updateAt,
+        createAt: this.editDialogForm.createAt,
+        updateId: this.editDialogForm.updateId,
+        createId: this.editDialogForm.createId,
+        name: this.editDialogForm.name,
+        company: this.editDialogForm.company,
+        id: this.editDialogForm.id,
+        age: this.editDialogForm.age,
+        status: this.editDialogForm.status
+      };
+      this.$refs.editDialogForm.validate(valid => {
+        if (valid) {
+          this.$axios.post(url, formData).then(res => {
+            if (res.data.code == 1) {
+              this.$message({
+                type: "success",
+                message: res.data.msg
+              });
+              this.globalaEditDialogFormVisible = false;
+              this.getTableData();
+            }
+          });
+        } else {
+          this.$message({
+            type: "warning",
+            message: "请先填写必填项!"
+          });
+          return false;
+        }
+      });
+    },
     // 表格行删除事件
     handleDelete(index, row) {
       this.globalDeleteUrl = "customer/deleteCustomer";
@@ -388,10 +523,7 @@ export default {
         status: row.status
       };
       this.globalMenuStatus();
-    },
-  },
-  beforeCreate: function() {
-    that = this;
+    }
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
