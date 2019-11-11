@@ -139,6 +139,13 @@
       "unicode_decimal": 58888
     },
     {
+      "icon_id": "7171160",
+      "name": "项目管理",
+      "font_class": "xiangmu",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
       "icon_id": "7171936",
       "name": "密码重置",
       "font_class": "mimazhongzhi",
