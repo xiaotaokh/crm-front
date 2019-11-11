@@ -97,6 +97,13 @@
       "unicode_decimal": 58890
     },
     {
+      "icon_id": "1915207",
+      "name": "CRM",
+      "font_class": "icon-test",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
       "icon_id": "1965167",
       "name": "icon_公司信息维护",
       "font_class": "icon_gongsixinxiweihu",
@@ -158,6 +165,13 @@
       "font_class": "yonghu",
       "unicode": "e674",
       "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "9101993",
+      "name": "添加人",
+      "font_class": "tubiao-tianjiaren",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
     },
     {
       "icon_id": "9351375",

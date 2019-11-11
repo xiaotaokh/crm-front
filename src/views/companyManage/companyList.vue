@@ -133,16 +133,16 @@
     <el-dialog append-to-body center :title="viewDetailForm.name" :visible.sync="viewDetailFormVisible">
       <el-form :model="viewDetailForm" :label-width="viewDetailFormLabelWidth" ref="viewDetailForm">
         <el-form-item label="公司名称：">
-          <el-input v-model="viewDetailForm.name" disabled></el-input>
+          <el-input v-model="viewDetailForm.name" readonly></el-input>
         </el-form-item>
         <el-form-item label="法人：">
-          <el-input v-model="viewDetailForm.legalPerson" disabled></el-input>
+          <el-input v-model="viewDetailForm.legalPerson" readonly></el-input>
         </el-form-item>
         <el-form-item label="父公司：">
-          <el-input v-model="viewDetailForm.fatherCompany" disabled></el-input>
+          <el-input v-model="viewDetailForm.fatherCompany" readonly></el-input>
         </el-form-item>
         <el-form-item label="统一社会代码：">
-          <el-input v-model="viewDetailForm.unifiedSocialCode" disabled></el-input>
+          <el-input v-model="viewDetailForm.unifiedSocialCode" readonly></el-input>
         </el-form-item>
         <el-form-item label="状态">
           <el-switch
@@ -155,13 +155,13 @@
           ></el-switch>
         </el-form-item>
         <el-form-item label="法人电话：">
-          <el-input v-model="viewDetailForm.telephone" disabled></el-input>
+          <el-input v-model="viewDetailForm.telephone" readonly></el-input>
         </el-form-item>
         <el-form-item label="成立日期：">
-          <el-input v-model="viewDetailForm.establishmentTimeFilters" disabled></el-input>
+          <el-input v-model="viewDetailForm.establishmentTimeFilters" readonly></el-input>
         </el-form-item>
         <el-form-item label="通讯地址：">
-          <el-input v-model="viewDetailForm.postalAddress" disabled></el-input>
+          <el-input v-model="viewDetailForm.postalAddress" readonly></el-input>
         </el-form-item>
         <el-form-item label="营业执照：">
           <el-tooltip class="item" effect="dark" content="点击下载" placement="right">
@@ -172,7 +172,7 @@
           <el-input
             type="textarea"
             :autosize="{ minRows: 4, maxRows: 8}"
-            disabled
+            readonly
             v-model="viewDetailForm.note"
           ></el-input>
         </el-form-item>

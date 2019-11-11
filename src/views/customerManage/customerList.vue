@@ -53,7 +53,7 @@
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="客户名称" width="160" show-overflow-tooltip>
+            <el-table-column align="center" label="客户名称" width="140" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
             <el-table-column align="center" label="性别" width="100">
@@ -62,7 +62,7 @@
             <el-table-column align="center" label="年龄" width="100">
               <template slot-scope="scope">{{ scope.row.age }}</template>
             </el-table-column>
-            <el-table-column align="center" label="联系电话" width="240">
+            <el-table-column align="center" label="联系电话" width="140">
               <template slot-scope="scope">{{ scope.row.phone }}</template>
             </el-table-column>
             <el-table-column align="center" label="状态" width="180">
@@ -83,10 +83,10 @@
             <el-table-column align="center" label="修改时间" width="160">
               <template slot-scope="scope">{{ scope.row.updateAt | dateFilter }}</template>
             </el-table-column>
-            <el-table-column label="单位" min-width="100">
+            <el-table-column label="单位" min-width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.company }}</template>
             </el-table-column>
-            <el-table-column fixed="right" width="180" align="center" label="操作">
+            <el-table-column fixed="right" width="220" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="查看详情" placement="top">
                   <el-button
@@ -96,6 +96,16 @@
                     circle
                     icon="el-icon-tickets"
                   ></el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="查看添加人" placement="top">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="viewAddUser(scope.$index, scope.row)"
+                    circle
+                  >
+                    <i class="iconfont icontubiao-tianjiaren" style="font-size:12px"></i>
+                  </el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="编辑" placement="top">
                   <el-button
@@ -185,10 +195,10 @@
     >
       <el-form :model="viewDetailForm" :label-width="viewDetailFormLabelWidth" ref="viewDetailForm">
         <el-form-item label="客户名称：">
-          <el-input v-model="viewDetailForm.name" disabled></el-input>
+          <el-input v-model="viewDetailForm.name" readonly></el-input>
         </el-form-item>
         <el-form-item label="单位：">
-          <el-input v-model="viewDetailForm.company" disabled></el-input>
+          <el-input v-model="viewDetailForm.company" readonly></el-input>
         </el-form-item>
         <el-form-item label="性别：">
           <el-radio-group disabled v-model="viewDetailForm.gender">
@@ -197,13 +207,13 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="年龄：">
-          <el-input v-model="viewDetailForm.age" disabled></el-input>
+          <el-input v-model="viewDetailForm.age" readonly></el-input>
         </el-form-item>
         <el-form-item label="联系电话：" prop="phone">
-          <el-input v-model="viewDetailForm.phone" disabled></el-input>
+          <el-input v-model="viewDetailForm.phone" readonly></el-input>
         </el-form-item>
         <el-form-item label="地址：">
-          <el-input v-model="viewDetailForm.address" disabled></el-input>
+          <el-input v-model="viewDetailForm.address" readonly></el-input>
         </el-form-item>
         <el-form-item label="状态：" prop="name">
           <el-switch
@@ -216,16 +226,16 @@
           ></el-switch>
         </el-form-item>
         <el-form-item label="修改时间：">
-          <el-input v-model="viewDetailForm.updateAt_new" disabled></el-input>
+          <el-input v-model="viewDetailForm.updateAt_new" readonly></el-input>
         </el-form-item>
         <el-form-item label="创建时间：">
-          <el-input v-model="viewDetailForm.createAt_new" disabled></el-input>
+          <el-input v-model="viewDetailForm.createAt_new" readonly></el-input>
         </el-form-item>
         <el-form-item label="备注：">
           <el-input
             type="textarea"
             :autosize="{ minRows: 4, maxRows: 8}"
-            disabled
+            readonly
             v-model="viewDetailForm.note"
             maxlength="250"
             show-word-limit
@@ -235,6 +245,25 @@
       <div slot="footer" class="dialog-footer">
         <el-button size="small" type="info" @click="viewDetailDialogFormCancleGlobal">取 消</el-button>
         <el-button size="small" type="primary" @click="viewDetailDialogFormSubmitGlobal">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 查看添加人 -->
+    <el-dialog
+      append-to-body
+      center
+      :title="viewAddUserForm.viewAddUserFormTitle"
+      :visible.sync="viewAddUserForm.viewAddUserFormVisible"
+    >
+      <el-form :model="viewAddUserForm" label-width="120px" ref="viewAddUserForm">
+        <el-form-item label="添加人：">
+          <el-input v-model="globalUserInformation.name" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="所属公司：">
+          <el-input v-model="globalCompanyInformation.name" readonly></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" type="info" @click="viewAddUserFormCancle">取 消</el-button>
       </div>
     </el-dialog>
     <!-- 编辑dialog -->
@@ -347,6 +376,11 @@ export default {
       viewDetailForm: {},
       viewDetailFormLabelWidth: "100px",
 
+      // 查看添加人dialog form
+      viewAddUserForm: {
+        viewAddUserFormVisible: false,
+        viewAddUserFormTitle: "" // 查看添加人dialog title
+      },
       // 编辑dialog form
       editDialogForm: {
         name: "", // 客户名称
@@ -523,6 +557,21 @@ export default {
         status: row.status
       };
       this.globalMenuStatus();
+    },
+    // 表格行查看添加人
+    viewAddUser(index, row) {
+      this.viewAddUserForm.viewAddUserFormTitle = row.name;
+      // 根据添加人id获取添加人信息
+      this.getIdUserInformationGlobal(row.createId);
+      this.viewAddUserForm.viewAddUserFormVisible = true;
+    },
+    // 表格行添加人取消
+    viewAddUserFormCancle() {
+      this.viewAddUserForm.viewAddUserFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "取消添加人查看"
+      });
     }
   },
   mounted() {

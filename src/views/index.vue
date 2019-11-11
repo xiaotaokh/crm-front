@@ -11,7 +11,7 @@
       <el-row :gutter="20" class="card">
         <!-- 总销售额 -->
         <el-col :span="6">
-          <el-card class="box-card">
+          <el-card class="box-card" :mouseover="addActive" :mouseout="removeActive">
             <div class="card-name">
               <span class="card-name-span">总销售额</span>
             </div>
@@ -150,6 +150,11 @@ export default {
     };
   },
   methods: {
+    // 指示板统计信息移入移出事件
+    addActive($event) {
+      // $event.currentTarget.className="box-card active";  // 设置类名
+    },
+    removeActive() {},
     format(percentage) {
       return percentage === 100 ? "完成" : `${percentage}%`;
     },
@@ -190,7 +195,7 @@ export default {
         .shape("smooth");
       // Step 4: 渲染图表
       chart.render();
-    }
+    },
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
@@ -215,6 +220,17 @@ export default {
 .index .card {
   width: 100%;
   padding: 10px;
+}
+.index .card .box-card {
+  transition: transform 0.1s;
+}
+.index .card .box-card:hover {
+  cursor: pointer;
+  /* 上移 */
+  transform: translate(0, -3px);    
+  /* 放大 */
+  /* transform: scale(1.03); */
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.3);
 }
 .index .card .box-card .card-name {
   margin-bottom: 10px;

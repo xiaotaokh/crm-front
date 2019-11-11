@@ -16,7 +16,7 @@
           <el-button type="text" class="user-name-icon">
             <i class="iconfont iconyonghu"></i>
           </el-button>
-          <el-dropdown :hide-on-click="false">
+          <el-dropdown append-to-body :hide-on-click="false">
             <span class="el-dropdown-link">{{ this.$store.state.globalUserInformation.name }}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>
             <el-dropdown-menu slot="dropdown">
@@ -648,10 +648,17 @@ export default {
 .app-header .header-right .userIcon .el-icon-arrow-down {
   font-size: 12px;
 }
-/* 修改密码 */
-.app-header .update-pass {
+/* 修改密码 el-dropdown没在body之上，因此不需要带.app-header*/
+.update-pass {
   background: #fff !important;
   text-align: center;
+  margin-top: 10px;
+}
+/* 用户下拉下拉菜单背景色 */
+.el-dropdown-menu__item:hover {
+  /* background: #fff !important;
+  color:#303133 !important;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;  */
 }
 /* 通知 */
 .app-header .header-right .notice i {
