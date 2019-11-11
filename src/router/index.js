@@ -22,6 +22,10 @@ import companyManage from '@/views/companyManage/companyManage'                 
 import companyMaintains from '@/views/companyManage/companyMaintains'             // 公司维护
 import companyList from '@/views/companyManage/companyList'             // 公司列表
 
+// 项目管理
+import itemManage from '@/views/itemManage/itemManage'                       // 项目管理
+import itemMaintain from '@/views/itemManage/itemMaintain'             // 项目维护
+
 Vue.use(Router)
 
 const router = new Router({
@@ -67,6 +71,19 @@ const router = new Router({
                   path: '/appMain/customerManage/salesTarget/salesTargetStatistic', name: 'appMain/customerManage/salesTarget/salesTargetStatistic', component: salesTargetStatistic, meta:"销售目标统计",              // 销售目标统计
                 }
               ]
+            },
+          ]
+        },
+        // 项目管理
+        {
+          path: '/appMain/itemManage/itemManage', redirect: '/appMain/itemManage/itemMaintain', component: itemMaintain                 // 项目管理重定向到项目维护
+        },
+        {
+          path: '/appMain/itemManage/itemManage', name: 'appMain/itemManage/itemManage', component: itemManage, meta:"项目管理",        // 项目管理
+          children:[
+            // 项目维护
+            {
+              path: '/appMain/itemManage/itemMaintain', name: 'appMain/itemManage/itemMaintain', component: itemMaintain, meta:"项目维护",        // 项目维护
             },
           ]
         },
