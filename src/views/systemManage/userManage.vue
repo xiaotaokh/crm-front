@@ -416,22 +416,25 @@
     >
       <el-form :model="viewDetailForm" :label-width="viewDetailFormLabelWidth" ref="viewDetailForm">
         <el-form-item label="用户名：">
-          <el-input v-model="viewDetailForm.userName" disabled></el-input>
+          <el-input v-model="viewDetailForm.userName" readonly></el-input>
         </el-form-item>
         <el-form-item label="姓名：">
-          <el-input v-model="viewDetailForm.name" disabled></el-input>
+          <el-input v-model="viewDetailForm.name" readonly></el-input>
         </el-form-item>
         <el-form-item label="性别：">
-          <el-input v-model="viewDetailForm.gender" disabled></el-input>
+          <el-radio-group disabled v-model="viewDetailForm.gender">
+            <el-radio label="男">男</el-radio>
+            <el-radio label="女">女</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="年龄：">
-          <el-input v-model="viewDetailForm.age" disabled></el-input>
+          <el-input v-model="viewDetailForm.age" readonly></el-input>
         </el-form-item>
         <el-form-item label="手机号码：">
-          <el-input v-model="viewDetailForm.phoneNumber" disabled></el-input>
+          <el-input v-model="viewDetailForm.phoneNumber" readonly></el-input>
         </el-form-item>
         <el-form-item label="出生日期：">
-          <el-input v-model="viewDetailForm.birthdayNew" disabled></el-input>
+          <el-input v-model="viewDetailForm.birthdayNew" readonly></el-input>
         </el-form-item>
         <el-form-item label="状态">
           <el-switch
@@ -444,19 +447,19 @@
           ></el-switch>
         </el-form-item>
         <el-form-item label="入职日期：">
-          <el-input v-model="viewDetailForm.entryDateNew" disabled></el-input>
+          <el-input v-model="viewDetailForm.entryDateNew" readonly></el-input>
         </el-form-item>
         <el-form-item label="创建时间：">
-          <el-input v-model="viewDetailForm.createAtNew" disabled></el-input>
+          <el-input v-model="viewDetailForm.createAtNew" readonly></el-input>
         </el-form-item>
         <el-form-item label="修改时间：">
-          <el-input v-model="viewDetailForm.updateAtNew" disabled></el-input>
+          <el-input v-model="viewDetailForm.updateAtNew" readonly></el-input>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
             type="textarea"
             :autosize="{ minRows: 4, maxRows: 8}"
-            disabled
+            readonly
             v-model="viewDetailForm.note"
           ></el-input>
         </el-form-item>

@@ -16,7 +16,14 @@
             <i class="iconfont iconxingmingyonghumingnicheng"></i>
           </template>
         </el-input>
-        <el-input show-password placeholder="请输入密码" v-model="password" @keyup.enter.native="login" clearable size="medium">
+        <el-input
+          show-password
+          placeholder="请输入密码"
+          v-model="password"
+          @keyup.enter.native="login"
+          clearable
+          size="medium"
+        >
           <template slot="prepend">
             <i class="iconfont iconmima"></i>
           </template>
@@ -195,48 +202,60 @@ export default {
 .login {
   width: 100%;
   height: 100%;
-  background: #152e71;
+  min-height: 760px;
   position: relative;
-  overflow: hidden;
-  background: -webkit-linear-gradient(
+  /* background: #f0f0f0; */
+  background: #3e7b82;
+  background-image: url(../assets/images/login_bg.svg);
+  background-size: 100%;
+  overflow: auto;
+  /* Safari 5.1 - 6.0 */
+  /* background: -webkit-linear-gradient(
     left top,
     #6b80bd,
     #6bb4ce,
     #84c5a3,
     #8dad98
-  ); /* Safari 5.1 - 6.0 */
-  background: -o-linear-gradient(
+  );  */
+  /* Opera 11.1 - 12.0 */
+  /* background: -o-linear-gradient(
     bottom right,
     #6b80bd,
     #6bb4ce,
     #84c5a3,
     #8dad98
-  ); /* Opera 11.1 - 12.0 */
-  background: -moz-linear-gradient(
+  );  */
+  /* Firefox 3.6 - 15 */
+  /* background: -moz-linear-gradient(
     bottom right,
     #6b80bd,
     #6bb4ce,
     #84c5a3,
     #8dad98
-  ); /* Firefox 3.6 - 15 */
-  background: linear-gradient(
+  );  */
+  /* 标准的语法 */
+  /* background: linear-gradient(
     to bottom right,
     #6b80bd,
     #6bb4ce,
     #84c5a3,
     #8dad98
-  ); /* 标准的语法 */
+  );  */
 }
 /* 登录窗口 */
 .login .login-form {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 55%;
   transform: translate(-50%, -50%);
   width: 330px;
   height: 350px;
   background: rgba(255, 255, 255, 0);
-  box-shadow: 0 0 10px #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.login .login-form:hover {
+  box-shadow: 0 0 8px #fff;
 }
 /* 标题 */
 .login .login-form .login-form-title {
@@ -248,7 +267,7 @@ export default {
   font-family: cursive;
   font-weight: 700;
   font-size: 24px;
-  color: #fff;
+  color: #F2F6FC;
 }
 /* 输入框 */
 .login .login-form .login-form-ipt {
@@ -293,9 +312,9 @@ export default {
   height: 100px;
   line-height: 100px;
   text-align: center;
-  font-size: 5vh;
+  font-size: 36px;
   font-weight: 700;
-  margin-top: 20px;
+  margin-top: 4%;
   font-family: cursive;
 }
 .login .header span {

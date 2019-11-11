@@ -39,6 +39,14 @@ export const myMixins = {
 
       // 表格全局查看详情
       globalViewDetailFormVisible: false,
+
+      // 全局根据id获取用户信息
+      globalUserInformation:{},
+
+      // 全局公司信息，根据id查找
+      globalCompanyInformation:{},
+
+
     }
   },
   created() {
@@ -394,6 +402,41 @@ export const myMixins = {
     // 表格行查看详情全局确定
     viewDetailDialogFormSubmitGlobal() {
       this.globalViewDetailFormVisible = false;
+    },
+
+    // 全局根据id获取用户信息
+    getIdUserInformationGlobal(userId) {
+      this.globalUserInformation = {};
+      let url = "user/getUserById";
+      let formData = {
+        id:userId
+      }
+      this.$axios.post(url,formData).then(res => {
+        if(res.data.code == 1) {
+          this.globalUserInformation = res.data.data;
+          // console.log(this.globalUserInformation)
+          this.getCompanyByIdGlobal(this.globalUserInformation.companyId);  // 根据公司id查询公司信息
+        }
+      }).catch(err => {
+        return err;
+      })
+    },
+
+    // 全局获取公司
+    getCompanyByIdGlobal(companyId) {
+      let url = "company/getCompanyById";
+      let formData = {
+        id: companyId
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.globalCompanyInformation = res.data.data;
+            // console.log(this.globalCompanyInformation)
+          }
+        })
+        .catch(err => {}); 
     },
   }
 }

@@ -1,17 +1,15 @@
 <template>
   <div class="index">
-    <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/appMain/index' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>dashboard</el-breadcrumb-item>
-    </el-breadcrumb>-->
-
-    <app-breadcrumb></app-breadcrumb>
+    </el-breadcrumb>
     <!-- 除去面包屑主体 -->
     <div class="content-main">
       <el-row :gutter="20" class="card">
         <!-- 总销售额 -->
         <el-col :span="6">
-          <el-card class="box-card" :mouseover="addActive" :mouseout="removeActive">
+          <el-card class="box-card">
             <div class="card-name">
               <span class="card-name-span">总销售额</span>
             </div>
@@ -41,7 +39,8 @@
             <div class="card-number">
               <span class="card-number-span">8846</span>
             </div>
-            <div class="card-figure"></div>
+            <div class="card-figure">
+            </div>
             <div class="card-bot">
               <span>日访问量</span>
               <span>1234</span>
@@ -94,117 +93,124 @@
           </el-card>
         </el-col>
       </el-row>
-      <!-- 访问量area图 -->
-      <div id="mini-area"></div>
+              <div id="myChart" :style="{width: '100%', height: '100px'}"></div>
     </div>
   </div>
 </template>
 
 <script>
 import G2 from "@antv/g2";
-// import dataSet from "../plugin/data-set";
+import shine from "@/plugin/shine.js"
 export default {
   name: "index",
   computed: {},
   watch: {},
   data() {
     return {
-      data: [
-        {
-          year: "1",
-          value: 11
-        },
-        {
-          year: "2",
-          value: 12
-        },
-        {
-          year: "3",
-          value: 32
-        },
-        {
-          year: "4",
-          value: 47
-        },
-        {
-          year: "5",
-          value: 5
-        },
-        {
-          year: "6",
-          value: 16
-        },
-        {
-          year: "7",
-          value: 76
-        },
-        {
-          year: "8",
-          value: 38
-        },
-        {
-          year: "9",
-          value: 29
-        }
-      ]
+      data: {
+        xData: [
+          "2019-10-1",
+          "2019-10-2",
+          "2019-10-3",
+          "2019-10-4",
+          "2019-10-5",
+          "2019-10-6",
+          "2019-10-7",
+          "2019-10-8",
+          "2019-10-9",
+          "2019-10-10",
+          "2019-10-11",
+          "2019-10-12",
+          "2019-10-13",
+          "2019-10-14",
+          "2019-10-15",
+          "2019-10-16",
+          "2019-10-17",
+          "2019-10-18",
+          "2019-10-19"
+        ],
+        yData: [
+          1,
+          21,
+          13,
+          4,
+          12,
+          6,
+          7,
+          18,
+          9,
+          10,
+          11,
+          4,
+          56,
+          1,
+          15,
+          16,
+          16,
+          8,
+          3
+        ]
+      }
     };
   },
   methods: {
-    // 指示板统计信息移入移出事件
-    addActive($event) {
-      // $event.currentTarget.className="box-card active";  // 设置类名
-    },
-    removeActive() {},
-    format(percentage) {
-      return percentage === 100 ? "完成" : `${percentage}%`;
-    },
-    // mini area chart
-    miniArea() {
-      // var ds = new DataSet();
-      // var dv = ds.createView().source(this.data);
-      // Step 1: 创建 Chart 对象
-      var chart = new G2.Chart({
-        container: "mini-area",
-        forceFit: true,
-        height: 300
+    
+      format(percentage) {
+        return percentage === 100 ? '完成' : `${percentage}%`;
+      },
+    drawLine() {
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$echarts.init(document.getElementById("myChart"),'shine');
+      // 绘制图表
+      myChart.setOption({
+        tooltip: {},
+        xAxis: {
+          show: false,
+          data: this.data.xData,
+          splitLine: {
+            show: false
+          }
+        },
+        yAxis: [
+          {
+            show: false,
+            type: "category",
+            boundaryGap: false,
+            //y轴
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              //y轴刻度线
+              show: false
+            },
+            //网格线
+            splitLine: {
+              show: false
+            }
+          }
+        ],
+        series: [
+          {
+            name: "访问量",
+            type: "line",
+            data: this.data.yData,
+             areaStyle: {}
+          }
+        ]
       });
-      // Step 2: 载入数据源
-      // chart.source(dv);
-      chart.source(this.data);
-      chart.axis("value", {
-        label: {
-          // formatter: function formatter(val) {
-          //   return (val / 10000).toFixed(1) + "k";
-          // }
-        }
-      });
-      chart.tooltip({
-        crosshairs: {
-          type: "line"
-        }
-      });
-      // Step 3：创建图形语法，绘制折线区域图
-      chart
-        .area()
-        .position("year*value")
-        .shape("smooth"); // 折线使用曲线
-      chart
-        .line()
-        .position("year*value")
-        .size(1)
-        .shape("smooth");
-      // Step 4: 渲染图表
-      chart.render();
-    },
+    }
   },
   mounted() {
-    this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
-    this.miniArea();
+    this.drawLine();
   }
 };
 </script>
 
 <style scoped>
+#myChart {
+  border:1px solid #000;
+}
 .index {
   width: 100%;
   height: 100%;
@@ -220,17 +226,6 @@ export default {
 .index .card {
   width: 100%;
   padding: 10px;
-}
-.index .card .box-card {
-  transition: transform 0.1s;
-}
-.index .card .box-card:hover {
-  cursor: pointer;
-  /* 上移 */
-  transform: translate(0, -3px);    
-  /* 放大 */
-  /* transform: scale(1.03); */
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.3);
 }
 .index .card .box-card .card-name {
   margin-bottom: 10px;

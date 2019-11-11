@@ -34,6 +34,20 @@
       "unicode_decimal": 58976
     },
     {
+      "icon_id": "829816",
+      "name": "下降",
+      "font_class": "xiajiang",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "829818",
+      "name": "增长",
+      "font_class": "zengchang",
+      "unicode": "e692",
+      "unicode_decimal": 59026
+    },
+    {
       "icon_id": "982375",
       "name": "邮箱",
       "font_class": "youxiang",
@@ -81,6 +95,13 @@
       "font_class": "tianjia",
       "unicode": "e60a",
       "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "1915207",
+      "name": "CRM",
+      "font_class": "icon-test",
+      "unicode": "e604",
+      "unicode_decimal": 58884
     },
     {
       "icon_id": "1965167",
@@ -144,6 +165,13 @@
       "font_class": "yonghu",
       "unicode": "e674",
       "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "9101993",
+      "name": "添加人",
+      "font_class": "tubiao-tianjiaren",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
     },
     {
       "icon_id": "9351375",
