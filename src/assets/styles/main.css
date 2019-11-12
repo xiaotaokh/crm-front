@@ -89,6 +89,7 @@ html, body {
   height: 100%;
   width: 100%;
   min-width: 1360px;
+  min-height: 760px;
 }
 
 /* 除去面包屑主体 不带搜索、不带分页 表格高度为 window.innerHeight - 200*/
