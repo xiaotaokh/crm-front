@@ -9,6 +9,7 @@ import customerManage from '@/views/customerManage/customerManage'              
 import salesTarget from '@/views/customerManage/salesTarget/salesTarget'            // 销售目标
 import salesTargetManage from '@/views/customerManage/salesTarget/salesTargetManage'                     // 销售目标管理
 import salesTargetStatistic from '@/views/customerManage/salesTarget/salesTargetStatistic'               // 销售目标管理
+import salesTargetManage_router from '@/views/customerManage/salesTarget/salesTargetManage_router'       // 销售目标管理跳转页
 import customerList from '@/views/customerManage/customerList'            // 客户列表
 
 // 系统管理
@@ -66,6 +67,9 @@ const router = new Router({
               children:[
                 {
                   path: '/appMain/customerManage/salesTarget/salesTargetManage', name: 'appMain/customerManage/salesTarget/salesTargetManage', component: salesTargetManage, meta:"销售目标管理",                       // 销售目标管理
+                },
+                {
+                  path: '/appMain/customerManage/salesTarget/salesTargetManage_router', name: 'appMain/customerManage/salesTarget/salesTargetManage_router', component: salesTargetManage_router, meta:"销售目标管理跳转页",    // 销售目标管理跳转页
                 },
                 {
                   path: '/appMain/customerManage/salesTarget/salesTargetStatistic', name: 'appMain/customerManage/salesTarget/salesTargetStatistic', component: salesTargetStatistic, meta:"销售目标统计",              // 销售目标统计
