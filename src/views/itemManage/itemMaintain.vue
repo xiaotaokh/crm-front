@@ -77,10 +77,10 @@
             <el-table-column align="center" label="修改时间" width="160">
               <template slot-scope="scope">{{ scope.row.updateAt | dateFilter }}</template>
             </el-table-column>
-            <el-table-column label="备注" min-width="180">
+            <el-table-column label="备注" min-width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.note }}</template>
             </el-table-column>
-            <el-table-column fixed="right" width="180" align="center" label="操作">
+            <el-table-column fixed="right" width="160" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="查看详情" placement="top">
                   <el-button

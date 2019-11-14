@@ -267,7 +267,7 @@ export default {
   font-family: cursive;
   font-weight: 700;
   font-size: 24px;
-  color: #F2F6FC;
+  color: #f2f6fc;
 }
 /* 输入框 */
 .login .login-form .login-form-ipt {
@@ -298,7 +298,7 @@ export default {
 /* 背景图片 */
 .login .img {
   position: absolute;
-  right: 2%;
+  left: 0;
   bottom: 0%;
   width: 32%;
   height: 47%;
@@ -312,7 +312,7 @@ export default {
   height: 100px;
   line-height: 100px;
   text-align: center;
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 700;
   margin-top: 4%;
   font-family: cursive;

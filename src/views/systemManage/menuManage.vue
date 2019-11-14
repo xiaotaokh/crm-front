@@ -61,7 +61,7 @@
             <el-table-column min-width="180" label="菜单描述">
               <template slot-scope="scope">{{ scope.row.content }}</template>
             </el-table-column>
-            <el-table-column fixed="right" width="140" align="center" label="操作">
+            <el-table-column fixed="right" width="120" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="编辑" placement="top">
                   <el-button

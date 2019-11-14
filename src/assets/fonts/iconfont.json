@@ -160,6 +160,20 @@
       "unicode_decimal": 59034
     },
     {
+      "icon_id": "7561349",
+      "name": "菜单_收缩",
+      "font_class": "caidan_shousuo",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "7562909",
+      "name": "菜单_展开",
+      "font_class": "caidan_zhankai",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
       "icon_id": "8085228",
       "name": "客户管理",
       "font_class": "ziyuan",

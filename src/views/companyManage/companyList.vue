@@ -93,7 +93,7 @@
                 {{scope.row.note}}
               </template>
             </el-table-column>
-            <el-table-column fixed="right" width="140" align="center" label="操作">
+            <el-table-column fixed="right" width="120" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="查看详情" placement="top">
                   <el-button

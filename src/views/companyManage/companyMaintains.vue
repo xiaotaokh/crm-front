@@ -266,7 +266,6 @@ export default {
         .get(url)
         .then(res => {
           if (res.data.code == 1) {
-            console.log(res.data)
             this.companyMaintainsForm.companyNewsList = res.data.data; // 赋给公司信息表单
 
             this.companyMaintainsForm.fatherCompany = res.data.data.pid;

@@ -6,6 +6,10 @@ export default new Vuex.Store({
   // 全局管理的状态  定义
   state: {
     store: 0, // 测试store
+    sliderIsCollapse:false,  // 侧边栏是否收起
+    sliderWidth:220,  // 侧边栏宽度
+    appContentWidth:220,  // app-content width
+    isHeaderLogo:true,  // 是否显示logo
     globalNavList:[], // 侧边栏slider列表数据
     breadcrumb: [], // 面包屑
     tableLoading: true, // 表格全局loading加载
@@ -42,7 +46,22 @@ export default new Vuex.Store({
     addStore(state, num) {
       state.store = state.store + num;
     },
-
+    // 侧边栏是否收起
+    setsLiderIsCollapse(state,val) {
+      state.sliderIsCollapse = val;
+    },
+    // 侧边栏宽度跟随侧边栏变化
+    setSliderWidth(state,val) {
+      state.sliderWidth = val;
+    },
+    // app-content 主体区域跟随侧边栏变化
+    setAppContentWidth(state,val) {
+      state.appContentWidth = val;
+    },
+    // 设置头部logo显示隐藏
+    setIsHeaderLogo(state,val) {
+      state.isHeaderLogo = val;
+    },
     // 侧边栏slider列表数据
     getGlobalNavList(state,list) {
       state.globalNavList = list;

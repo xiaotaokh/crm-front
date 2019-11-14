@@ -86,7 +86,7 @@
             <el-table-column label="单位" min-width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.company }}</template>
             </el-table-column>
-            <el-table-column fixed="right" width="220" align="center" label="操作">
+            <el-table-column fixed="right" width="200" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="查看详情" placement="top">
                   <el-button
