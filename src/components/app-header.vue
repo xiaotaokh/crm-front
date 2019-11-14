@@ -1,13 +1,52 @@
 <template>
   <div class="app-header">
-    <div class="logo">
-      <img src="../assets/logo.png" alt />
+    <div
+      class="logo"
+      :style="'width: '+this.$store.state.sliderWidth+'px'"
+      v-if="this.$store.state.isHeaderLogo"
+    >
+      <img src="../assets/logo.png" class="img_1" alt />
     </div>
-    <div class="header-right clearfix">
+    <div
+      class="logo"
+      :style="'width: '+this.$store.state.sliderWidth+'px'"
+      v-if="!this.$store.state.isHeaderLogo"
+    >
+      <img src="../assets/logo_v2.png" class="img_2" alt />
+    </div>
+    <div
+      class="header-right clearfix"
+      :style="'position: absolute;left: '+
+      this.$store.state.appContentWidth+
+      'px;width: calc(100% - '+
+      this.$store.state.appContentWidth+
+      'px)'"
+    >
+      <!-- 菜单展开收缩 -->
+      <div class="isCollapse" v-if="this.$store.state.isHeaderLogo">
+        <el-tooltip class="item" effect="dark" content="折叠菜单" placement="right">
+          <el-button type="text" @click="handleSliderIsCollapse">
+            <i class="iconfont iconcaidan_shousuo"></i>
+          </el-button>
+        </el-tooltip>
+      </div>
+      <div class="isCollapse" v-if="!this.$store.state.isHeaderLogo">
+        <el-tooltip class="item" effect="dark" content="展开菜单" placement="right">
+          <el-button type="text" @click="handleSliderIsCollapse">
+            <i class="iconfont iconcaidan_zhankai"></i>
+          </el-button>
+        </el-tooltip>
+      </div>
       <!-- 搜索框 -->
       <div class="search">
-        <el-input placeholder="请输入您想要查询的关键词..." v-model="headerSearch" clearable>
-          <el-button class="search-btn" type="primary" slot="append" icon="el-icon-search"></el-button>
+        <el-input placeholder="请输入您想要查询的关键词..." v-model="headerSearch" size="small" clearable>
+          <el-button
+            class="search-btn"
+            type="primary"
+            slot="append"
+            size="small"
+            icon="el-icon-search"
+          ></el-button>
         </el-input>
       </div>
       <ul class="clearfix">
@@ -326,6 +365,23 @@ export default {
     };
   },
   methods: {
+    // 侧边栏是否收起
+    handleSliderIsCollapse() {
+      this.$store.commit(
+        "setsLiderIsCollapse",
+        !this.$store.state.sliderIsCollapse
+      );
+      // 菜单展开关闭
+      if (this.$store.state.sliderIsCollapse == false) {
+        this.$store.commit("setAppContentWidth", 220); // 主体区域变化
+        this.$store.commit("setSliderWidth", 220); // 侧边栏宽度变化
+        this.$store.commit("setIsHeaderLogo", true); // 头部logo显示隐藏
+      } else {
+        this.$store.commit("setAppContentWidth", 64); // 主体区域变化
+        this.$store.commit("setSliderWidth", 64); // 侧边栏宽度变化
+        this.$store.commit("setIsHeaderLogo", false); // 头部logo显示隐藏
+      }
+    },
     // 退出
     exit() {
       this.$confirm("是否继续?", "退出登录", {
@@ -595,17 +651,22 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  width: 240px;
+  /* width: 240px; */
   height: 60px;
 }
-.app-header .logo img {
-  width: 240px;
+.app-header .logo .img_1 {
+  width: 220px;
+  height: 60px;
+  transition: all 1s;
+}
+.app-header .logo .img_2 {
+  width: 64px;
   height: 60px;
 }
 .app-header .header-right {
-  width: calc(100% - 240px);
+  /* width: calc(100% - 240px); */
   position: absolute;
-  left: 240px;
+  /* left: 240px; */
   top: 0;
   height: 60px;
   line-height: 60px;
@@ -614,9 +675,17 @@ export default {
 .app-header .header-right > div {
   float: left;
 }
+/* 是否展开菜单 */
+.app-header .header-right .isCollapse {
+  margin-left: 10px;
+}
+.app-header .header-right .isCollapse i {
+  font-weight: 700;
+  color: #409eff;
+}
 .app-header .header-right .search {
   width: 320px;
-  margin-left: 100px;
+  margin-left: 20px;
   float: left;
 }
 .app-header .header-right ul {
