@@ -41,12 +41,19 @@ export const myMixins = {
       globalViewDetailFormVisible: false,
 
       // 全局根据id获取用户信息
-      globalUserInformation:{},
+      globalUserInformation: {},
 
       // 全局公司信息，根据id查找
-      globalCompanyInformation:{},
+      globalCompanyInformation: {},
 
+      // 全局公司下拉框，选公司时候使用 - 获取到状态是启用状态的公司
+      globalCompanySelect: [],
 
+      // 全局获取客户列表  客户下拉框，选客户时候使用   获取到状态是启用状态的客户
+      globalCustomerSelect: [],
+
+      // 全局获取项目列表  项目下拉框
+      globalProductSelect: [],
     }
   },
   created() {
@@ -76,9 +83,11 @@ export const myMixins = {
       this.$axios
         .post(url)
         .then(res => {
-          this.$store.commit("getGlobalNavList",res.data.data)
+          this.$store.commit("getGlobalNavList", res.data.data)
         })
-        .catch(error => {error});
+        .catch(error => {
+          error
+        });
     },
 
     // 全局监听页面高度 赋值给tableHeight
@@ -92,16 +101,25 @@ export const myMixins = {
     // 全局搜索
     searchSubmitGlobal() {
       // 判断查询条件是否为空
-      for (var key in this.searchForm) {
-        if (!this.searchForm[key]) {
-          this.$message({
-            message: "查询条件为空显示全部数据！",
-            type: "warning",
-            showClose: true,
-            duration: 1000
-          });
+      let self = this;
+      var arr = Object.keys(self.searchForm).map(function (i) {
+        return self.searchForm[i]
+      })
+      var arr_v2 = [];
+      for (let j of arr) {
+        if (!j) {
+          arr_v2.push(j)
         }
       }
+      if (arr_v2.length == arr.length) {
+        this.$message({
+          message: "查询条件为空显示全部数据！",
+          type: "warning",
+          showClose: true,
+          duration: 1000
+        });
+      }
+
       this.globalTableLoading = true;
       let url = this.globalSearchUrl;
       let formData = this.globalSearchFormData
@@ -409,13 +427,13 @@ export const myMixins = {
       this.globalUserInformation = {};
       let url = "user/getUserById";
       let formData = {
-        id:userId
+        id: userId
       }
-      this.$axios.post(url,formData).then(res => {
-        if(res.data.code == 1) {
+      this.$axios.post(url, formData).then(res => {
+        if (res.data.code == 1) {
           this.globalUserInformation = res.data.data;
           // console.log(this.globalUserInformation)
-          this.getCompanyByIdGlobal(this.globalUserInformation.companyId);  // 根据公司id查询公司信息
+          this.getCompanyByIdGlobal(this.globalUserInformation.companyId); // 根据公司id查询公司信息
         }
       }).catch(err => {
         return err;
@@ -436,7 +454,46 @@ export const myMixins = {
             // console.log(this.globalCompanyInformation)
           }
         })
-        .catch(err => {}); 
+        .catch(err => {});
     },
+
+    // 全局获取公司下拉框
+    getCompanySelectGlobal() {
+      let url = "company/getCompanySelectByCurrentUsers";
+      this.$axios
+        .post(url)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.globalCompanySelect = res.data.data;
+          }
+        })
+        .catch(err => {});
+    },
+
+    // 全局获取客户列表  客户下拉框，选客户时候使用   获取到状态是启用状态的客户
+    getCustomerSelectGlobal() {
+      let url = "customer/getCustomerSelectByCurrentUsers";
+      this.$axios
+        .post(url)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.globalCustomerSelect = res.data.data;
+          }
+        })
+        .catch(err => {});
+    },
+
+    // 全局获取项目列表  项目下拉框
+    getProductSelectGlobal() {
+      let url = "product/getProductSelectByCurrentUsers";
+      this.$axios
+        .post(url)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.globalProductSelect = res.data.data;
+          }
+        })
+        .catch(err => {});
+    }
   }
 }

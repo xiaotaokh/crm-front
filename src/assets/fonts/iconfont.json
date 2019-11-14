@@ -174,6 +174,13 @@
       "unicode_decimal": 58894
     },
     {
+      "icon_id": "7588131",
+      "name": "展开",
+      "font_class": "guanbi-search",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
       "icon_id": "8085228",
       "name": "客户管理",
       "font_class": "ziyuan",
@@ -214,6 +221,13 @@
       "font_class": "shanchu",
       "unicode": "e635",
       "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "11785793",
+      "name": "展开",
+      "font_class": "zhankai-search",
+      "unicode": "e88f",
+      "unicode_decimal": 59535
     }
   ]
 }
