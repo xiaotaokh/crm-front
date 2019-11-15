@@ -5,31 +5,15 @@
     <!-- 除去面包屑主体 -->
     <div class="content-main">
       <!-- 搜索 -->
-      <app-search :isUnfold="true" :searchNum="7">
+      <app-search :isUnfold="true" :searchNum="5">
         <el-form
           @submit.native.prevent
           size="small"
           :inline="true"
           ref="searchForm"
           :model="searchForm"
-          label-width="130px"
+          label-width="100px"
         >
-          <el-form-item label="销售目标：">
-            <el-input
-              v-model="searchForm.name"
-              @keyup.enter.native="searchSubmit"
-              placeholder="请输入销售目标"
-              clearable
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="销售目标：">
-            <el-input
-              v-model="searchForm.name"
-              @keyup.enter.native="searchSubmit"
-              placeholder="请输入销售目标"
-              clearable
-            ></el-input>
-          </el-form-item>
           <el-form-item label="销售目标：">
             <el-input
               v-model="searchForm.name"
@@ -62,8 +46,8 @@
               clearable
             ></el-input>
           </el-form-item>
-          <el-form-item label="跟进人员所属公司：" prop="companyId">
-            <el-select v-model="searchForm.companyId" size="small" placeholder="请选择跟进人员所属公司">
+          <el-form-item label="所属公司：" prop="companyId">
+            <el-select v-model="searchForm.companyId" size="small" placeholder="请选择所属公司">
               <el-option
                 v-for="item in globalCompanySelect"
                 :key="item.id"
@@ -268,10 +252,10 @@
           <el-input v-model="editObj.productName" disabled clearable></el-input>
         </el-form-item>
         <el-form-item label="审批开销：" prop="estimatedCost">
-          <el-input v-model="editDialogForm.estimatedCost" placeholder="请输入销售目标" clearable></el-input>
+          <el-input v-model="editDialogForm.estimatedCost" placeholder="请输入审批开销" clearable></el-input>
         </el-form-item>
         <el-form-item label="实际开销：" prop="actualCost">
-          <el-input v-model="editDialogForm.actualCost" placeholder="请输入销售目标" clearable></el-input>
+          <el-input v-model="editDialogForm.actualCost" placeholder="请输入实际开销" clearable></el-input>
         </el-form-item>
         <el-form-item label="销售状态：">
           <el-tag size="small" v-if="editObj.saleStatus == 0" type="danger" effect="dark">未进行</el-tag>
@@ -352,6 +336,7 @@ export default {
   watch: {},
   data() {
     return {
+      tableHeight: window.innerHeight - 380, // 表格高度
       // 搜索
       searchForm: {
         name: "",
@@ -360,9 +345,6 @@ export default {
         productName: "",
         companyId: ""
       },
-
-      tableHeight: window.innerHeight - 300, // 表格高度
-
       // 添加dialog form
       addDialogForm: {
         addDialogFormVisible: false,
@@ -669,8 +651,8 @@ export default {
     this.getTableData(); // 获取表格数据
 
     this.getCompanySelectGlobal(); // 获取公司下拉菜单
-    this.getCustomerSelectGlobal(); // 获取公司下拉菜单
-    this.getProductSelectGlobal(); // 获取公司下拉菜单
+    this.getCustomerSelectGlobal(); // 获取客户下拉菜单
+    this.getProductSelectGlobal(); // 获取项目下拉菜单
   }
 };
 </script>

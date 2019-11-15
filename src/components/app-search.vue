@@ -1,5 +1,5 @@
 <template>
-  <div class="app-search" :style="'height:' + hetghtSearch + 'px'" ref="appSearch">
+  <div class="app-search" :style="'max-height:' + hetghtSearch + 'px'" ref="appSearch">
     <!-- 搜索 -->
     <el-row type="flex" justify="start">
       <el-col :span="24">
@@ -47,7 +47,7 @@ export default {
   methods: {
     // 展开
     searchIsUnfold() {
-      this.hetghtSearch = (this.searchNum / (this.searchWidth / 360) + 1) * 60;
+      this.hetghtSearch = (Math.ceil(this.searchNum / (parseInt(this.searchWidth / 355) -1))) * 50;
       this.isUnfoldExpand = false;
       this.isUnfoldClose = true;
     },
@@ -63,9 +63,8 @@ export default {
       window.onresize = () => {
         return (() => {
           this.searchWidth = this.$refs.appSearch.clientWidth;
-          if (this.isUnfoldExpand) {
-            this.hetghtSearch =
-              (this.searchNum / (this.searchWidth / 360) + 1) * 60;
+          if (this.isUnfoldExpand || this.isUnfoldClose) {
+            this.hetghtSearch = (Math.ceil(this.searchNum / (parseInt(this.searchWidth / 355) -1))) * 50;
           }
         })();
       };
