@@ -5,14 +5,16 @@
       :style="'width: '+this.$store.state.sliderWidth+'px'"
       v-if="this.$store.state.isHeaderLogo"
     >
-      <img src="../assets/logo.png" class="img_1" alt />
+      <!-- <img src="../assets/logo.png" class="img_1" alt /> -->
+      <img src="../assets/logo_v9.png" class="img_1" alt />
     </div>
     <div
       class="logo"
       :style="'width: '+this.$store.state.sliderWidth+'px'"
       v-if="!this.$store.state.isHeaderLogo"
     >
-      <img src="../assets/logo_v2.png" class="img_2" alt />
+      <!-- <img src="../assets/logo_v2.png" class="img_2" alt /> -->
+      <img src="../assets/logo_v4.png" class="img_2" alt />
     </div>
     <div
       class="header-right clearfix"

@@ -251,10 +251,10 @@
         <el-form-item label="项目：">
           <el-input v-model="editObj.productName" disabled clearable></el-input>
         </el-form-item>
-        <el-form-item label="审批开销：" prop="estimatedCost">
-          <el-input v-model="editDialogForm.estimatedCost" placeholder="请输入审批开销" clearable></el-input>
+        <el-form-item label="预计开销：" prop="estimatedCost">
+          <el-input v-model="editDialogForm.estimatedCost" placeholder="请输入预计开销" clearable></el-input>
         </el-form-item>
-        <el-form-item label="实际开销：" prop="actualCost">
+        <el-form-item label="实际开销：">
           <el-input v-model="editDialogForm.actualCost" placeholder="请输入实际开销" clearable></el-input>
         </el-form-item>
         <el-form-item label="销售状态：">
@@ -299,7 +299,7 @@
         <el-form-item label="项目价格：">
           <el-input v-model="editObj.price" disabled></el-input>
         </el-form-item>
-        <el-form-item label="售出价格：" prop="sellingPrice">
+        <el-form-item label="售出价格：">
           <el-input v-model="editDialogForm.sellingPrice" placeholder="请输入售出价格" clearable></el-input>
         </el-form-item>
         <el-form-item label="修改时间：">
@@ -392,7 +392,6 @@ export default {
         sellingPrice: "",
         note: "",
         companyId: "",
-        customerId: "",
         // 编辑菜单弹窗form表单校验规则
         editDialogFormRules: {
           name: [
@@ -401,15 +400,15 @@ export default {
           estimatedCost: [
             { required: true, message: "请输入预计开销", trigger: "blur" }
           ],
-          actualCost: [
-            { required: true, message: "请输入实际开销", trigger: "blur" }
-          ],
+          // actualCost: [
+          //   { required: true, message: "请输入实际开销", trigger: "blur" }
+          // ],
           customerId: [
             { required: true, message: "请选择客户", trigger: "change" }
           ],
-          sellingPrice: [
-            { required: true, message: "请输入售出价格", trigger: "blur" }
-          ]
+          // sellingPrice: [
+          //   { required: true, message: "请输入售出价格", trigger: "blur" }
+          // ]
         }
       },
       // 根据id获取的销售目标对象
@@ -474,7 +473,7 @@ export default {
       let formData = {
         name: this.addDialogForm.name,
         userId: userId,
-        customerId: this.addDialogForm.productId,
+        customerId: this.addDialogForm.customerId,
         productId: this.addDialogForm.productId,
         estimatedCost: this.addDialogForm.estimatedCost
       };

@@ -22,6 +22,18 @@ import '@/assets/styles/reset.css' // 全局样式重置
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
+// highcharts
+import Highcharts from 'highcharts/highstock';
+import HighchartsMore from 'highcharts/highcharts-more';
+import HighchartsDrilldown from 'highcharts/modules/drilldown';
+import Highcharts3D from 'highcharts/highcharts-3d';
+import Highmaps from 'highcharts/modules/map';
+HighchartsMore(Highcharts)
+HighchartsDrilldown(Highcharts);
+Highcharts3D(Highcharts);
+Highmaps(Highcharts);
+Vue.prototype.$Highcharts = Highcharts
+
 import 'es6-promise/auto' // Vuex依赖 Promise
 import Vuex from 'vuex' // Vuex全局状态管理
 Vue.use(Vuex)

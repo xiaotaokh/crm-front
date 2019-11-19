@@ -96,6 +96,9 @@
       </el-row>
       <!-- 访问量area图 -->
       <div id="mini-area"></div>
+
+      <!-- highcharts -->
+      <div id="container" style="min-width:400px;height:600px"></div>
     </div>
   </div>
 </template>
@@ -196,10 +199,168 @@ export default {
       // Step 4: 渲染图表
       chart.render();
     },
+    // highcharts 折线
+    highcharts() {
+      var chart = this.$Highcharts.chart("container", {
+        title: {
+          text: "2010 ~ 2016 年太阳能行业就业人员发展情况"
+        },
+        subtitle: {
+          text: "数据来源：thesolarfoundation.com"
+        },
+        yAxis: {
+          title: {
+            text: "就业人数"
+          }
+        },
+        legend: {
+          layout: "vertical",
+          align: "right",
+          verticalAlign: "middle"
+        },
+        plotOptions: {
+          series: {
+            label: {
+              connectorAllowed: false
+            },
+            pointStart: 2010
+          }
+        },
+        series: [
+          {
+            name: "安装，实施人员",
+            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+          },
+          {
+            name: "工人",
+            data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
+          },
+          {
+            name: "销售",
+            data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+          },
+          {
+            name: "项目开发",
+            data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
+          },
+          {
+            name: "其他",
+            data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
+          }
+        ],
+        responsive: {
+          rules: [
+            {
+              condition: {
+                maxWidth: 500
+              },
+              chartOptions: {
+                legend: {
+                  layout: "horizontal",
+                  align: "center",
+                  verticalAlign: "bottom"
+                }
+              }
+            }
+          ]
+        }
+      });
+    },
+
+    // highcharts mini
+    miniHighcharts() {
+      this.$Highcharts.SparkLine = function(a, b, c) {
+        var hasRenderToArg = typeof a === "string" || a.nodeName,
+          options = arguments[hasRenderToArg ? 1 : 0],
+          defaultOptions = {
+            chart: {
+              renderTo: (options.chart && options.chart.renderTo) || this,
+              backgroundColor: null,
+              borderWidth: 0,
+              type: "area",
+              margin: [2, 0, 2, 0],
+              width: 120,
+              height: 20,
+              style: {
+                overflow: "visible"
+              },
+              // 小优化，节省1-2毫秒每个迷你图
+              skipClone: true
+            },
+            title: {
+              text: ""
+            },
+            credits: {
+              enabled: false
+            },
+            xAxis: {
+              labels: {
+                enabled: false
+              },
+              title: {
+                text: null
+              },
+              startOnTick: false,
+              endOnTick: false,
+              tickPositions: []
+            },
+            yAxis: {
+              endOnTick: false,
+              startOnTick: false,
+              labels: {
+                enabled: false
+              },
+              title: {
+                text: null
+              },
+              tickPositions: [0]
+            },
+            legend: {
+              enabled: false
+            },
+            tooltip: {
+              hideDelay: 0,
+              outside: true,
+              shared: true
+            },
+            plotOptions: {
+              series: {
+                animation: false,
+                lineWidth: 1,
+                shadow: false,
+                states: {
+                  hover: {
+                    lineWidth: 1
+                  }
+                },
+                marker: {
+                  radius: 1,
+                  states: {
+                    hover: {
+                      radius: 2
+                    }
+                  }
+                },
+                fillOpacity: 0.25
+              },
+              column: {
+                negativeColor: "#910000",
+                borderColor: "silver"
+              }
+            }
+          };
+        options = this.$Highcharts.merge(defaultOptions, options);
+        return hasRenderToArg
+          ? new this.$Highcharts.Chart(a, options, c)
+          : new this.$Highcharts.Chart(options, b);
+      };
+    }
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
     this.miniArea();
+    this.highcharts();
+    this.miniHighcharts();
   }
 };
 </script>
@@ -227,10 +388,10 @@ export default {
 .index .card .box-card:hover {
   cursor: pointer;
   /* 上移 */
-  transform: translate(0, -3px);    
+  transform: translate(0, -3px);
   /* 放大 */
   /* transform: scale(1.03); */
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.3);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
 }
 .index .card .box-card .card-name {
   margin-bottom: 10px;

@@ -43,12 +43,6 @@
           </el-form-item>
         </el-form>
       </app-search>
-      <!-- 按钮组 -->
-      <el-row type="flex" justify="start" class="app-btn-group">
-        <el-col :span="24">
-          <el-button size="mini" type="primary" @click="addGlobal">添加</el-button>
-        </el-col>
-      </el-row>
       <!-- 表格table -->
       <el-row class="app-content-table">
         <el-col :span="24">
@@ -220,7 +214,7 @@ export default {
   watch: {},
   data() {
     return {
-      tableHeight: window.innerHeight - 300, // 表格高度
+      tableHeight: window.innerHeight - 240, // 表格高度
       // 搜索
       searchForm: {
         name: "",
@@ -239,9 +233,9 @@ export default {
           actualCost: [
             { required: true, message: "请输入实际开销", trigger: "blur" }
           ],
-          sellingPrice: [
-            { required: true, message: "请输入售出价格", trigger: "blur" }
-          ]
+          // sellingPrice: [
+          //   { required: true, message: "请输入售出价格", trigger: "blur" }
+          // ]
         }
       },
       // 根据id获取的销售目标对象
