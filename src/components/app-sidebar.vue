@@ -1,5 +1,8 @@
 <template>
-  <div class="app-sidebar" :style="'width:'+this.$store.state.sliderWidth+'px;transition: all .15s'">
+  <div
+    class="app-sidebar"
+    :style="'width:'+this.$store.state.sliderWidth+'px;transition: all .15s'"
+  >
     <el-menu
       :default-active="this.$route.path"
       router
@@ -39,6 +42,61 @@
         </el-menu-item>
       </el-submenu>
     </el-menu>
+    <!-- 侧边栏下边（项目左下角）区域 -->
+    <div class="slider-control" v-if="this.$store.state.sliderIsCollapse">
+      <el-tooltip
+        class="item"
+        @click="this.drawer = true"
+        effect="dark"
+        content="系统布局配置"
+        placement="right"
+      >
+        <el-button type="primary" plain @click="drawer = true">
+          <i class="iconfont iconicon-test1 slider-control"></i>
+        </el-button>
+      </el-tooltip>
+    </div>
+    <div class="slider-control" v-if="!this.$store.state.sliderIsCollapse">
+      <el-button type="primary" @click="drawer = true" plain style="width:100%">
+        <i class="iconfont iconicon-test1"></i>系统布局配置
+      </el-button>
+    </div>
+    <el-drawer title="系统布局配置" :modal="false" :visible.sync="drawer" size="240px">
+      <div class="dra-con">
+        <ul>
+          <li>
+            <span>主题色</span>
+            <span>
+              <el-color-picker v-model="mainColor" size="small" @change="drawMainColor"></el-color-picker>
+            </span>
+          </li>
+          <li>
+            <span>头部颜色</span>
+            <span>
+              12345
+            </span>
+          </li>
+          <li>
+            <span>开启面包屑</span>
+            <span>
+              <el-switch v-model="tagsView"></el-switch>
+            </span>
+          </li>
+          <li>
+            <span>侧边栏Logo</span>
+            <span>
+              <el-switch v-model="sliderLogo"></el-switch>
+            </span>
+          </li>
+          <li>
+            <span>侧边栏颜色</span>
+            <span>
+              12345
+            </span>
+          </li>
+        </ul>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -49,7 +107,11 @@ export default {
   name: "app-sidebar",
   data() {
     return {
-      id: "" // 菜单ID
+      id: "", // 菜单ID
+      drawer: false, // 系统布局配置抽屉
+      mainColor: "#409EFF", // 主题色
+      tagsView: true, // 面包屑
+      sliderLogo: true // 侧边栏logo
     };
   },
   computed: {},
@@ -79,6 +141,10 @@ export default {
           }
         }
       }
+    },
+    // 系统布局配置抽屉 主题色
+    drawMainColor() {
+      console.log(this.mainColor);
     }
   },
   mounted() {
@@ -102,5 +168,34 @@ export default {
 }
 .app-sidebar .el-menu--collapse {
   width: 64px;
+}
+/* 侧边栏下边（项目左下角）区域  */
+.app-sidebar .slider-control {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.app-sidebar .slider-control .slider-control {
+  font-size: 24px;
+}
+/* draw 系统设置抽屉 */
+.dra-con ul li {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  margin-bottom: 5px;
+  padding: 0 10%;
+  position: relative;
+}
+.dra-con ul li span:nth-child(1) {
+  font-size: 14px;
+}
+.dra-con ul li span:nth-child(2) {
+  float: right;
+  position: absolute;
+  right: 10%;
 }
 </style>

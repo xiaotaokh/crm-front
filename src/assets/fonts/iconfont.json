@@ -139,6 +139,13 @@
       "unicode_decimal": 58888
     },
     {
+      "icon_id": "6861608",
+      "name": "系统设置",
+      "font_class": "icon-test1",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
       "icon_id": "7171160",
       "name": "项目管理",
       "font_class": "xiangmu",
@@ -172,6 +179,13 @@
       "font_class": "caidan_zhankai",
       "unicode": "e60e",
       "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "7588131",
+      "name": "展开",
+      "font_class": "guanbi-search",
+      "unicode": "e626",
+      "unicode_decimal": 58918
     },
     {
       "icon_id": "8085228",
@@ -214,6 +228,13 @@
       "font_class": "shanchu",
       "unicode": "e635",
       "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "11785793",
+      "name": "展开",
+      "font_class": "zhankai-search",
+      "unicode": "e88f",
+      "unicode_decimal": 59535
     }
   ]
 }
