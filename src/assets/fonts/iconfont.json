@@ -139,6 +139,13 @@
       "unicode_decimal": 58888
     },
     {
+      "icon_id": "6861608",
+      "name": "系统设置",
+      "font_class": "icon-test1",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
       "icon_id": "7171160",
       "name": "项目管理",
       "font_class": "xiangmu",

@@ -16,7 +16,10 @@
               <span class="card-name-span">总销售额</span>
             </div>
             <div class="card-number">
-              <span class="card-number-span">¥ 126,560</span>
+              <span class="card-number-span">
+                ¥
+                <span class="index">126,560</span>
+              </span>
             </div>
             <div class="card-figure">
               <span>周同比</span>
@@ -39,7 +42,7 @@
               <span class="card-name-span">访问量</span>
             </div>
             <div class="card-number">
-              <span class="card-number-span">8846</span>
+              <span class="card-number-span index">8846</span>
             </div>
             <div class="card-figure"></div>
             <div class="card-bot">
@@ -55,7 +58,7 @@
               <span class="card-name-span">支付笔数</span>
             </div>
             <div class="card-number">
-              <span class="card-number-span">6560</span>
+              <span class="card-number-span index">6560</span>
             </div>
             <div class="card-figure">
               <span>周同比</span>
@@ -78,7 +81,9 @@
               <span class="card-name-span">运营活动效果</span>
             </div>
             <div class="card-number">
-              <span class="card-number-span">78%</span>
+              <span class="card-number-span">
+                <span class="index">126,560</span>%
+              </span>
             </div>
             <div class="card-figure">
               <el-progress :percentage="78" :format="format"></el-progress>
@@ -388,10 +393,13 @@ export default {
 .index .card .box-card:hover {
   cursor: pointer;
   /* 上移 */
-  transform: translate(0, -3px);
+  transform: translate(0, -2px);
   /* 放大 */
   /* transform: scale(1.03); */
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
+}
+.index .card .box-card:hover span.index {
+  color: #f56c6c;
 }
 .index .card .box-card .card-name {
   margin-bottom: 10px;

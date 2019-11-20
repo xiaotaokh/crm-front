@@ -398,7 +398,8 @@ export default {
             .then(res => {
               this.$message({
                 message: "退出成功!",
-                type: "success"
+                type: "success",
+                duration:1000,
               });
               localStorage.removeItem("token"); // 清除token
               this.$router.push({ path: "/login" }); // 跳转页面

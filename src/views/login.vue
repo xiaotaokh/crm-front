@@ -156,13 +156,14 @@ export default {
           if (res.data.code == 1) {
             this.$message({
               message: res.data.msg,
-              type: "success"
+              type: "success",
+              duration: 1000
             });
 
             // 把拿到的token存放在localStorage里面
             localStorage.setItem("token", res.data.data);
 
-            // 设置延迟器加载菜单
+            // 跳转到主页
             this.$router.push({ path: "/appMain" }); // 跳转页面
 
             this.loading = false; // 关闭loading
