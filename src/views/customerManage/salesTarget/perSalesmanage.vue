@@ -49,7 +49,7 @@
           <el-table
             ref="tableData"
             :data="globalTableData.slice((currentPage-1)*PageSize,currentPage*PageSize)"
-            style="width: 100%; table-layout:fixed"
+            style="width: 100%;"
             :max-height="tableHeight"
             stripe
             size="medium"
@@ -58,7 +58,63 @@
             :default-sort="{prop: 'createAt', order: 'ascending'}"
             v-loading="globalTableLoading"
           >
-            <el-table-column label="序号" fixed width="80" align="center">
+            <el-table-column label="展开行" width="80" type="expand">
+              <template slot-scope="scope">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="销售目标">
+                    <span>{{ scope.row.name }}</span>
+                  </el-form-item>
+                  <el-form-item label="客户名称">
+                    <span>{{ scope.row.customerName }}</span>
+                  </el-form-item>
+                  <el-form-item label="项目名称">
+                    <span>{{ scope.row.productName }}</span>
+                  </el-form-item>
+                  <el-form-item label="项目价格">
+                    <span>{{ scope.row.price }}</span>
+                  </el-form-item>
+                  <el-form-item label="售出价格">
+                    <span>{{ scope.row.sellingPrice }}</span>
+                  </el-form-item>
+                  <el-form-item label="跟进人员">
+                    <span>{{ scope.row.userName }}</span>
+                  </el-form-item>
+                  <el-form-item label="预计开销">
+                    <span>{{ scope.row.estimatedCost }}</span>
+                  </el-form-item>
+                  <el-form-item label="实际开销">
+                    <span>{{ scope.row.actualCost }}</span>
+                  </el-form-item>
+                  <el-form-item label="销售状态">
+                    <span>
+                      <el-tag
+                  size="small"
+                  v-if="scope.row.saleStatus == 0"
+                  type="danger"
+                  effect="dark"
+                >未进行</el-tag>
+                <el-tag size="small" v-else-if="scope.row.saleStatus == 1" effect="dark">进行中</el-tag>
+                <el-tag
+                  size="small"
+                  v-else-if="scope.row.saleStatus == 2"
+                  type="success"
+                  effect="dark"
+                >2已完成</el-tag>
+                    </span>
+                  </el-form-item>
+                  <el-form-item label="添加时间">
+                    <span>{{ scope.row.createAt | dateFilter }}</span>
+                  </el-form-item>
+                  <el-form-item label="修改时间">
+                    <span>{{ scope.row.updateAt | dateFilter }}</span>
+                  </el-form-item>
+                  <el-form-item label="备注">
+                    <span>{{ scope.row.note }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column label="序号" width="80" align="center">
               <template slot-scope="scope">
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
@@ -113,7 +169,7 @@
             <el-table-column align="center" label="备注" width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.note }}</template>
             </el-table-column>
-            <el-table-column fixed="right" width="60" align="center" label="操作">
+            <el-table-column fixed="right" width="120" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="编辑" placement="top">
                   <el-button
@@ -123,6 +179,14 @@
                     circle
                     icon="el-icon-edit"
                   ></el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="行程记录" placement="top">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="tripRecord(scope.$index, scope.row)"
+                    circle
+                  ><i class="iconfont iconjilu" style="font-size:12px"></i></el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -364,6 +428,27 @@ export default {
           }
         })
         .catch(err => {});
+    },
+    // 表格行 - 行程记录
+    tripRecord(index,row) {
+      // query  地址栏显示参数
+      // this.$router.push({
+      //   path: "/appMain/customerManage/salesTarget/tripRecord",
+      //   query: {
+      //     id: this.id
+      //   }
+      // });
+      // 不存在历史记录
+      // this.$router.replace({
+      //   path: "/appMain/customerManage/salesTarget/tripRecord"
+      // });
+      // params 传参  地址栏不显示参数
+      this.$router.push({
+        name: "appMain/customerManage/salesTarget/tripRecord",
+        params: {
+          row: row,
+        }
+      });
     }
   },
   mounted() {
@@ -384,5 +469,17 @@ export default {
   height: 100%;
   position: relative;
   background: #fff;
+}
+.perSalesmanage .demo-table-expand {
+  font-size: 0;
+}
+.perSalesmanage .demo-table-expand label {
+  width: 100px;
+  color: #99a9bf;
+}
+.perSalesmanage .demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 25%;
 }
 </style>

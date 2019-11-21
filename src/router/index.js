@@ -10,7 +10,7 @@ import salesTarget from '@/views/customerManage/salesTarget/salesTarget' // 销�
 import salesTargetManage from '@/views/customerManage/salesTarget/salesTargetManage' // 销售目标管理
 import salesTargetStatistic from '@/views/customerManage/salesTarget/salesTargetStatistic' // 销售目标统计
 import perSalesmanage from '@/views/customerManage/salesTarget/perSalesmanage' // 个人目标管理
-import salesTargetManage_router from '@/views/customerManage/salesTarget/salesTargetManage_router' // 销售目标管理跳转页
+import tripRecord from '@/views/customerManage/salesTarget/tripRecord' // 销售目标管理跳转页
 import customerList from '@/views/customerManage/customerList' // 客户列表
 
 // 系统管理
@@ -96,9 +96,9 @@ const router = new Router({
                   meta: "销售目标管理", // 销售目标管理
                 },
                 {
-                  path: '/appMain/customerManage/salesTarget/salesTargetManage_router',
-                  name: 'appMain/customerManage/salesTarget/salesTargetManage_router',
-                  component: salesTargetManage_router,
+                  path: '/appMain/customerManage/salesTarget/tripRecord',
+                  name: 'appMain/customerManage/salesTarget/tripRecord',
+                  component: tripRecord,
                   meta: "销售目标管理跳转页", // 销售目标管理跳转页
                 },
                 {

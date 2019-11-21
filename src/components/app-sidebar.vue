@@ -51,7 +51,7 @@
         content="系统布局配置"
         placement="right"
       >
-        <el-button type="primary" plain @click="drawer = true">
+        <el-button type="primary" size="mini" class="control-btn" plain @click="drawer = true">
           <i class="iconfont iconicon-test1 slider-control"></i>
         </el-button>
       </el-tooltip>
@@ -72,9 +72,7 @@
           </li>
           <li>
             <span>头部颜色</span>
-            <span>
-              12345
-            </span>
+            <span>12345</span>
           </li>
           <li>
             <span>开启面包屑</span>
@@ -90,9 +88,7 @@
           </li>
           <li>
             <span>侧边栏颜色</span>
-            <span>
-              12345
-            </span>
+            <span>12345</span>
           </li>
         </ul>
       </div>
@@ -173,13 +169,21 @@ export default {
 .app-sidebar .slider-control {
   width: 100%;
   height: 40px;
-  line-height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+.app-sidebar .slider-control .el-button--primary.is-plain {
+  border: none;
+  height: 40px;
+  width: 100%;
+  border-radius: 0;
+}
+.app-sidebar .slider-control .el-button--primary.control-btn i{
+  height: 27px;
+}
 .app-sidebar .slider-control .slider-control {
-  font-size: 24px;
+  font-size: 22px;
 }
 /* draw 系统设置抽屉 */
 .dra-con ul li {
