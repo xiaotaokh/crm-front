@@ -203,7 +203,6 @@ export default {
 .login {
   width: 100%;
   height: 100%;
-  min-height: 760px;
   position: relative;
   /* background: #f0f0f0; */
   background: #3e7b82;
