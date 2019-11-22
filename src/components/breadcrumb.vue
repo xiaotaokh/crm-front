@@ -1,6 +1,6 @@
 <template>
   <!-- 面包屑 -->
-  <div class="breadcrumb">
+  <div class="breadcrumb" v-show="this.$store.state.globalTagsViewBreadcrumb">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <!-- 通过路由meta属性记录，得到当前路由下所有的路径地址以及菜单名称  this.$route.matched -->
       <el-breadcrumb-item

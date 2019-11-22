@@ -1,9 +1,9 @@
 <template>
-  <div class="app-header">
+  <div class="app-header" :style="'background:'+this.$store.state.globalHeaderColor">
     <div
       class="logo"
       :style="'width: '+this.$store.state.sliderWidth+'px'"
-      v-if="this.$store.state.isHeaderLogo"
+      v-if="this.$store.state.isHeaderLogo && this.$store.state.globalSliderLogo"
     >
       <!-- <img src="../assets/logo.png" class="img_1" alt /> -->
       <img src="../assets/logo_v9.png" class="img_1" alt />
@@ -11,18 +11,15 @@
     <div
       class="logo"
       :style="'width: '+this.$store.state.sliderWidth+'px'"
-      v-if="!this.$store.state.isHeaderLogo"
+      v-if="!this.$store.state.isHeaderLogo && this.$store.state.globalSliderLogo"
     >
       <!-- <img src="../assets/logo_v2.png" class="img_2" alt /> -->
       <img src="../assets/logo_v4.png" class="img_2" alt />
     </div>
+    <!-- 先判断logo是否存在   存在：侧边距为侧边栏宽度 不存在：左侧为10px-->
     <div
       class="header-right clearfix"
-      :style="'position: absolute;left: '+
-      this.$store.state.appContentWidth+
-      'px;width: calc(100% - '+
-      this.$store.state.appContentWidth+
-      'px)'"
+      :style="this.$store.state.globalSliderLogo ? 'position: absolute;left: '+ this.$store.state.appContentWidth+ 'px;width: calc(100% - '+ this.$store.state.appContentWidth+ 'px)': 'position: absolute;left:10px;width:calc(100% - 10px);'"
     >
       <!-- 菜单展开收缩 -->
       <div class="isCollapse" v-if="this.$store.state.isHeaderLogo">
