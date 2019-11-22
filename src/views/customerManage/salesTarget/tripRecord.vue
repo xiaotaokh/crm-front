@@ -1,12 +1,12 @@
 <template>
-  <!-- 销售目标管理路由跳转页 -->
+  <!-- 个人目标管理 行程记录路由跳转页 -->
   <div class="tripRecord">
     <!-- 返回 -->
     <app-back :appBackPath="appBackPath"></app-back>
     <!-- 除去返回主体 -->
     <div class="content-main">
       <el-divider>
-        <i class="iconfont iconjilu"></i>
+        <i class="iconfont iconjilu"></i>&nbsp;
         {{ this.$route.params.row.name == undefined ? '' : this.$route.params.row.name }} - 行程记录
       </el-divider>
       <!-- 按钮组 -->
@@ -101,7 +101,7 @@
             <el-table-column align="center" label="备注" width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.note }}</template>
             </el-table-column>
-            <el-table-column fixed="right" width="160" align="center" label="操作">
+            <el-table-column fixed="right" width="200" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="编辑" placement="top">
                   <el-button
@@ -113,22 +113,15 @@
                     v-if="scope.row.recordStatus == 0"
                   ></el-button>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="删除" placement="top">
-                  <el-button
-                    size="small"
-                    circle
-                    type="danger"
-                    icon="el-icon-delete"
-                    @click="handleDelete(scope.$index, scope.row)"
-                    v-if="scope.row.recordStatus == 0"
-                  ></el-button>
-                </el-tooltip>
                 <el-tooltip effect="dark" content="查看详情" placement="top">
                   <el-button
-                    type="text"
+                    size="small"
+                    type="primary"
                     @click="handleDetail(scope.$index, scope.row)"
                     v-if="scope.row.recordStatus == 1"
-                  >查看详情</el-button>
+                    circle
+                    icon="el-icon-tickets"
+                  ></el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="提交" placement="top">
                   <el-button
@@ -140,6 +133,25 @@
                   >
                     <i class="iconfont icontijiao1" style="font-size:12px"></i>
                   </el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="上传附件" placement="top">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="upload(scope.$index, scope.row)"
+                    v-if="scope.row.recordStatus == 0"
+                    circle
+                  ><i class="iconfont iconshangchuan" style="font-size:12px"></i></el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="删除" placement="top">
+                  <el-button
+                    size="small"
+                    circle
+                    type="danger"
+                    icon="el-icon-delete"
+                    @click="handleDelete(scope.$index, scope.row)"
+                    v-if="scope.row.recordStatus == 0"
+                  ></el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -547,7 +559,11 @@ export default {
         id: row.id
       };
       this.getViewDetailFormGlobal(url, formData);
-    }
+    },
+    // 表格行上传
+    upload(index,row) {
+      console.log(index)
+    },
   },
   mounted() {
     if (!this.$route.params.row) {

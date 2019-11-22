@@ -16,8 +16,7 @@
     >
       <el-submenu v-for="(item,i) in this.$store.state.globalNavList" :key="i" :index="item.route">
         <template slot="title">
-          <i class="iconfont" :class="item.icon"></i>
-          <span slot="title">{{ item.navName }}</span>
+          <i class="iconfont" :class="item.icon" style="font-size:24px"></i><span slot="title">&nbsp;{{ item.navName }}</span>
         </template>
         <!-- 三级标题存在 -->
         <el-submenu
@@ -26,9 +25,9 @@
           v-show="sec.third.length != 0"
           :index="sec.route"
         >
-          <span slot="title">{{ sec.navName }}</span>
+          <span slot="title">&nbsp;&nbsp;&nbsp;&nbsp;{{ sec.navName }}</span>
           <el-menu-item v-for="(thi,k) in sec.third" :key="k" :index="thi.route">
-            <span slot="title">{{ thi.navName }}</span>
+            <span slot="title">&nbsp;{{ thi.navName }}</span>
           </el-menu-item>
         </el-submenu>
         <!-- 三级标题不存在 -->
@@ -38,7 +37,7 @@
           v-show="m.third.length == 0"
           :index="m.route"
         >
-          <span slot="title">{{ m.navName }}</span>
+          <span slot="title">&nbsp;&nbsp;&nbsp;&nbsp;{{ m.navName }}</span>
         </el-menu-item>
       </el-submenu>
     </el-menu>

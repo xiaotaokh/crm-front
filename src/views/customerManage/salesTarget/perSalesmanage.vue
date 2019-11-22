@@ -449,7 +449,7 @@ export default {
           row: row,
         }
       });
-    }
+    },
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑

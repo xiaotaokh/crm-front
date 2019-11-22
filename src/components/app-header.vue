@@ -28,14 +28,14 @@
       <div class="isCollapse" v-if="this.$store.state.isHeaderLogo">
         <el-tooltip class="item" effect="dark" content="折叠菜单" placement="right">
           <el-button type="text" @click="handleSliderIsCollapse">
-            <i class="iconfont iconcaidan_shousuo"></i>
+            <i class="iconfont icondaohanghebing"></i>
           </el-button>
         </el-tooltip>
       </div>
       <div class="isCollapse" v-if="!this.$store.state.isHeaderLogo">
         <el-tooltip class="item" effect="dark" content="展开菜单" placement="right">
           <el-button type="text" @click="handleSliderIsCollapse">
-            <i class="iconfont iconcaidan_zhankai"></i>
+            <i class="iconfont icondaohangzhankai"></i>
           </el-button>
         </el-tooltip>
       </div>

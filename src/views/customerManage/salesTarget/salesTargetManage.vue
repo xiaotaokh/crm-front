@@ -135,7 +135,7 @@
             <el-table-column align="center" label="备注" width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.note }}</template>
             </el-table-column>
-            <el-table-column fixed="right" width="120" align="center" label="操作">
+            <el-table-column fixed="right" width="160" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="编辑" placement="top">
                   <el-button
@@ -145,6 +145,14 @@
                     circle
                     icon="el-icon-edit"
                   ></el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="行程记录" placement="top">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="tripRecord(scope.$index, scope.row)"
+                    circle
+                  ><i class="iconfont iconjilu" style="font-size:12px"></i></el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="删除" placement="top">
                   <el-button
@@ -336,7 +344,7 @@ export default {
   watch: {},
   data() {
     return {
-      tableHeight: window.innerHeight - 380, // 表格高度
+      tableHeight: window.innerHeight - 300, // 表格高度
       // 搜索
       searchForm: {
         name: "",
@@ -642,7 +650,16 @@ export default {
           }
         })
         .catch(err => {});
-    }
+    },
+    // 表格行 - 行程记录
+    tripRecord(index,row) {
+      this.$router.push({
+        name: "appMain/customerManage/salesTarget/salesTargetManageTripRecord",
+        params: {
+          row: row,
+        }
+      });
+    },
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
