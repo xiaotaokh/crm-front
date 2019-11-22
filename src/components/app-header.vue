@@ -399,7 +399,7 @@ export default {
               this.$message({
                 message: "退出成功!",
                 type: "success",
-                duration:1000,
+                duration: 1000
               });
               localStorage.removeItem("token"); // 清除token
               this.$router.push({ path: "/login" }); // 跳转页面
@@ -656,15 +656,28 @@ export default {
   top: 0;
   /* width: 240px; */
   height: 60px;
+  position: relative;
 }
 .app-header .logo .img_1 {
-  width: 220px;
-  height: 60px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 180px;
+  height: 45px;
   transition: all 1s;
 }
 .app-header .logo .img_2 {
-  width: 64px;
+  width: 60px;
   height: 60px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
 }
 .app-header .header-right {
   /* width: calc(100% - 240px); */
