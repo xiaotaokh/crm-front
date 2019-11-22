@@ -37,6 +37,11 @@ export const myMixins = {
       // 存放表格选中项信息
       globalMultipleSelection: [],
 
+      // 全局查看详情
+      globalViewDetailForm:{},  // 全局查看详情 Form 对象
+      // globalViewDetailFormUrl: "",
+      // globalViewDetailFormData: {},
+
       // 表格全局查看详情
       globalViewDetailFormVisible: false,
 
@@ -145,7 +150,9 @@ export const myMixins = {
         .then(res => {
           this.globalTableData = res.data.data; // 获取表格数据
           this.globalTableLoading = false;
-          this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount
+          this.totalCount = res.data.data.length; // 将数据的长度赋值给totalCount 
+
+          // console.log(res.data.data)
         })
         .catch(err => {});
     },
@@ -408,6 +415,20 @@ export const myMixins = {
           message: "请先勾选表格项!"
         });
       }
+    },
+
+    // 全局表格行查看详情
+    getViewDetailFormGlobal(url,formData) {
+      let url_v = url;
+      let formData_v = formData;
+      this.$axios
+        .post(url_v, formData_v)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.globalViewDetailForm = res.data.data;
+          }
+        })
+        .catch(err => {});
     },
     // 表格行查看详情全局取消
     viewDetailDialogFormCancleGlobal() {

@@ -111,6 +111,20 @@
       "unicode_decimal": 59534
     },
     {
+      "icon_id": "3826027",
+      "name": "记录",
+      "font_class": "jilu",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "3996617",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
       "icon_id": "4512455",
       "name": "重置密码",
       "font_class": "zhongzhimima",
@@ -137,6 +151,13 @@
       "font_class": "guanbi",
       "unicode": "e608",
       "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "6282774",
+      "name": "提交",
+      "font_class": "tijiao",
+      "unicode": "e6b9",
+      "unicode_decimal": 59065
     },
     {
       "icon_id": "6861608",
@@ -200,6 +221,13 @@
       "font_class": "yonghu",
       "unicode": "e674",
       "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "8897351",
+      "name": "提交",
+      "font_class": "tijiao1",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
     },
     {
       "icon_id": "9101993",
