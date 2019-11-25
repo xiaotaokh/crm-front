@@ -525,10 +525,10 @@ export default {
               this.$axios
                 .post("logout")
                 .then(res => {
-                  this.$message({
-                    message: "退出成功!",
-                    type: "success"
-                  });
+                  // this.$message({
+                  //   message: "退出成功!",
+                  //   type: "success"
+                  // });
                   localStorage.removeItem("token"); // 清除token
                   this.$router.push({ path: "/login" }); // 跳转页面
                 })

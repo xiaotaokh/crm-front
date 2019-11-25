@@ -47,7 +47,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item label="所属公司：" prop="companyId">
-            <el-select v-model="searchForm.companyId" size="small" placeholder="请选择所属公司">
+            <el-select v-model="searchForm.companyId" clearable size="small" placeholder="请选择所属公司">
               <el-option
                 v-for="item in globalCompanySelect"
                 :key="item.id"

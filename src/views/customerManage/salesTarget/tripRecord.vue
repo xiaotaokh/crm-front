@@ -6,8 +6,9 @@
     <!-- 除去返回主体 -->
     <div class="content-main">
       <el-divider>
-        <i class="iconfont iconjilu"></i>&nbsp;
-        {{ this.$route.params.row.name == undefined ? '' : this.$route.params.row.name }} - 行程记录
+        <i class="iconfont iconjilu"></i>
+        &nbsp;
+        {{ title }} - 行程记录
       </el-divider>
       <!-- 按钮组 -->
       <el-row type="flex" justify="start" class="app-btn-group">
@@ -141,7 +142,9 @@
                     @click="upload(scope.$index, scope.row)"
                     v-if="scope.row.recordStatus == 0"
                     circle
-                  ><i class="iconfont iconshangchuan" style="font-size:12px"></i></el-button>
+                  >
+                    <i class="iconfont iconshangchuan" style="font-size:12px"></i>
+                  </el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="删除" placement="top">
                   <el-button
@@ -357,6 +360,7 @@ export default {
     return {
       appBackPath: "/appMain/customerManage/salesTarget/perSalesmanage", // 返回路径 appBackPath
       tableHeight: window.innerHeight - 300, // 表格高度
+      title:"", // 行程记录标题名称
       // 添加dialog form
       addDialogForm: {
         addDialogFormVisible: false,
@@ -561,9 +565,9 @@ export default {
       this.getViewDetailFormGlobal(url, formData);
     },
     // 表格行上传
-    upload(index,row) {
-      console.log(index)
-    },
+    upload(index, row) {
+      
+    }
   },
   mounted() {
     if (!this.$route.params.row) {
@@ -571,6 +575,8 @@ export default {
         path: "/appMain/customerManage/salesTarget/perSalesmanage"
       });
       return false;
+    } else {
+      this.title = this.$route.params.row.name;
     }
     this.globalListenHeight(); // 监听页面变化，修改表格高度
     this.getTableData(); // 获取表格数据

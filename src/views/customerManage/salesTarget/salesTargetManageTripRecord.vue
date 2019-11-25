@@ -246,7 +246,7 @@ export default {
                 this.getTableData(); // 重新获取表格数据
                 this.$message({
                   type: "success",
-                  message: res.data.data
+                  message: res.data.msg
                 });
               }
             })

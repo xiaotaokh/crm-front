@@ -65,7 +65,7 @@
       <div class="dra-con">
         <ul>
           <li>
-            <span>主题色</span>
+            <span>主题色(待配置)</span>
             <span>
               <el-color-picker v-model="mainColor" size="small" @change="drawMainColor"></el-color-picker>
             </span>
