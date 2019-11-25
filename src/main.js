@@ -96,12 +96,13 @@ axios.interceptors.request.use(config => {
   }
   // 设置post请求体parms格式
   if (config.method === 'post') {
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     // 如果 请求体为FormData 类型的（例如带文件的请求体），不使用qs去转换
     if(config.data instanceof FormData) {
-    }else{
+      
+    }else {
       config.data = Qs.stringify(config.data); // 普通请求体转换请求体格式
     }
-    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
   }
   return config;
 }, err => Promise.reject(err));
