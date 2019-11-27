@@ -42,6 +42,7 @@
                 size="small"
                 @change="selectCompanyAll"
                 placeholder="请选择公司"
+                clearable
               >
                 <el-option label="未设置公司的员工" value="0"></el-option>
                 <el-option

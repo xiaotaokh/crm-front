@@ -295,7 +295,7 @@ export const myMixins = {
     },
     downloadFile(url, data) {
       let requestData = Object.assign({}, data, {
-        accessToken: localStorage.getItem("accessToken")
+        // accessToken: localStorage.getItem("accessToken");
       });
 
       // 响应类型：arraybuffer, blob

@@ -24,15 +24,15 @@
       <!-- 菜单展开收缩 -->
       <div class="isCollapse" v-if="this.$store.state.isHeaderLogo">
         <el-tooltip class="item" effect="dark" content="折叠菜单" placement="right">
-          <el-button type="text" @click="handleSliderIsCollapse">
-            <i class="iconfont icondaohanghebing"></i>
+          <el-button type="primary" size="mini" icon="el-icon-s-fold" @click="handleSliderIsCollapse">
+            <!-- <i class="iconfont icondaohanghebing"></i> -->
           </el-button>
         </el-tooltip>
       </div>
       <div class="isCollapse" v-if="!this.$store.state.isHeaderLogo">
         <el-tooltip class="item" effect="dark" content="展开菜单" placement="right">
-          <el-button type="text" @click="handleSliderIsCollapse">
-            <i class="iconfont icondaohangzhankai"></i>
+          <el-button type="primary" size="mini" icon="el-icon-s-unfold" @click="handleSliderIsCollapse">
+            <!-- <i class="iconfont icondaohangzhankai"></i> -->
           </el-button>
         </el-tooltip>
       </div>
@@ -691,10 +691,6 @@ export default {
 /* 是否展开菜单 */
 .app-header .header-right .isCollapse {
   margin-left: 10px;
-}
-.app-header .header-right .isCollapse i {
-  font-weight: 700;
-  color: #409eff;
 }
 .app-header .header-right .search {
   width: 320px;

@@ -143,7 +143,7 @@
                     v-if="scope.row.recordStatus == 0"
                     circle
                   >
-                    <i class="iconfont iconshangchuan" style="font-size:12px"></i>
+                    <i class="iconfont iconfujian" style="font-size:12px"></i>
                   </el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="删除" placement="top">
@@ -352,9 +352,16 @@
       <!-- 按钮组 -->
       <el-row type="flex" justify="start" class="app-btn-group">
         <el-col :span="24">
-          <el-upload action :auto-upload="false" :on-change="upload" :show-file-list="false">
-            <el-button icon="el-icon-upload" size="mini" type="primary">上传</el-button>
-          </el-upload>
+          <el-form id="upload">
+            <el-upload action :auto-upload="false" :on-change="upload" :show-file-list="false">
+              <el-button
+                :loading="uploadFileLoading"
+                icon="el-icon-upload"
+                size="mini"
+                type="primary"
+              >上传</el-button>
+            </el-upload>
+          </el-form>
         </el-col>
       </el-row>
       <el-table
@@ -374,7 +381,7 @@
         <el-table-column align="center" label="上传时间">
           <template slot-scope="scope">{{ scope.row.createAt | dateFilter }}</template>
         </el-table-column>
-        <el-table-column fixed="right" width="80" align="center" label="操作">
+        <el-table-column fixed="right" width="120" align="center" label="操作">
           <template slot-scope="scope">
             <el-tooltip effect="dark" content="查看" placement="top">
               <el-button
@@ -383,6 +390,15 @@
                 @click="fileView(scope.$index, scope.row)"
                 circle
                 icon="el-icon-download"
+              ></el-button>
+            </el-tooltip>
+            <el-tooltip effect="dark" content="删除" placement="top">
+              <el-button
+                size="small"
+                circle
+                type="danger"
+                icon="el-icon-delete"
+                @click="handleDelFile(scope.$index, scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -443,7 +459,8 @@ export default {
       fileManageTableData: [], // 附件管理表格
       fileManageVisible: false, // 附件管理dialog
       fileManageTableLoading: false, // // 附件管理loading
-      recordId: "" // 销售目标中行程记录的id
+      recordId: "", // 销售目标中行程记录的id
+      uploadFileLoading: false // 附件上传按钮 Loading
     };
   },
   methods: {
@@ -596,7 +613,7 @@ export default {
     },
     // 表格行删除事件
     handleDelete(index, row) {
-      this.globalDeleteUrl = "saleRecord/delRecord";
+      this.globalDeleteUrl = "file/delFile";
       this.globalDeleteFormData = {
         id: row.id
       };
@@ -611,14 +628,12 @@ export default {
       };
       this.getViewDetailFormGlobal(url, formData);
     },
-    // 表格行附件管理
-    handleFileManage(index, row) {
-      this.recordId = row.id; // 存放行程记录id
-      this.fileManageVisible = true;
+    // 获取行程记录 - 附件表格列表
+    getFileList(id) {
       this.fileManageTableLoading = true;
       let url = "file/getRecordFile";
       let formData = {
-        recordId: row.id
+        recordId: id
       };
       this.$axios
         .post(url, formData)
@@ -632,40 +647,39 @@ export default {
           return err;
         });
     },
+    // 表格行附件管理
+    handleFileManage(index, row) {
+      this.recordId = row.id; // 存放行程记录id
+      this.fileManageVisible = true;
+      this.getFileList(row.id);
+    },
     // 附件管理上传
     upload(file) {
+      this.uploadFileLoading = true;
       let url = "file/addRecordFile";
-
-      let formData = new FormData();
-      formData.append("file",file);
-      formData.append("recordId",this.recordId);
-
+      let upload = document.getElementById("upload");
+      let formData = new FormData(upload);
+      // let formData = new URLSearchParams()
+      formData.append("file", file);
+      formData.append("recordId", this.recordId);
       this.$axios
-        .post(url, formData)
+        .post(url, formData, {
+          headers: {
+            enctype: "multipart/form-data",
+            dataType: "text",
+            processData: false,
+            contentType: false
+          }
+        })
         .then(res => {
-          console.log(formData[file])
+          // console.log(formData.get("file"))
           if (res.data.code == 1) {
             this.$message({
               type: "success",
               message: res.data.msg
             });
-            // 刷新该行程记录附件列表
-            this.fileManageTableLoading = true;
-            let url = "file/getRecordFile";
-            let formData = {
-              recordId: this.recordId
-            };
-            this.$axios
-              .post(url, formData)
-              .then(res => {
-                if (res.data.code == 1) {
-                  this.fileManageTableData = res.data.data;
-                  this.fileManageTableLoading = false;
-                }
-              })
-              .catch(err => {
-                return err;
-              });
+            this.uploadFileLoading = false;
+            this.getFileList(this.recordId); // 刷新该行程记录附件列表
           }
         })
         .catch(err => {
@@ -674,7 +688,49 @@ export default {
     },
     // 文件查看
     fileView(index, row) {
-      console.log(index);
+      this.globalFileName = row.name; // 用于下载问件时候的文件名
+      let url = "file/downloadFileById";
+      let formData = {
+        id: row.id
+      };
+      this.downloadFile(url, formData);
+    },
+    // 文件删除
+    handleDelFile(index, row) {
+      let url = "file/delFile";
+      let formData = {
+        id: row.id
+      };
+      this.$confirm("此操不可逆, 是否继续?", "删除信息", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$axios
+            .post(url, formData)
+            .then(res => {
+              if (res.data.code == 1) {
+                this.$message({
+                  type: "success",
+                  message: res.data.msg
+                });
+              }
+              this.getFileList(this.recordId); // 刷新该行程记录附件列表
+            })
+            .catch(err => {
+              this.$message({
+                type: "error",
+                message: res.data.msg
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除!"
+          });
+        });
     }
   },
   mounted() {

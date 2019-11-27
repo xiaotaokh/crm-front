@@ -132,7 +132,7 @@ axios.interceptors.response.use(res => {
 }, error => {
   if (!error.response) {
     Vue.prototype.$message({
-      message: "后台接口访问失败！",
+      message: "WOW，访问失败了！",
       type: 'warning'
     });
   }

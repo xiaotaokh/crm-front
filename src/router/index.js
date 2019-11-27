@@ -214,7 +214,8 @@ router.beforeEach((to, from, next) => {
       next("/appMain");
       Vue.prototype.$message({
         message: '您已经登录，欢迎使用！',
-        type: 'success'
+        type: 'success',
+        duration:1500,
       });
       next();
     } else {

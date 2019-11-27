@@ -6,6 +6,13 @@
   "description": "国威永耀-crm管理平台",
   "glyphs": [
     {
+      "icon_id": "1276",
+      "name": "附件",
+      "font_class": "fujian",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
       "icon_id": "553323",
       "name": "姓名 用户名 昵称",
       "font_class": "xingmingyonghumingnicheng",
@@ -144,6 +151,13 @@
       "font_class": "shangchuan",
       "unicode": "e621",
       "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "4598843",
+      "name": "附件管理",
+      "font_class": "fujianguanli",
+      "unicode": "e634",
+      "unicode_decimal": 58932
     },
     {
       "icon_id": "4735727",
