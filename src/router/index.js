@@ -32,7 +32,7 @@ import itemMaintain from '@/views/itemManage/itemMaintain' // 项目维护
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history', // build打包时候要关闭
+  // mode: 'history', // build打包时候要关闭
   routes: [{
       path: '/',
       redirect: '/login',

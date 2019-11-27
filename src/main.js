@@ -14,9 +14,20 @@ Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
-import '@/assets/styles/main.css' // 全局主样式文件
+import '@/assets/fonts/iconfont.css' // 阿里图标字体
+import '@/assets/fonts/iconfont.js' // 阿里图标字体
+
 import '@/assets/styles/media.css' // 响应式布局样式文件
+import '@/assets/styles/main.css' // 全局主样式文件
 import '@/assets/styles/reset.css' // 全局样式重置
+
+// ElementUI
+import ElementUI from 'element-ui' // element-ui
+import 'element-ui/lib/theme-chalk/index.css' // element-ui css
+
+import 'aigodata-element-theme' // aigo定制element-ui
+import '@/assets/styles/theme.css'
+Vue.use(ElementUI)
 
 // 引入echarts
 import echarts from 'echarts'
@@ -49,17 +60,6 @@ import * as dateFilter from '@/common/filters/index' // 引入时间戳
 Object.keys(dateFilter).forEach(key => {
   Vue.filter(key, dateFilter[key])
 })
-
-// ElementUI
-import ElementUI from 'element-ui' // element-ui
-import 'element-ui/lib/theme-chalk/index.css' // element-ui css
-
-import 'aigodata-element-theme' // aigo定制element-ui
-import '@/assets/styles/theme.css'
-Vue.use(ElementUI)
-
-import '@/assets/fonts/iconfont.css' // 阿里图标字体
-import '@/assets/fonts/iconfont.js' // 阿里图标字体
 
 // url-loader
 import urlLoader from './router'
