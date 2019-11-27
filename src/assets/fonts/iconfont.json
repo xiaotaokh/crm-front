@@ -76,6 +76,13 @@
       "unicode_decimal": 58944
     },
     {
+      "icon_id": "1115076",
+      "name": "搜索",
+      "font_class": "sousuo1",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
       "icon_id": "1166005",
       "name": "首页",
       "font_class": "iconfontzhizuobiaozhun023101",
@@ -151,6 +158,13 @@
       "font_class": "shangchuan",
       "unicode": "e621",
       "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "4572509",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
     },
     {
       "icon_id": "4598843",
