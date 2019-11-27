@@ -6,8 +6,9 @@
     <!-- 除去返回主体 -->
     <div class="content-main">
       <el-divider>
-        <i class="iconfont iconjilu"></i>&nbsp;
-        {{ this.$route.params.row.name == undefined ? '' : this.$route.params.row.name }} - 行程记录
+        <i class="iconfont iconjilu"></i>
+        &nbsp;
+        {{ title }} - 行程记录
       </el-divider>
       <!-- 表格table -->
       <el-row class="app-content-table">
@@ -95,7 +96,7 @@
             <el-table-column align="center" label="备注" width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.note }}</template>
             </el-table-column>
-            <el-table-column fixed="right" width="120" align="center" label="操作">
+            <el-table-column fixed="right" width="180" align="center" label="操作">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="查看详情" placement="top">
                   <el-button
@@ -105,6 +106,16 @@
                     circle
                     icon="el-icon-tickets"
                   ></el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="附件管理" placement="top">
+                  <el-button
+                    type="primary"
+                    size="small"
+                    @click="handleFileManage(scope.$index, scope.row)"
+                    circle
+                  >
+                    <i class="iconfont iconfujian" style="font-size:12px"></i>
+                  </el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="退回" placement="top">
                   <el-button
@@ -202,6 +213,40 @@
         <el-button size="small" type="primary" @click="viewDetailDialogFormSubmitGlobal">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 附件管理dialog -->
+    <el-dialog append-to-body center title="附件管理" :visible.sync="fileManageVisible">
+      <el-table
+        :data="fileManageTableData"
+        stripe
+        max-height="400px"
+        size="medium"
+        v-loading="fileManageTableLoading"
+        border
+      >
+        <el-table-column label="序号" width="60" align="center">
+          <template slot-scope="scope">{{scope.$index + 1}}</template>
+        </el-table-column>
+        <el-table-column align="center" label="附件名称" show-overflow-tooltip>
+          <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="上传时间">
+          <template slot-scope="scope">{{ scope.row.createAt | dateFilter }}</template>
+        </el-table-column>
+        <el-table-column fixed="right" width="60" align="center" label="操作">
+          <template slot-scope="scope">
+            <el-tooltip effect="dark" content="查看" placement="top">
+              <el-button
+                type="primary"
+                size="small"
+                @click="fileView(scope.$index, scope.row)"
+                circle
+                icon="el-icon-download"
+              ></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -214,7 +259,12 @@ export default {
   data() {
     return {
       // appBackPath: "/appMain/customerManage/salesTarget/salesTargetManageTripRecord", // 返回路径 appBackPath
-      tableHeight: window.innerHeight - 240 // 表格高度
+      tableHeight: window.innerHeight - 240, // 表格高度
+      title: "", // 行程记录标题名称
+      fileManageTableData: [], // 附件管理表格
+      fileManageVisible: false, // 附件管理dialog
+      fileManageTableLoading: false, // // 附件管理loading
+      recordId: "", // 销售目标中行程记录的id
     };
   },
   methods: {
@@ -269,14 +319,50 @@ export default {
         id: row.id
       };
       this.getViewDetailFormGlobal(url, formData);
-    }
+    },
+    // 获取行程记录 - 附件表格列表
+    getFileList(id) {
+      this.fileManageTableLoading = true;
+      let url = "file/getRecordFile";
+      let formData = {
+        recordId: id
+      };
+      this.$axios
+        .post(url, formData)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.fileManageTableLoading = false;
+            this.fileManageTableData = res.data.data;
+          }
+        })
+        .catch(err => {
+          return err;
+        });
+    },
+    // 表格行附件管理
+    handleFileManage(index, row) {
+      this.recordId = row.id; // 存放行程记录id
+      this.fileManageVisible = true;
+      this.getFileList(row.id);
+    },
+    // 表格行附件管理 文件查看
+    fileView(index, row) {
+      this.globalFileName = row.name; // 用于下载问件时候的文件名
+      let url = "file/downloadFileById";
+      let formData = {
+        id: row.id
+      };
+      this.downloadFile(url, formData);
+    },
   },
   mounted() {
     if (!this.$route.params.row) {
       this.$router.push({
-        path: "/appMain/customerManage/salesTarget/perSalesmanage"
+        path: "/appMain/customerManage/salesTarget/salesTargetManage"
       });
       return false;
+    } else {
+      this.title = this.$route.params.row.name;
     }
     this.globalListenHeight(); // 监听页面变化，修改表格高度
     this.getTableData(); // 获取表格数据

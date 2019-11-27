@@ -140,7 +140,6 @@
                     type="primary"
                     size="small"
                     @click="handleFileManage(scope.$index, scope.row)"
-                    v-if="scope.row.recordStatus == 0"
                     circle
                   >
                     <i class="iconfont iconfujian" style="font-size:12px"></i>
@@ -347,10 +346,10 @@
         <el-button size="small" type="primary" @click="viewDetailDialogFormSubmitGlobal">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 上传dialog -->
+    <!-- 附件管理dialog -->
     <el-dialog append-to-body center title="附件管理" :visible.sync="fileManageVisible">
       <!-- 按钮组 -->
-      <el-row type="flex" justify="start" class="app-btn-group">
+      <el-row type="flex" justify="start" class="app-btn-group" v-if="fileUploadDel">
         <el-col :span="24">
           <el-form id="upload">
             <el-upload action :auto-upload="false" :on-change="upload" :show-file-list="false">
@@ -392,7 +391,7 @@
                 icon="el-icon-download"
               ></el-button>
             </el-tooltip>
-            <el-tooltip effect="dark" content="删除" placement="top">
+            <el-tooltip effect="dark" content="删除" placement="top" v-if="fileUploadDel">
               <el-button
                 size="small"
                 circle
@@ -455,12 +454,12 @@ export default {
           ]
         }
       },
-
       fileManageTableData: [], // 附件管理表格
       fileManageVisible: false, // 附件管理dialog
       fileManageTableLoading: false, // // 附件管理loading
       recordId: "", // 销售目标中行程记录的id
-      uploadFileLoading: false // 附件上传按钮 Loading
+      uploadFileLoading: false, // 附件上传按钮 Loading
+      fileUploadDel:true,  // 附件管理上传按钮显示
     };
   },
   methods: {
@@ -650,6 +649,12 @@ export default {
     // 表格行附件管理
     handleFileManage(index, row) {
       this.recordId = row.id; // 存放行程记录id
+      // 根据记录状态是否显示上传按钮
+      if(row.recordStatus == 1) {
+        this.fileUploadDel = false;
+      }else {
+        this.fileUploadDel = true;
+      }
       this.fileManageVisible = true;
       this.getFileList(row.id);
     },
