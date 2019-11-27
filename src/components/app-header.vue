@@ -27,10 +27,9 @@
           <el-button
             type="primary"
             size="mini"
-            icon="el-icon-s-fold"
             @click="handleSliderIsCollapse"
           >
-            <!-- <i class="iconfont icondaohanghebing"></i> -->
+            <i class="iconfont icondaohanghebing" style="font-size:12px"></i>
           </el-button>
         </el-tooltip>
       </div>
@@ -39,10 +38,9 @@
           <el-button
             type="primary"
             size="mini"
-            icon="el-icon-s-unfold"
             @click="handleSliderIsCollapse"
           >
-            <!-- <i class="iconfont icondaohangzhankai"></i> -->
+            <i class="iconfont icondaohangzhankai" style="font-size:12px"></i>
           </el-button>
         </el-tooltip>
       </div>
