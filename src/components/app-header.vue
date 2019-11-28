@@ -23,7 +23,7 @@
     >
       <!-- 菜单展开收缩 -->
       <div class="isCollapse" v-if="this.$store.state.isHeaderLogo">
-        <el-tooltip class="item" effect="dark" content="折叠菜单" placement="right">
+        <el-tooltip class="item" effect="dark" content="折叠菜单" placement="left">
           <el-button
             type="primary"
             size="mini"
@@ -48,7 +48,7 @@
       <div class="search" ref="search">
         <transition name="searchFade" appear mode="in-out">
         <div class="search-no-ipt" v-show="!isSearchInput">
-          <el-tooltip class="item" effect="dark" content="站内搜索" placement="right">
+          <el-tooltip class="item" effect="dark" content="搜索" placement="left">
             <el-button type="text" size="mini" @click="isSearchInput = true">
               <i class="iconfont iconsousuo1" style="font-size:18px;"></i>
             </el-button>
@@ -665,7 +665,7 @@ export default {
   },
   mounted() {
     document.addEventListener("click", e => {
-      if (!this.$refs["search"].contains(e.target)) {
+      if (!this.$refs.search.contains(e.target)) {
         this.isSearchInput = false;
       }
     });

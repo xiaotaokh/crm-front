@@ -266,8 +266,8 @@ export default {
         .get(url)
         .then(res => {
           if (res.data.code == 1) {
+            this.handleFatherCompanyChange(); // 获取父公司下拉列表
             this.companyMaintainsForm.companyNewsList = res.data.data; // 赋给公司信息表单
-
             this.companyMaintainsForm.fatherCompany = res.data.data.pid;
             this.companyMaintainsForm.name = res.data.data.name;
             this.companyMaintainsForm.unifiedSocialCode =
@@ -286,8 +286,6 @@ export default {
             this.companyMaintainsForm.companyMaintainsShow = false;
 
             this.globalFileName = res.data.data.fileName; // 用于下载问件时候的文件名
-
-            this.handleFatherCompanyChange(); // 获取父公司下拉列表
             // 父公司默认值
             if (this.companyMaintainsForm.fatherCompany == 0) {
               this.companyMaintainsForm.fatherCompany = "无"; // pid为0 显示无

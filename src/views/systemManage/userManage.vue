@@ -759,7 +759,11 @@ export default {
             this.editDialogForm.password = res.data.data.password;
             this.editDialogForm.name = res.data.data.name;
             this.editDialogForm.gender = res.data.data.gender;
-            this.editDialogForm.companyId = res.data.data.companyId;
+            if(res.data.data.companyId == 0) {
+              this.editDialogForm.companyId = "暂无所属公司";
+            }else {
+              this.editDialogForm.companyId = res.data.data.companyId;
+            }
             this.editDialogForm.age = res.data.data.age;
             this.editDialogForm.phoneNumber = res.data.data.phoneNumber;
             this.editDialogForm.birthday = res.data.data.birthday;
@@ -779,7 +783,9 @@ export default {
       var companyId = "";
       if (this.editDialogForm.addSelectCompanyList.length == 0) {
         companyId = this.editDialogForm.addDialogCompany.id;
-      } else {
+      } else if(this.editDialogForm.companyId == "暂无所属公司"){
+        companyId = 0;
+      }else {
         companyId = this.editDialogForm.companyId;
       }
       let formData = {
