@@ -124,17 +124,6 @@
                     icon="el-icon-tickets"
                   ></el-button>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="提交" placement="top">
-                  <el-button
-                    type="primary"
-                    size="small"
-                    @click="tripRecordSubmit(scope.$index, scope.row)"
-                    circle
-                    v-if="scope.row.recordStatus == 0"
-                  >
-                    <i class="iconfont icontijiao1" style="font-size:12px"></i>
-                  </el-button>
-                </el-tooltip>
                 <el-tooltip effect="dark" content="附件管理" placement="top">
                   <el-button
                     type="primary"
@@ -143,6 +132,17 @@
                     circle
                   >
                     <i class="iconfont iconfujian" style="font-size:12px"></i>
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip effect="dark" content="提交" placement="top">
+                  <el-button
+                    type="warning"
+                    size="small"
+                    @click="tripRecordSubmit(scope.$index, scope.row)"
+                    circle
+                    v-if="scope.row.recordStatus == 0"
+                  >
+                    <i class="iconfont icontijiao1" style="font-size:12px"></i>
                   </el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="删除" placement="top">

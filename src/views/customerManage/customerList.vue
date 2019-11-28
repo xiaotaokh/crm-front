@@ -59,8 +59,8 @@
             <el-table-column align="center" label="性别" width="100">
               <template slot-scope="scope">{{ scope.row.gender }}</template>
             </el-table-column>
-            <el-table-column align="center" label="年龄" width="100">
-              <template slot-scope="scope">{{ scope.row.age }}</template>
+            <el-table-column align="center" label="单位" width="180" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.company }}</template>
             </el-table-column>
             <el-table-column align="center" label="联系电话" width="140">
               <template slot-scope="scope">{{ scope.row.phone }}</template>
@@ -83,8 +83,10 @@
             <el-table-column align="center" label="修改时间" width="160">
               <template slot-scope="scope">{{ scope.row.updateAt | dateFilter }}</template>
             </el-table-column>
-            <el-table-column label="单位" min-width="180" show-overflow-tooltip>
-              <template slot-scope="scope">{{ scope.row.company }}</template>
+            <el-table-column label="备注" min-width="280" show-overflow-tooltip>
+              <template slot-scope="scope">
+                {{scope.row.note}}
+              </template>
             </el-table-column>
             <el-table-column fixed="right" width="200" align="center" label="操作">
               <template slot-scope="scope">
