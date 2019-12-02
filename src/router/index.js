@@ -46,8 +46,8 @@ const router = new Router({
     },
     {
       path: '/appMain',
-      redirect: '/appMain/index',
-      component: index // 重定向到首页
+      redirect: '/appMain/customerManage/customerList',  // /appMain/index
+      component: customerList // 重定向到首页 index
     },
     {
       path: '/appMain',

@@ -12,15 +12,28 @@
           :inline="true"
           ref="searchForm"
           :model="searchForm"
-          label-width="80px"
+          label-width="120px"
         >
-          <el-form-item label="客户名称：">
+          <el-form-item label="联系人姓名：">
             <el-input
               v-model="searchForm.name"
               @keyup.enter.native="searchSubmit"
-              placeholder="请输入客户名称"
+              placeholder="请输入联系人姓名"
               clearable
             ></el-input>
+          </el-form-item>
+          <el-form-item label="区域：" prop="areaList">
+            <el-cascader
+              :options="areaOption"
+              v-model="searchForm.areaList"
+              expand-trigger="hover"
+              @change="handleAreaChange"
+              clearable
+              :props="optionProps"
+              placeholder="请输入/选择区域"
+              filterable
+              @keyup.enter.native="searchSubmit"
+            ></el-cascader>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="searchSubmit">查询</el-button>
@@ -53,16 +66,19 @@
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="客户名称" width="140" show-overflow-tooltip>
+            <el-table-column align="center" label="联系人姓名" width="140" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
-            <el-table-column align="center" label="性别" width="100">
-              <template slot-scope="scope">{{ scope.row.gender }}</template>
+            <el-table-column align="center" label="区域" width="220" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.address }}</template>
             </el-table-column>
-            <el-table-column align="center" label="单位" width="180" show-overflow-tooltip>
+            <el-table-column align="center" label="单位名称" width="180" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.company }}</template>
             </el-table-column>
-            <el-table-column align="center" label="联系电话" width="140">
+            <el-table-column align="center" label="职务" width="140" show-overflow-tooltip>
+              <template slot-scope="scope">{{ scope.row.post }}</template>
+            </el-table-column>
+            <el-table-column align="center" label="联系方式" width="140">
               <template slot-scope="scope">{{ scope.row.phone }}</template>
             </el-table-column>
             <el-table-column align="center" label="状态" width="180">
@@ -80,13 +96,8 @@
             <el-table-column align="center" label="添加时间" width="160" prop="createAt" sortable>
               <template slot-scope="scope">{{ scope.row.createAt | dateFilter }}</template>
             </el-table-column>
-            <el-table-column align="center" label="修改时间" width="160">
-              <template slot-scope="scope">{{ scope.row.updateAt | dateFilter }}</template>
-            </el-table-column>
             <el-table-column label="备注" min-width="280" show-overflow-tooltip>
-              <template slot-scope="scope">
-                {{scope.row.note}}
-              </template>
+              <template slot-scope="scope">{{scope.row.note}}</template>
             </el-table-column>
             <el-table-column fixed="right" width="200" align="center" label="操作">
               <template slot-scope="scope">
@@ -151,11 +162,29 @@
         :label-width="addDialogForm.addDialogFormLabelWidth"
         :rules="addDialogForm.addDialogFormRules"
       >
-        <el-form-item label="客户名称：" prop="name">
-          <el-input v-model="addDialogForm.name" placeholder="请输入客户名称" clearable></el-input>
+        <el-form-item label="联系人姓名：" prop="name">
+          <el-input v-model="addDialogForm.name" placeholder="请输入联系人姓名" clearable></el-input>
         </el-form-item>
-        <el-form-item label="单位：">
-          <el-input v-model="addDialogForm.company" placeholder="请输入客户单位" clearable></el-input>
+        <el-form-item label="区域：" prop="areaList">
+          <el-cascader
+            :options="areaOption"
+            v-model="addDialogForm.areaList"
+            expand-trigger="hover"
+            @change="handleAreaChange"
+            clearable
+            :props="optionProps"
+            placeholder="请输入/选择区域"
+            filterable
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="联系方式：" prop="phone">
+          <el-input v-model="addDialogForm.phone" placeholder="请输入联系方式" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="单位名称：">
+          <el-input v-model="addDialogForm.company" placeholder="请输入单位名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="职务：">
+          <el-input v-model="addDialogForm.post" placeholder="请输入职务" clearable></el-input>
         </el-form-item>
         <el-form-item label="性别：">
           <el-radio-group v-model="addDialogForm.gender">
@@ -165,12 +194,6 @@
         </el-form-item>
         <el-form-item label="年龄：">
           <el-input v-model="addDialogForm.age" placeholder="请输入客户年龄" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话：" prop="phone">
-          <el-input v-model="addDialogForm.phone" placeholder="请输入联系电话" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="地址：">
-          <el-input v-model="addDialogForm.address" placeholder="请输入地址" clearable></el-input>
         </el-form-item>
         <el-form-item label="备注：">
           <el-input
@@ -196,11 +219,20 @@
       :visible.sync="globalViewDetailFormVisible"
     >
       <el-form :model="viewDetailForm" :label-width="viewDetailFormLabelWidth" ref="viewDetailForm">
-        <el-form-item label="客户名称：">
+        <el-form-item label="联系人姓名：">
           <el-input v-model="viewDetailForm.name" readonly></el-input>
         </el-form-item>
-        <el-form-item label="单位：">
+        <el-form-item label="区域：">
+          <el-input v-model="viewDetailForm.address" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="单位名称：">
           <el-input v-model="viewDetailForm.company" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="职务：">
+          <el-input v-model="viewDetailForm.post" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式：" prop="phone">
+          <el-input v-model="viewDetailForm.phone" readonly></el-input>
         </el-form-item>
         <el-form-item label="性别：">
           <el-radio-group disabled v-model="viewDetailForm.gender">
@@ -210,12 +242,6 @@
         </el-form-item>
         <el-form-item label="年龄：">
           <el-input v-model="viewDetailForm.age" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话：" prop="phone">
-          <el-input v-model="viewDetailForm.phone" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="地址：">
-          <el-input v-model="viewDetailForm.address" readonly></el-input>
         </el-form-item>
         <el-form-item label="状态：" prop="name">
           <el-switch
@@ -279,13 +305,35 @@
         :model="editDialogForm"
         ref="editDialogForm"
         label-width="100px"
-        :rules="editDialogForm.editDialogFormRules"
+        :rules="editDialogFormRules"
       >
-        <el-form-item label="客户名称：" prop="name">
-          <el-input v-model="editDialogForm.name" placeholder="请输入客户名称" clearable></el-input>
+        <el-form-item label="联系人姓名：" prop="name">
+          <el-input v-model="editDialogForm.name" placeholder="请输入联系人姓名" clearable></el-input>
         </el-form-item>
-        <el-form-item label="单位：">
-          <el-input v-model="editDialogForm.company" placeholder="请输入客户单位" clearable></el-input>
+        <el-form-item label="区域：" v-if="!isAddress">
+          <el-input v-model="editDialogForm.address" readonly style="width:80%" clearable></el-input>
+          <el-button type="text" @click="isAddress = true">修改</el-button>
+        </el-form-item>
+        <el-form-item label="区域：" prop="areaList" v-if="isAddress">
+          <el-cascader
+            :options="areaOption"
+            v-model="editDialogAreaList"
+            expand-trigger="hover"
+            @change="handleAreaChange"
+            clearable
+            :props="optionProps"
+            placeholder="请输入/选择区域"
+            filterable
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="联系方式：" prop="phone">
+          <el-input v-model="editDialogForm.phone" placeholder="请输入联系方式" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="单位名称：">
+          <el-input v-model="editDialogForm.company" placeholder="请输入客户单位名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="职务：">
+          <el-input v-model="editDialogForm.post" placeholder="请输入职务" clearable></el-input>
         </el-form-item>
         <el-form-item label="性别：">
           <el-radio-group v-model="editDialogForm.gender">
@@ -295,12 +343,6 @@
         </el-form-item>
         <el-form-item label="年龄：">
           <el-input v-model="editDialogForm.age" placeholder="请输入客户年龄" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话：" prop="phone">
-          <el-input v-model="editDialogForm.phone" placeholder="请输入联系电话" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="地址：">
-          <el-input v-model="editDialogForm.address" disabled></el-input>
         </el-form-item>
         <el-form-item label="状态：" prop="name">
           <el-switch
@@ -338,6 +380,8 @@
 </template>
 
 <script>
+// 引入省市县js文件
+import areaJs from "../../plugin/select_area.js";
 import { myMixins } from "@/mixins/index";
 let that;
 export default {
@@ -348,11 +392,19 @@ export default {
     return {
       // 搜索
       searchForm: {
-        name: ""
+        name: "",
+        areaList: []
       },
-
       tableHeight: window.innerHeight - 300, // 表格高度
-
+      areaOption: areajson,
+      // el-cascader 配置项
+      optionProps: {
+        value: "label",
+        label: "label",
+        children: "children",
+        checkStrictly: true
+      },
+      area: "", // 级联区域 字段转换后的值
       // 添加dialog form
       addDialogForm: {
         addDialogFormVisible: false,
@@ -364,12 +416,17 @@ export default {
         phone: "",
         address: "",
         note: "",
+        post: "",
+        areaList: [], // 级联区域el-cascader默认值
         addDialogFormRules: {
           name: [
-            { required: true, message: "请输入客户名称", trigger: "blur" }
+            { required: true, message: "请输入联系人姓名", trigger: "blur" }
           ],
           phone: [
             { required: true, message: "请输入联系方式", trigger: "blur" }
+          ],
+          areaList: [
+            { required: true, message: "请输入/选择区域", trigger: "change" }
           ]
         }
       },
@@ -385,22 +442,26 @@ export default {
       },
       // 编辑dialog form
       editDialogForm: {
-        name: "", // 客户名称
-        company: "", // 单位
+        name: "", // 联系人姓名
+        company: "", // 单位名称
         gender: "", // 性别
         age: "", // 年龄
-        phone: "", // 联系电话
-        address: "", // 地址
+        phone: "", // 联系方式
+        address: "", // 区域
         note: "", // 备注
-        // 编辑菜单弹窗form表单校验规则
-        editDialogFormRules: {
-          name: [
-            { required: true, message: "请输入客户名称", trigger: "blur" }
-          ],
-          phone: [
-            { required: true, message: "请输入联系方式", trigger: "blur" }
-          ]
-        }
+        post: ""
+      },
+      editDialogAreaList: [], // 级联区域el-cascader默认值
+      isAddress: false, // 编辑dialog里面的区域
+      // 编辑菜单弹窗form表单校验规则
+      editDialogFormRules: {
+        name: [
+          { required: true, message: "请输入联系人姓名", trigger: "blur" }
+        ],
+        phone: [{ required: true, message: "请输入联系方式", trigger: "blur" }],
+        areaList: [
+          { required: true, message: "请输入/选择区域", trigger: "change" }
+        ]
       }
     };
   },
@@ -409,7 +470,8 @@ export default {
     searchSubmit() {
       this.globalSearchUrl = "customer/getCustomerByName";
       this.globalSearchFormData = {
-        name: this.searchForm.name
+        name: this.searchForm.name,
+        address: this.area
       };
       this.searchSubmitGlobal();
     },
@@ -417,6 +479,11 @@ export default {
     getTableData() {
       this.globalGetTableDataUrl = "customer/getAll";
       this.getTableDataGlobal();
+    },
+    // 添加dialog 区域设置
+    handleAreaChange(value) {
+      // 赋值给区域字段 （先数组转字符串，再去掉所有的逗号）
+      this.area = value.toString().replace(/,/g, "");
     },
     // 添加表单重置
     addReset() {
@@ -432,13 +499,14 @@ export default {
     addDialogFormSubmit() {
       var url = "customer/addCustomer";
       let formData = {
-        address: this.addDialogForm.address,
+        address: this.area,
         gender: this.addDialogForm.gender,
         name: this.addDialogForm.name,
         company: this.addDialogForm.company,
         age: this.addDialogForm.age,
         phone: this.addDialogForm.phone,
-        note: this.addDialogForm.note
+        note: this.addDialogForm.note,
+        post: this.addDialogForm.post
       };
       this.$refs.addDialogForm.validate(valid => {
         if (valid) {
@@ -448,6 +516,8 @@ export default {
                 type: "success",
                 message: res.data.msg
               });
+              this.area = "";
+              this.addDialogForm.areaList = [];
               this.globalaAddDialogFormVisible = false;
               this.addReset();
               this.getTableData(); // 重置表单数据
@@ -508,9 +578,10 @@ export default {
     },
     // 表格行编辑确定
     editDialogFormSubmit() {
+      this.isAddress = true;
       var url = "customer/updateCustomer";
       let formData = {
-        address: this.editDialogForm.address,
+        address: this.area,
         gender: this.editDialogForm.gender,
         updateAt: this.editDialogForm.updateAt,
         createAt: this.editDialogForm.createAt,
@@ -520,16 +591,27 @@ export default {
         company: this.editDialogForm.company,
         id: this.editDialogForm.id,
         age: this.editDialogForm.age,
-        status: this.editDialogForm.status
+        status: this.editDialogForm.status,
+        post: this.editDialogForm.post
       };
       this.$refs.editDialogForm.validate(valid => {
         if (valid) {
+          if (this.isAddress && this.editDialogAreaList.length == 0) {
+            this.$message({
+              type: "warning",
+              message: "请先选择区域"
+            });
+            return false;
+          }
           this.$axios.post(url, formData).then(res => {
             if (res.data.code == 1) {
               this.$message({
                 type: "success",
                 message: res.data.msg
               });
+              this.isAddress = false;
+              this.area = "";
+              this.editDialogAreaList=[];
               this.globalaEditDialogFormVisible = false;
               this.getTableData();
             }

@@ -389,11 +389,10 @@ export default {
     // 关闭搜索input
     closeSearchInput(event) {
       var searchIpt = document.getElementsByClassName("search-ipt");
-      console.log(searchIpt);
       //按钮.app-download以外的区域
-      if (!searchIpt.contains(event.target)) {
-        this.isSearchInput = false;
-      }
+      // if (!searchIpt.contains(event.target)) {
+      //   this.isSearchInput = false;
+      // }
     },
     // 侧边栏是否收起
     handleSliderIsCollapse() {
@@ -665,9 +664,9 @@ export default {
   },
   mounted() {
     document.addEventListener("click", e => {
-      if (!this.$refs.search.contains(e.target)) {
-        this.isSearchInput = false;
-      }
+      // if (!this.$refs.search.contains(e.target)) {
+      //   this.isSearchInput = false;
+      // }
     });
     this.getUserInformationGlobal(); // 获取用户信息
     this.getRoleFilterList(); // 获取角色列表
