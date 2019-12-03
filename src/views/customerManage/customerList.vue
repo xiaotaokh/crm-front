@@ -69,10 +69,10 @@
             <el-table-column align="center" label="联系人姓名" width="140" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
-            <el-table-column align="center" label="区域" width="220" show-overflow-tooltip>
+            <el-table-column align="center" label="区域" width="240" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.address }}</template>
             </el-table-column>
-            <el-table-column align="center" label="单位名称" width="180" show-overflow-tooltip>
+            <el-table-column align="center" label="单位名称" width="240" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.company }}</template>
             </el-table-column>
             <el-table-column align="center" label="职务" width="140" show-overflow-tooltip>

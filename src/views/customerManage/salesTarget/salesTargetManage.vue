@@ -14,6 +14,16 @@
           :model="searchForm"
           label-width="100px"
         >
+          <el-form-item label="所属公司：" prop="companyId">
+            <el-select v-model="searchForm.companyId" clearable size="small" placeholder="请选择所属公司">
+              <el-option
+                v-for="item in globalCompanySelect"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="销售目标：">
             <el-input
               v-model="searchForm.name"
@@ -30,11 +40,11 @@
               clearable
             ></el-input>
           </el-form-item>
-          <el-form-item label="客户：">
+          <el-form-item label="联系人：">
             <el-input
               v-model="searchForm.customerName"
               @keyup.enter.native="searchSubmit"
-              placeholder="请输入客户"
+              placeholder="请输入联系人"
               clearable
             ></el-input>
           </el-form-item>
@@ -45,16 +55,6 @@
               placeholder="请输入项目"
               clearable
             ></el-input>
-          </el-form-item>
-          <el-form-item label="所属公司：" prop="companyId">
-            <el-select v-model="searchForm.companyId" clearable size="small" placeholder="请选择所属公司">
-              <el-option
-                v-for="item in globalCompanySelect"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
           </el-form-item>
           <el-button class="search-submit" size="mini" type="primary" @click="searchSubmit">查询</el-button>
         </el-form>
@@ -85,10 +85,10 @@
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="销售目标" width="180" show-overflow-tooltip>
+            <el-table-column align="center" label="销售目标" width="240" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
-            <el-table-column align="center" label="客户名称" width="120" show-overflow-tooltip>
+            <el-table-column align="center" label="联系人" width="120" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.customerName }}</template>
             </el-table-column>
             <el-table-column align="center" label="项目名称" width="180" show-overflow-tooltip>
@@ -210,8 +210,8 @@
             <el-option v-for="item in staffList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="客户：" prop="customerId">
-          <el-select v-model="addDialogForm.customerId" size="small" placeholder="请选择客户">
+        <el-form-item label="联系人：" prop="customerId">
+          <el-select v-model="addDialogForm.customerId" size="small" placeholder="请选择联系人">
             <el-option
               v-for="item in globalCustomerSelect"
               :key="item.id"
@@ -294,8 +294,8 @@
             <el-option v-for="item in staffList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="客户：" prop="customerId">
-          <el-select v-model="editDialogForm.customerId" size="small" placeholder="请选择客户">
+        <el-form-item label="联系人：" prop="customerId">
+          <el-select v-model="editDialogForm.customerId" size="small" placeholder="请选择联系人">
             <el-option
               v-for="item in globalCustomerSelect"
               :key="item.id"
@@ -360,7 +360,7 @@ export default {
         name: "",
         companyId: "", // 公司id
         staffId: "", // 跟进人员id
-        customerId: "", // 客户 id
+        customerId: "", // 联系人 id
         productId: "", // 项目 id
         estimatedCost: "", // 预计开销
         addDialogFormRules: {
@@ -378,7 +378,7 @@ export default {
             { required: true, message: "请选择跟进人员", trigger: "change" }
           ],
           customerId: [
-            { required: true, message: "请选择客户", trigger: "change" }
+            { required: true, message: "请选择联系人", trigger: "change" }
           ],
           productId: [
             { required: true, message: "请选择项目", trigger: "change" }
@@ -412,7 +412,7 @@ export default {
           //   { required: true, message: "请输入实际开销", trigger: "blur" }
           // ],
           customerId: [
-            { required: true, message: "请选择客户", trigger: "change" }
+            { required: true, message: "请选择联系人", trigger: "change" }
           ],
           // sellingPrice: [
           //   { required: true, message: "请输入售出价格", trigger: "blur" }
@@ -667,7 +667,7 @@ export default {
     this.getTableData(); // 获取表格数据
 
     this.getCompanySelectGlobal(); // 获取公司下拉菜单
-    this.getCustomerSelectGlobal(); // 获取客户下拉菜单
+    this.getCustomerSelectGlobal(); // 获取联系人下拉菜单
     this.getProductSelectGlobal(); // 获取项目下拉菜单
   }
 };
