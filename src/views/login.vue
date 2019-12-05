@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       username: "admin",
-      password: "123456",
+      password: "gwyy",
       verifyShow: false, // 显示验证
       verifyType: "info", // 验证按钮类型
       verifyText: "点击验证", // 验证text
