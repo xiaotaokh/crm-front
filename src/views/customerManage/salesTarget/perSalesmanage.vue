@@ -22,7 +22,7 @@
               clearable
             ></el-input>
           </el-form-item>
-          <el-form-item label="客户：">
+          <el-form-item label="联系人：">
             <el-input
               v-model="searchForm.customerName"
               @keyup.enter.native="searchSubmit"
@@ -64,7 +64,7 @@
                   <el-form-item label="销售目标">
                     <span>{{ scope.row.name }}</span>
                   </el-form-item>
-                  <el-form-item label="客户名称">
+                  <el-form-item label="联系人">
                     <span>{{ scope.row.customerName }}</span>
                   </el-form-item>
                   <el-form-item label="项目名称">
@@ -119,10 +119,10 @@
                 <span>{{scope.$index+(currentPage - 1) * PageSize + 1}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="销售目标" width="180" show-overflow-tooltip>
+            <el-table-column align="center" label="销售目标" width="240" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.name }}</template>
             </el-table-column>
-            <el-table-column align="center" label="客户名称" width="120" show-overflow-tooltip>
+            <el-table-column align="center" label="联系人" width="140" show-overflow-tooltip>
               <template slot-scope="scope">{{ scope.row.customerName }}</template>
             </el-table-column>
             <el-table-column align="center" label="项目名称" width="180" show-overflow-tooltip>
@@ -235,7 +235,7 @@
           <el-tag size="small" v-else-if="editObj.saleStatus == 1" effect="dark">进行中</el-tag>
           <el-tag size="small" v-else-if="editObj.saleStatus == 2" type="success" effect="dark">2已完成</el-tag>
         </el-form-item>
-        <el-form-item label="客户：" prop="customerId">
+        <el-form-item label="联系人：" prop="customerId">
           <el-input v-model="editObj.customerName" disabled></el-input>
         </el-form-item>
         <el-form-item label="项目价格：">
@@ -449,7 +449,7 @@ export default {
           row: row,
         }
       });
-    }
+    },
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑

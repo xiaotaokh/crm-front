@@ -14,6 +14,10 @@ export default new Vuex.Store({
     breadcrumb: [], // 面包屑
     tableLoading: true, // 表格全局loading加载
     postTableData: [], // 全局post请求 数据
+    globalHeaderColor: "#fff", // 头部背景色
+    globalSliderColor: "#155B74", // 侧边栏背景色
+    globalTagsViewBreadcrumb: true, // 是否显示面包屑
+    globalSliderLogo: true, // 是否显示LOGO
 
     // 全局当前用户信息
     globalUserInformation: {
@@ -53,6 +57,22 @@ export default new Vuex.Store({
     // 侧边栏宽度跟随侧边栏变化
     setSliderWidth(state,val) {
       state.sliderWidth = val;
+    },
+    // 设置头部背景色
+    setHeaderColor(state,val) {
+      state.globalHeaderColor = val;
+    },
+    // 设置侧边栏背景色
+    setSliderColor(state,val) {
+      state.globalSliderColor = val;
+    },
+    // 设置面包屑是否显示
+    setTagsViewBreadcrumbGlobal(state,val) {
+      state.globalTagsViewBreadcrumb = val;
+    },
+    // 设置是否显示LOGO
+    setSliderLogoGlobal(state,val) {
+      state.globalSliderLogo = val;
     },
     // app-content 主体区域跟随侧边栏变化
     setAppContentWidth(state,val) {

@@ -100,7 +100,7 @@
         </el-col>
       </el-row>
       <!-- 访问量area图 -->
-      <div id="mini-area"></div>
+      <!-- <div id="mini-area"></div> -->
 
       <!-- highcharts -->
       <div id="container" style="min-width:400px;height:600px"></div>
@@ -167,55 +167,55 @@ export default {
       return percentage === 100 ? "完成" : `${percentage}%`;
     },
     // mini area chart
-    miniArea() {
-      // var ds = new DataSet();
-      // var dv = ds.createView().source(this.data);
-      // Step 1: 创建 Chart 对象
-      var chart = new G2.Chart({
-        container: "mini-area",
-        forceFit: true,
-        height: 300
-      });
-      // Step 2: 载入数据源
-      // chart.source(dv);
-      chart.source(this.data);
-      chart.axis("value", {
-        label: {
-          // formatter: function formatter(val) {
-          //   return (val / 10000).toFixed(1) + "k";
-          // }
-        }
-      });
-      chart.tooltip({
-        crosshairs: {
-          type: "line"
-        }
-      });
-      // Step 3：创建图形语法，绘制折线区域图
-      chart
-        .area()
-        .position("year*value")
-        .shape("smooth"); // 折线使用曲线
-      chart
-        .line()
-        .position("year*value")
-        .size(1)
-        .shape("smooth");
-      // Step 4: 渲染图表
-      chart.render();
-    },
+    // miniArea() {
+    //   // var ds = new DataSet();
+    //   // var dv = ds.createView().source(this.data);
+    //   // Step 1: 创建 Chart 对象
+    //   var chart = new G2.Chart({
+    //     container: "mini-area",
+    //     forceFit: true,
+    //     height: 300
+    //   });
+    //   // Step 2: 载入数据源
+    //   // chart.source(dv);
+    //   chart.source(this.data);
+    //   chart.axis("value", {
+    //     label: {
+    //       // formatter: function formatter(val) {
+    //       //   return (val / 10000).toFixed(1) + "k";
+    //       // }
+    //     }
+    //   });
+    //   chart.tooltip({
+    //     crosshairs: {
+    //       type: "line"
+    //     }
+    //   });
+    //   // Step 3：创建图形语法，绘制折线区域图
+    //   chart
+    //     .area()
+    //     .position("year*value")
+    //     .shape("smooth"); // 折线使用曲线
+    //   chart
+    //     .line()
+    //     .position("year*value")
+    //     .size(1)
+    //     .shape("smooth");
+    //   // Step 4: 渲染图表
+    //   chart.render();
+    // },
     // highcharts 折线
     highcharts() {
       var chart = this.$Highcharts.chart("container", {
         title: {
-          text: "2010 ~ 2016 年太阳能行业就业人员发展情况"
+          text: "2019 ~ 2020 年国威永耀数据科技有限公司发展情况"
         },
         subtitle: {
-          text: "数据来源：thesolarfoundation.com"
+          text: "数据来源：http://gwxll.com"
         },
         yAxis: {
           title: {
-            text: "就业人数"
+            text: "营业额"
           }
         },
         legend: {
@@ -233,19 +233,19 @@ export default {
         },
         series: [
           {
-            name: "安装，实施人员",
+            name: "实例1",
             data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
           },
           {
-            name: "工人",
+            name: "实例2",
             data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434]
           },
           {
-            name: "销售",
+            name: "实例3",
             data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
           },
           {
-            name: "项目开发",
+            name: "实例4",
             data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227]
           },
           {
@@ -363,7 +363,7 @@ export default {
   },
   mounted() {
     this.$store.commit("editBreadcrumb", this.$route.matched); // 面包屑
-    this.miniArea();
+    // this.miniArea();
     this.highcharts();
     this.miniHighcharts();
   }

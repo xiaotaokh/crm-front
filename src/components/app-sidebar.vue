@@ -7,8 +7,8 @@
       :default-active="this.$route.path"
       router
       unique-opened
-      background-color="#155B74"
-      text-color="#fff"
+      :background-color="this.$store.state.globalSliderColor"
+      :text-color="sliderTextColor"
       active-text-color="#1BD5E7"
       class="el-menu-vertical-demo"
       @select="handleSelect"
@@ -16,8 +16,8 @@
     >
       <el-submenu v-for="(item,i) in this.$store.state.globalNavList" :key="i" :index="item.route">
         <template slot="title">
-          <i class="iconfont" :class="item.icon"></i>
-          <span slot="title">{{ item.navName }}</span>
+          <i class="iconfont" :class="item.icon" :style="'font-size:24px;color:'+sliderTextColor"></i>
+          <span slot="title">&nbsp;{{ item.navName }}</span>
         </template>
         <!-- 三级标题存在 -->
         <el-submenu
@@ -26,9 +26,9 @@
           v-show="sec.third.length != 0"
           :index="sec.route"
         >
-          <span slot="title">{{ sec.navName }}</span>
+          <span slot="title">&nbsp;&nbsp;&nbsp;&nbsp;{{ sec.navName }}</span>
           <el-menu-item v-for="(thi,k) in sec.third" :key="k" :index="thi.route">
-            <span slot="title">{{ thi.navName }}</span>
+            <span slot="title">&nbsp;{{ thi.navName }}</span>
           </el-menu-item>
         </el-submenu>
         <!-- 三级标题不存在 -->
@@ -38,7 +38,7 @@
           v-show="m.third.length == 0"
           :index="m.route"
         >
-          <span slot="title">{{ m.navName }}</span>
+          <span slot="title">&nbsp;&nbsp;&nbsp;&nbsp;{{ m.navName }}</span>
         </el-menu-item>
       </el-submenu>
     </el-menu>
@@ -65,30 +65,38 @@
       <div class="dra-con">
         <ul>
           <li>
-            <span>主题色</span>
+            <span>主题色(待配置)</span>
             <span>
               <el-color-picker v-model="mainColor" size="small" @change="drawMainColor"></el-color-picker>
             </span>
           </li>
           <li>
             <span>头部颜色</span>
-            <span>12345</span>
+            <span>
+              <el-color-picker
+                v-model="headerColor"
+                size="small"
+                @change="drawHeaderColor"
+              ></el-color-picker>
+            </span>
           </li>
           <li>
             <span>开启面包屑</span>
             <span>
-              <el-switch v-model="tagsView"></el-switch>
+              <el-switch @change="handleTagsViewBreadcrumb" v-model="tagsViewBreadcrumb"></el-switch>
             </span>
           </li>
           <li>
             <span>侧边栏Logo</span>
             <span>
-              <el-switch v-model="sliderLogo"></el-switch>
+              <el-switch v-model="sliderLogo" @change="handlesliderLogo"></el-switch>
             </span>
           </li>
           <li>
             <span>侧边栏颜色</span>
-            <span>12345</span>
+            <span>
+              <el-color-picker v-model="sliderColor" size="small" @change="drawSliderColor"></el-color-picker>
+            </span>
           </li>
         </ul>
       </div>
@@ -106,7 +114,10 @@ export default {
       id: "", // 菜单ID
       drawer: false, // 系统布局配置抽屉
       mainColor: "#409EFF", // 主题色
-      tagsView: true, // 面包屑
+      headerColor: "#fff", // 头部背景色
+      sliderColor: "#155B74", // 侧边栏背景色
+      sliderTextColor:"#fff",  // 侧边栏字体颜色
+      tagsViewBreadcrumb: true, // 面包屑
       sliderLogo: true // 侧边栏logo
     };
   },
@@ -140,7 +151,28 @@ export default {
     },
     // 系统布局配置抽屉 主题色
     drawMainColor() {
-      console.log(this.mainColor);
+      
+    },
+    // 系统布局配置抽屉 头部背景色
+    drawHeaderColor() {
+      this.$store.commit("setHeaderColor", this.headerColor);
+    },
+    // 系统布局配置抽屉 侧边栏背景色
+    drawSliderColor() {
+      this.$store.commit("setSliderColor", this.sliderColor);
+      if(this.sliderColor == "#FFFFFF") {
+        this.sliderTextColor = "#303133";
+      }else {
+        this.sliderTextColor = "#fff";
+      }
+    },
+    // 是否显示面包屑
+    handleTagsViewBreadcrumb() {
+      this.$store.commit("setTagsViewBreadcrumbGlobal",this.tagsViewBreadcrumb)
+    },
+    // 是否显示logo
+    handlesliderLogo() {
+      this.$store.commit("setSliderLogoGlobal",this.sliderLogo)
     }
   },
   mounted() {
@@ -179,7 +211,7 @@ export default {
   width: 100%;
   border-radius: 0;
 }
-.app-sidebar .slider-control .el-button--primary.control-btn i{
+.app-sidebar .slider-control .el-button--primary.control-btn i {
   height: 27px;
 }
 .app-sidebar .slider-control .slider-control {

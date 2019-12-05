@@ -105,7 +105,8 @@ html, body {
 /* 按钮组紧邻的表格  除去面包屑主体再除去按钮组*/
 .app-content-table {
   padding: 10px;
-  height: calc(100% -50px);   /* 这个高度用于放置分页 */
+  /* 这个高度用于放置分页 */
+  /* height: calc(100% -50px);    */
 }
 /* 分页pagination */
 .el-pagination {

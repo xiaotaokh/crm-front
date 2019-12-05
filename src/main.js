@@ -14,9 +14,20 @@ Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
-import '@/assets/styles/main.css' // 全局主样式文件
+import '@/assets/fonts/iconfont.css' // 阿里图标字体
+import '@/assets/fonts/iconfont.js' // 阿里图标字体
+
 import '@/assets/styles/media.css' // 响应式布局样式文件
+import '@/assets/styles/main.css' // 全局主样式文件
 import '@/assets/styles/reset.css' // 全局样式重置
+
+// ElementUI
+import ElementUI from 'element-ui' // element-ui
+import 'element-ui/lib/theme-chalk/index.css' // element-ui css
+
+import 'aigodata-element-theme' // aigo定制element-ui
+import '@/assets/styles/theme.css'
+Vue.use(ElementUI)
 
 // 引入echarts
 import echarts from 'echarts'
@@ -50,17 +61,6 @@ Object.keys(dateFilter).forEach(key => {
   Vue.filter(key, dateFilter[key])
 })
 
-// ElementUI
-import ElementUI from 'element-ui' // element-ui
-import 'element-ui/lib/theme-chalk/index.css' // element-ui css
-
-import 'aigodata-element-theme' // aigo定制element-ui
-import '@/assets/styles/theme.css'
-Vue.use(ElementUI)
-
-import '@/assets/fonts/iconfont.css' // 阿里图标字体
-import '@/assets/fonts/iconfont.js' // 阿里图标字体
-
 // url-loader
 import urlLoader from './router'
 Vue.use(urlLoader);
@@ -79,7 +79,7 @@ import axios from 'axios';
 Vue.prototype.$axios = axios; // axios  $为全局请求定义方式
 // axios.defaults.baseURL = '/api' // 跨域解决
 // axios.defaults.headers.post['Content-Type'] = 'application/json';   // 跨域解决  可以在axios.interceptors.request.use下设置  application/x-www-form-urlencoded;charset=UTF-8
-axios.defaults.baseURL = 'http://192.168.3.40:8899/' // url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
+axios.defaults.baseURL = 'http://192.168.3.40:8899/' // 开发url接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 // axios.defaults.baseURL = 'http://47.92.153.134:8899/'             // 打包接口地址全局定义    使用跨域解决不打开此行  修改config/index.js即可
 axios.defaults.timeout = 50000; // 每次请求间隔时间 3s
 // axios.defaults.headers.common['Authorization'] = localStorage.getItem("token") ? localStorage.getItem("token") : "";  // 全局设置请求头 添加token  错误
@@ -96,12 +96,13 @@ axios.interceptors.request.use(config => {
   }
   // 设置post请求体parms格式
   if (config.method === 'post') {
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     // 如果 请求体为FormData 类型的（例如带文件的请求体），不使用qs去转换
     if(config.data instanceof FormData) {
-    }else{
+      
+    }else {
       config.data = Qs.stringify(config.data); // 普通请求体转换请求体格式
     }
-    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
   }
   return config;
 }, err => Promise.reject(err));
@@ -131,7 +132,7 @@ axios.interceptors.response.use(res => {
 }, error => {
   if (!error.response) {
     Vue.prototype.$message({
-      message: "后台接口访问失败！",
+      message: "WOW，访问失败了！",
       type: 'warning'
     });
   }

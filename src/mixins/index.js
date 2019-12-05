@@ -295,7 +295,7 @@ export const myMixins = {
     },
     downloadFile(url, data) {
       let requestData = Object.assign({}, data, {
-        accessToken: localStorage.getItem("accessToken")
+        // accessToken: localStorage.getItem("accessToken");
       });
 
       // 响应类型：arraybuffer, blob
@@ -470,9 +470,8 @@ export const myMixins = {
       this.$axios
         .post(url, formData)
         .then(res => {
-          if (res.data.code == 1) {
+          if (res.data.code == 1 && res.data.data != null) {
             this.globalCompanyInformation = res.data.data;
-            // console.log(this.globalCompanyInformation)
           }
         })
         .catch(err => {});

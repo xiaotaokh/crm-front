@@ -1,9 +1,9 @@
 <template>
-  <div class="app-header">
+  <div class="app-header" :style="'background:'+this.$store.state.globalHeaderColor">
     <div
       class="logo"
       :style="'width: '+this.$store.state.sliderWidth+'px'"
-      v-if="this.$store.state.isHeaderLogo"
+      v-if="this.$store.state.isHeaderLogo && this.$store.state.globalSliderLogo"
     >
       <!-- <img src="../assets/logo.png" class="img_1" alt /> -->
       <img src="../assets/logo_v9.png" class="img_1" alt />
@@ -11,45 +11,63 @@
     <div
       class="logo"
       :style="'width: '+this.$store.state.sliderWidth+'px'"
-      v-if="!this.$store.state.isHeaderLogo"
+      v-if="!this.$store.state.isHeaderLogo && this.$store.state.globalSliderLogo"
     >
       <!-- <img src="../assets/logo_v2.png" class="img_2" alt /> -->
       <img src="../assets/logo_v4.png" class="img_2" alt />
     </div>
+    <!-- 先判断logo是否存在   存在：侧边距为侧边栏宽度 不存在：左侧为10px-->
     <div
       class="header-right clearfix"
-      :style="'position: absolute;left: '+
-      this.$store.state.appContentWidth+
-      'px;width: calc(100% - '+
-      this.$store.state.appContentWidth+
-      'px)'"
+      :style="this.$store.state.globalSliderLogo ? 'position: absolute;left: '+ this.$store.state.appContentWidth+ 'px;width: calc(100% - '+ this.$store.state.appContentWidth+ 'px)': 'position: absolute;left:10px;width:calc(100% - 10px);'"
     >
       <!-- 菜单展开收缩 -->
       <div class="isCollapse" v-if="this.$store.state.isHeaderLogo">
-        <el-tooltip class="item" effect="dark" content="折叠菜单" placement="right">
-          <el-button type="text" @click="handleSliderIsCollapse">
-            <i class="iconfont iconcaidan_shousuo"></i>
+        <el-tooltip class="item" effect="dark" content="折叠菜单" placement="left">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleSliderIsCollapse"
+          >
+            <i class="iconfont icondaohanghebing" style="font-size:12px"></i>
           </el-button>
         </el-tooltip>
       </div>
       <div class="isCollapse" v-if="!this.$store.state.isHeaderLogo">
         <el-tooltip class="item" effect="dark" content="展开菜单" placement="right">
-          <el-button type="text" @click="handleSliderIsCollapse">
-            <i class="iconfont iconcaidan_zhankai"></i>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleSliderIsCollapse"
+          >
+            <i class="iconfont icondaohangzhankai" style="font-size:12px"></i>
           </el-button>
         </el-tooltip>
       </div>
       <!-- 搜索框 -->
-      <div class="search">
-        <el-input placeholder="请输入您想要查询的关键词..." v-model="headerSearch" size="small" clearable>
-          <el-button
-            class="search-btn"
-            type="primary"
-            slot="append"
-            size="small"
-            icon="el-icon-search"
-          ></el-button>
-        </el-input>
+      <div class="search" ref="search">
+        <transition name="searchFade" appear mode="in-out">
+        <div class="search-no-ipt" v-show="!isSearchInput">
+          <el-tooltip class="item" effect="dark" content="搜索" placement="left">
+            <el-button type="text" size="mini" @click="isSearchInput = true">
+              <i class="iconfont iconsousuo1" style="font-size:18px;"></i>
+            </el-button>
+          </el-tooltip>
+        </div>
+        </transition>
+        <transition name="searchFade" appear mode="in-out">
+        <div class="search-ipt" v-show="isSearchInput">
+          <el-input placeholder="请输入您想要查询的关键词..." v-model="headerSearch" size="small" clearable>
+            <el-button
+              class="search-btn"
+              type="primary"
+              slot="append"
+              size="small"
+              icon="el-icon-search"
+            ></el-button>
+          </el-input>
+        </div>
+        </transition>
       </div>
       <ul class="clearfix">
         <!-- 用户名 -->
@@ -316,6 +334,7 @@ export default {
     };
     return {
       headerSearch: "", // 头部搜索
+      isSearchInput: false, // 搜索框是否显示
       rolesFilterList: [], // 角色列表
       fatherCompanyList: [], // 父公司列表
 
@@ -367,6 +386,14 @@ export default {
     };
   },
   methods: {
+    // 关闭搜索input
+    closeSearchInput(event) {
+      var searchIpt = document.getElementsByClassName("search-ipt");
+      //按钮.app-download以外的区域
+      // if (!searchIpt.contains(event.target)) {
+      //   this.isSearchInput = false;
+      // }
+    },
     // 侧边栏是否收起
     handleSliderIsCollapse() {
       this.$store.commit(
@@ -399,7 +426,7 @@ export default {
               this.$message({
                 message: "退出成功!",
                 type: "success",
-                duration:1000,
+                duration: 1000
               });
               localStorage.removeItem("token"); // 清除token
               this.$router.push({ path: "/login" }); // 跳转页面
@@ -528,10 +555,10 @@ export default {
               this.$axios
                 .post("logout")
                 .then(res => {
-                  this.$message({
-                    message: "退出成功!",
-                    type: "success"
-                  });
+                  // this.$message({
+                  //   message: "退出成功!",
+                  //   type: "success"
+                  // });
                   localStorage.removeItem("token"); // 清除token
                   this.$router.push({ path: "/login" }); // 跳转页面
                 })
@@ -636,6 +663,11 @@ export default {
     that = this;
   },
   mounted() {
+    document.addEventListener("click", e => {
+      // if (!this.$refs.search.contains(e.target)) {
+      //   this.isSearchInput = false;
+      // }
+    });
     this.getUserInformationGlobal(); // 获取用户信息
     this.getRoleFilterList(); // 获取角色列表
     this.handleFatherCompanyList(); // 获取父公司列表
@@ -656,15 +688,28 @@ export default {
   top: 0;
   /* width: 240px; */
   height: 60px;
+  position: relative;
 }
 .app-header .logo .img_1 {
-  width: 220px;
-  height: 60px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 180px;
+  height: 45px;
   transition: all 1s;
 }
 .app-header .logo .img_2 {
-  width: 64px;
+  width: 60px;
   height: 60px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
 }
 .app-header .header-right {
   /* width: calc(100% - 240px); */
@@ -682,13 +727,15 @@ export default {
 .app-header .header-right .isCollapse {
   margin-left: 10px;
 }
-.app-header .header-right .isCollapse i {
-  font-weight: 700;
-  color: #409eff;
-}
 .app-header .header-right .search {
-  width: 320px;
   margin-left: 20px;
+}
+.app-header .header-right .search .search-no-ipt {
+  float: left;
+  line-height: 66px;
+}
+.app-header .header-right .search .search-ipt {
+  width: 320px;
   float: left;
 }
 .app-header .header-right ul {
@@ -747,5 +794,12 @@ export default {
 /* 退出 */
 .app-header .header-right .exitOut i {
   font-size: 20px;
+}
+.searchFade-enter-active, .searchFade-leave-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.searchFade-enter, .searchFade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>

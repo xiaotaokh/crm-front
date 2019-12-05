@@ -6,6 +6,13 @@
   "description": "国威永耀-crm管理平台",
   "glyphs": [
     {
+      "icon_id": "1276",
+      "name": "附件",
+      "font_class": "fujian",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
       "icon_id": "553323",
       "name": "姓名 用户名 昵称",
       "font_class": "xingmingyonghumingnicheng",
@@ -69,6 +76,13 @@
       "unicode_decimal": 58944
     },
     {
+      "icon_id": "1115076",
+      "name": "搜索",
+      "font_class": "sousuo1",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
       "icon_id": "1166005",
       "name": "首页",
       "font_class": "iconfontzhizuobiaozhun023101",
@@ -95,6 +109,13 @@
       "font_class": "tianjia",
       "unicode": "e60a",
       "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "1514152",
+      "name": "退回",
+      "font_class": "tuihui",
+      "unicode": "e723",
+      "unicode_decimal": 59171
     },
     {
       "icon_id": "1915207",
@@ -130,6 +151,27 @@
       "font_class": "zhongzhimima",
       "unicode": "e61e",
       "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "4521249",
+      "name": "上传",
+      "font_class": "shangchuan",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "4572509",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "4598843",
+      "name": "附件管理",
+      "font_class": "fujianguanli",
+      "unicode": "e634",
+      "unicode_decimal": 58932
     },
     {
       "icon_id": "4735727",
@@ -244,6 +286,13 @@
       "unicode_decimal": 59271
     },
     {
+      "icon_id": "9874474",
+      "name": "KHCFDC_导航展开",
+      "font_class": "daohangzhankai",
+      "unicode": "e6ca",
+      "unicode_decimal": 59082
+    },
+    {
       "icon_id": "10213484",
       "name": "授权",
       "font_class": "shouquan",
@@ -263,6 +312,13 @@
       "font_class": "zhankai-search",
       "unicode": "e88f",
       "unicode_decimal": 59535
+    },
+    {
+      "icon_id": "11907529",
+      "name": "KHCFDC_导航展开",
+      "font_class": "daohanghebing",
+      "unicode": "e890",
+      "unicode_decimal": 59536
     }
   ]
 }
