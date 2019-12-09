@@ -68,7 +68,7 @@ this.globalListenHeight(); // 监听页面变化，修改表格高度
 ```
 
 **axios请求拦截**
-- min.js
+- main.js
 
 ```javascript
 // 对axios进行请求拦截处理  
