@@ -11,7 +11,7 @@
       <el-row :gutter="20" class="card">
         <!-- 总销售额 -->
         <el-col :span="6">
-          <el-card class="box-card" :mouseover="addActive" :mouseout="removeActive">
+          <el-card class="box-card" @mouseover="addActive" @mouseout="removeActive">
             <div class="card-name">
               <span class="card-name-span">总销售额</span>
             </div>
