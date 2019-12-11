@@ -22,7 +22,7 @@
               clearable
             ></el-input>
           </el-form-item>
-          <el-form-item label="区域：" prop="areaList">
+          <el-form-item label="区域：">
             <el-cascader
               :options="areaOption"
               v-model="searchForm.areaList"
@@ -480,7 +480,7 @@ export default {
       this.globalGetTableDataUrl = "customer/getAll";
       this.getTableDataGlobal();
     },
-    // 添加dialog 区域设置
+    // 区域设置
     handleAreaChange(value) {
       // 赋值给区域字段 （先数组转字符串，再去掉所有的逗号）
       this.area = value.toString().replace(/,/g, "");
