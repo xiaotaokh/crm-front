@@ -300,6 +300,8 @@
       center
       :title="editDialogForm.name"
       :visible.sync="globalaEditDialogFormVisible"
+      :close-on-click-modal="false"
+      :show-close="false"
     >
       <el-form
         :model="editDialogForm"
@@ -372,7 +374,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click="editDialogFormCancleGlobal">取 消</el-button>
+        <el-button size="small" type="info" @click="editDialogFormCancle">取 消</el-button>
         <el-button size="small" type="primary" @click="editDialogFormSubmit">确 定</el-button>
       </div>
     </el-dialog>
@@ -624,6 +626,15 @@ export default {
           return false;
         }
       });
+    },
+    // 表格行编辑取消
+    editDialogFormCancle() {
+      this.globalaEditDialogFormVisible = false;
+      this.$message({
+        type: "info",
+        message: "已取消编辑!"
+      });
+      this.isAddress = false;  // 区域显示为默认
     },
     // 表格行删除事件
     handleDelete(index, row) {
